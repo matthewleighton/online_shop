@@ -1,0 +1,171 @@
+* {
+	padding: 0;
+	margin: 0;
+	box-sizing: border-box;
+}
+
+body {
+	background-color: #EBEBEB;
+	font-family: Arial;
+}
+
+#wrapper {
+	width: 1200px;
+	margin: 0 auto;
+}
+
+/* ---------- Account header ---------- */
+
+#account-header {
+	background-color: white;
+	padding: 6px 0;
+	box-shadow: 0px 5px 2px #CFCFCF;
+	font-size: 12px;
+}
+
+#account-header div {
+	width: 1200px;
+	margin: 0 auto;
+}
+
+#account-header a {
+	text-decoration: none;
+}
+
+#account-header a:hover {
+	text-decoration: underline;
+}
+
+#account-header a:visited {
+	color: blue;
+}
+
+/* ---------- Search header ---------- */
+
+#navbar {
+	border-bottom: 1px solid #CDCDCD;
+	margin-bottom: 10px;
+	margin-top: 10px;
+	width: 100%;
+	height: 115px;
+}
+
+.nav-col-1 span {
+	float: right;
+	margin-left: 30px;
+}
+
+#navbar form {
+	float: right;	
+}
+
+#search-bar {
+	font-size: 25px;
+	border-radius: 15px;
+}
+
+.nav-col-2 span {
+	position: relative;
+	top: 10px;
+	font-size: 22px;
+}
+
+/* ---------- Account Creation ---------- */
+#account-creation {
+	text-align: center;
+	margin: 20px 0;
+}
+
+#account-creation-container {
+	background-color: white;
+	border-radius: 5px;
+	margin: 20px auto;
+	border: 1px solid #CDCDCD;
+	padding: 5px;
+	width: 400px;
+}
+
+#account-creation h2 {
+	margin-bottom: 5px;
+	font-weight: normal;
+}
+
+.field-error-message {
+	color: red;
+	list-style: none;
+	text-align: left;
+	font-size: 11px;
+	margin: -5px 0 5px 5px;
+}
+
+#account-creation input[type=text], #account-creation input[type=password] {
+	border: 1px solid #ADADAD;
+	border-radius: 5px;
+	height: 35px;
+	margin: 10px 0px;
+	padding: 0 0 0 5px;
+	width: 100%;
+}
+
+.field-with-errors {
+	border: 1px solid red !important;
+}
+
+#account-creation .first-name-input {
+	float: left;
+	width: 49%;
+}
+
+#account-creation .last-name-input {
+	width: 49%;
+	float: right;
+}
+
+#account-creation input[type=submit] {
+	font-weight: bold;
+	padding:10px 15px; 
+    background: -webkit-gradient(linear,left top,left bottom,from(#1079bc),to(#00509d));
+    color: white;
+    border:0 none;
+    cursor:pointer;
+    border-radius: 5px; 
+    margin: 20px 0 5px 0;
+}
+
+/* ---------- Footer ---------- */
+#footer {
+	background-color: white;
+	border-top: 1px solid gray;
+	box-shadow: 0px 500px 0px 500px white;
+	margin-top: 20px;
+	padding-top: 20px;
+}
+
+#footer-container {
+	width: 1200px;
+	margin: 0 auto;
+}
+
+.footer-column {
+	display: inline-block;
+	margin: 0 60px;
+}
+
+.footer-column h3 {
+	font-size: 18px;
+	font-weight: normal;
+	margin: 0 0 6px 0;
+}
+
+.footer-column ul {
+	list-style: none;
+	font-size: 12px;
+}
+
+.footer-column li {
+	margin: 5px 0;
+}
+
+#footer-bottom {
+	text-align: center;
+}

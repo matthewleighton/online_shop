@@ -90,6 +90,16 @@
 							$this->addError($attr_name, $this->validationsList[$attr_name][$quality][1]);
 						}
 					break;
+					case 'unique':
+						$conn = Db::connect();
+						$sql = 'SELECT *' . ' FROM ' . get_class($this) . 's WHERE ' . $attr_name . "='" . $_POST[$attr_name] . "'";
+						$results = $conn->query($sql);
+						//echo $sql;
+				
+						if($results->num_rows > 0) {
+							$this->addError($attr_name, ' address is already in use.');
+						}
+					break;
 				}
 			}
 		}

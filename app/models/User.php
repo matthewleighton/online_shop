@@ -24,6 +24,7 @@
 
 			$this->validates('email', 'presence');
 			$this->validates('email', 'match', ['/\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z/i', ' must be valid.']);
+			$this->validates('email', 'unique');
 
 			$this->validates('password', 'presence');
 			$this->validates('password', 'length', ['minimum' => 4]);

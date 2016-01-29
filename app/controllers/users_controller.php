@@ -16,11 +16,11 @@
 			if(isset($_POST['first_name'])){
 				$user->assignProperties();
 				if($user->createUser()) {
-					// redirect to somewhere.	
+					$this->redirect_to();
 				}
 			}
 
-			$view = new View('users/newuser', ['header' => false, 'footer' => false]);
+			$view = new View('layouts/register_login', ['header' => false, 'footer' => false]);
 			$view->set_title('Create account');
 			$view->pass_data('user', $user);
 			$view->load_page();

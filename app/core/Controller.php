@@ -8,5 +8,11 @@
 		public function load_view($view, $data = []) {
 			require_once('../app/views/' . $view . '.php');
 		}
+
+		public function redirect_to($location = '') {
+			header('location: http://localhost/online_shop/public/' . $location);
+		}
+
+		
 	}
 ?>

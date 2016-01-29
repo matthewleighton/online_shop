@@ -71,12 +71,12 @@ body {
 }
 
 /* ---------- Account Creation ---------- */
-#account-creation {
+#login-register-page {
 	text-align: center;
 	margin: 20px 0;
 }
 
-#account-creation-container {
+#login-register-page #box {
 	background-color: white;
 	border-radius: 5px;
 	margin: 20px auto;
@@ -85,20 +85,12 @@ body {
 	width: 400px;
 }
 
-#account-creation h2 {
+#login-register-page h2 {
 	margin-bottom: 5px;
 	font-weight: normal;
 }
 
-.field-error-message {
-	color: red;
-	list-style: none;
-	text-align: left;
-	font-size: 11px;
-	margin: -5px 0 5px 5px;
-}
-
-#account-creation input[type=text], #account-creation input[type=password] {
+#login-register-page input[type=text], #login-register-page input[type=password] {
 	border: 1px solid #ADADAD;
 	border-radius: 5px;
 	height: 35px;
@@ -111,17 +103,17 @@ body {
 	border: 1px solid red !important;
 }
 
-#account-creation .first-name-input {
+#login-register-page .first-name-input {
 	float: left;
 	width: 49%;
 }
 
-#account-creation .last-name-input {
+#login-register-page .last-name-input {
 	width: 49%;
 	float: right;
 }
 
-#account-creation input[type=submit] {
+#login-register-page input[type=submit] {
 	font-weight: bold;
 	padding:10px 15px; 
     background: -webkit-gradient(linear,left top,left bottom,from(#1079bc),to(#00509d));
@@ -130,6 +122,14 @@ body {
     cursor:pointer;
     border-radius: 5px; 
     margin: 20px 0 5px 0;
+}
+
+.field-error-message {
+	color: red;
+	list-style: none;
+	text-align: left;
+	font-size: 11px;
+	margin: -5px 0 5px 5px;
 }
 
 /* ---------- Footer ---------- */

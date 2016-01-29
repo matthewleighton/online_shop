@@ -34,14 +34,11 @@
 			}
 		}
 
-		public function createInput($type, $name, $placeholder, $ident = []) {
+		public function createInput($type, $name, $placeholder, $object, $ident = []) {
 
-			//print_r($this->data['user']->errorsList);
-
-			if(array_key_exists($name, $this->data['user']->errorsList)) {
-				$contains_errors = true;
-			} else {
-				$contains_errors = false;
+			$contains_errors = false;
+			if($object != '' && array_key_exists($name, $this->data[$object]->errorsList)) {
+					$contains_errors = true;
 			}
 
 			$input = "<input type='" . $type .

@@ -16,6 +16,7 @@
 			if(isset($_POST['first_name'])){
 				$user->assignProperties();
 				if($user->createUser()) {
+					Sessions_helper::login();
 					$this->redirect_to();
 				}
 			}

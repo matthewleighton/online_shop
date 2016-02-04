@@ -78,19 +78,42 @@
 		protected function link_to($location, $text, $ident = []) {
 			$link = "<a ";
 
-			if(array_key_exists('id', $ident)) {
-				$link .= "id='" . $ident['id'] . "' ";
-			} elseif (array_key_exists('class', $ident)) {
-				$link .= "class='" . $ident['class'] . "' ";
-			}
+			$link .= $this->listIdents($ident);
 
 			echo $link .= "href='/online_shop/public/" . $location . "'>" . $text . "</a>";
 		}
 
-		protected function image_tag($image) {
-			
+		protected function image_tag($image, $options = []) {
+			echo "<img src='/online_shop/public/assets/img/" . $image . "' ";
+
+			$this->listIdents($options);
+
+			if(array_key_exists('height', $options)) {
+				echo "height='" . $options['height'] . "' ";
+			}
+			if(array_key_exists('width', $options)) {
+				echo "width='" . $options['width'] . "' ";
+			}
+
+			echo ">";
+
+
 		}
 
+		protected function user_info($attr) {
+			if($attr == 'password') {
+				return nill;
+			}
+		}
+
+
+		private function listIdents($ident) {
+			if(array_key_exists('id', $ident)) {
+				return "id='" . $ident['id'] . "' ";
+			} elseif (array_key_exists('class', $ident)) {
+				return "class='" . $ident['class'] . "' ";
+			}
+		}
 	}
 	
 ?>

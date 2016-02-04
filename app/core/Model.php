@@ -4,6 +4,8 @@
 		public $validationsList = array();
 		public $errorsList = array();
 
+/* ---------- Validation functions ---------- */
+
 		// Add items to the validations list which will later be validated
 		public function validates($attr, $quality, $value = '', $error = '') {
 			
@@ -28,20 +30,14 @@
 			//echo '<br>';
 		}
 
+		// Loop through the validations held in the validations list
 		public function runValidations() {
-
-			//echo '<br><br>Validations list before validating: ';
-			//print_r($this->validationsList);
-
 			$this->errorsList = array();
 			foreach ($this->validationsList as $attr => $quality) {
 				foreach ($quality as $quality => $value) {
 					$this->validation($attr, $quality, $value);
 				}
 			}
-
-			// Uncomment to check errors list.
-			//print_r($this->errorsList);
 
 			if(empty($this->errorsList)) {
 				return true;
@@ -50,6 +46,7 @@
 			}
 		}
 
+		// Run an individual validation
 		private function validation($attr_name, $quality, $value) {
 			if($attr_name == 'password') {
 				$attr = $_POST['password'];
@@ -94,7 +91,6 @@
 						$conn = Db::connect();
 						$sql = 'SELECT *' . ' FROM ' . get_class($this) . 's WHERE ' . $attr_name . "='" . $_POST[$attr_name] . "'";
 						$results = $conn->query($sql);
-						//echo $sql;
 				
 						if($results->num_rows > 0) {
 							$this->addError($attr_name, ' address is already in use.');
@@ -104,6 +100,7 @@
 			}
 		}
 
+		// Add an error message to the errors list
 		private function addError($attr, $error = '') {
 			$attr_clean_name = ucfirst(str_replace('_', ' ', $attr));
 			if(!array_key_exists($attr, $this->errorsList)) {
@@ -142,12 +139,53 @@
 
 		protected function saveToDatabase($sql) {
 			$conn = Db::connect();
+			$conn->query($sql);
+			$conn->close();
+			return true;
+		}
+
+/* ---------- Search functions ---------- */
+
+		public function findAll() {
 			
-			if($conn->query($sql) === TRUE) {
-				echo 'New record created successfully';
-			} else {
-				echo 'Error ' . $sql . '<br>' . $conn->error;
+			if(isset($this->sqlOptions['concat'])) {
+				$concatBy = $this->sqlOptions['concat'][0];
+				$concat = ", GROUP_CONCAT(" . $concatBy . " ORDER BY " . $concatBy . ") " . $this->sqlOptions['concat'][1] . " ";
 			}
+
+			$sql = "SELECT *";
+
+			if(isset($concat)) {
+				$sql .= $concat;
+			}
+
+			$sql .= "FROM " . $this->table;
+
+			if(isset($this->sqlOptions['join'])) {
+				foreach($this->sqlOptions['join'] as $join => $on) {
+					$sql .= " JOIN " . $join . " ON " . $on[0] . " = " . $on[1];
+				}
+			}
+
+			if(isset($this->sqlOptions['groupby'])) {
+				$sql .= " GROUP BY " . $this->sqlOptions['groupby'];
+			}
+
+			//echo $sql;
+
+			$conn = Db::connect();
+			$results = $conn->query($sql);
+			$conn->close();
+			
+			//var_dump($results);
+
+			//print_r($results->fetch_assoc());
+
+			$array = [];
+			while($row = $results->fetch_assoc()) {
+				array_push($array, $row);
+			}
+			return $array;		
 		}
 
 	}

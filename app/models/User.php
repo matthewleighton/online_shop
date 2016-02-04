@@ -9,17 +9,13 @@
 
 		public $errors = array();
 
-		
-
 		public function __construct() {
 			$this->validates('first_name', 'presence');
-			$this->validates('first_name', 'length', ['minimum' => 2]);
-			$this->validates('first_name', 'length', ['maximum' => 9]);
+			$this->validates('first_name', 'length', ['maximum' => 30]);
 			$this->validates('first_name', 'no_match', ['/[0-9]/', ' must only contain letters.']);
 
 			$this->validates('last_name', 'presence', 'presence');
-			$this->validates('last_name', 'length', ['minimum' => 4]);
-			$this->validates('last_name', 'length', ['maximum' => 10]);
+			$this->validates('last_name', 'length', ['maximum' => 30]);
 			$this->validates('last_name', 'no_match', ['/[0-9]/', ' must contain only letters.']);
 
 			$this->validates('email', 'presence');
@@ -27,10 +23,7 @@
 			$this->validates('email', 'unique');
 
 			$this->validates('password', 'presence');
-			$this->validates('password', 'length', ['minimum' => 4]);
-
-			//print_r($this->validationsList);
-			//echo '<br>';
+			$this->validates('password', 'length', ['minimum' => 6]);
 		}
 
 		public function assignProperties() {
@@ -42,8 +35,6 @@
 					
 				}
 
-				//print_r($this->properties);
-
 				if(isset($this->{$postKey})) {
 					$this->{$postKey} = $_POST[$postKey];
 				}
@@ -52,18 +43,30 @@
 
 		public function createUser() {
 			
-			//echo '<br><br>';
-			//print_r($this->validationsList);
-
 			if($this->runValidations()) {
-				//$sql = "INSERT INTO Users (first_name, last_name, email) VALUES ('Test', 'One', 'email')";
 				$sql = $this->generateSql('INSERT INTO', 'users', $this->properties);
-				//echo '<br>SQL is ' . $sql . '<br>';
 				$this->saveToDatabase($sql);
 				return true;
 			} else {
 				return false;
 			}
+		}
+
+	
+		public function findBy($columns, $val) {
+			$conn = Db::connect();
+			$sql = "SELECT  id, first_name, last_name, email FROM users WHERE ";
+			if(is_array($columns)) {
+				foreach ($columns as $col) {
+					$sql .= $col . "='" . $val[array_search($col, $col_list)] . "' AND  ";
+				}
+				$sql = rtrim($sql, " AND ");
+			} else {
+				$sql .= $columns . "='" . $val . "'";
+			}
+			
+			$results = $conn->query($sql);
+			return $results->fetch_assoc();
 		}
 	}
 ?>

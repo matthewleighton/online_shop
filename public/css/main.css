@@ -14,6 +14,62 @@ body {
 	margin: 0 auto;
 }
 
+/* ---------- Dropdown Menus ---------- */
+
+.dropdown {
+	position: relative;
+    display: inline-block;
+}
+
+.dropbtn {
+	background-color: #4CAF50;
+	color: white;
+	padding: 10px;
+	font-size: 13px;
+	border: none;
+	cursor: pointer;
+}
+
+.dropdown-content {
+	display: none;
+	position: absolute;
+	background-color: #f9f9f9;
+	min-width: 160px;
+	box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+	padding: 12px 16px;
+	z-index: 1;
+}
+
+.dropdown-content ul {
+	list-style: none;	
+}
+
+.dropdown-content ul li {
+	padding: 5px 0;
+}
+
+.dropdown-content ul li a {
+	text-decoration: none;
+}
+
+.dropdown-content ul li a:visited{
+	color: inherit;
+}
+
+.dropdown-content ul li:hover{
+	color: orange;
+	font-weight: 600;
+}
+
+.dropdown:hover .dropdown-content {
+	display: block;
+}
+
+.dropdown:hover .dropbtn {
+	background-color: #3e8e41;
+}
+
+
 /* ---------- Account header ---------- */
 
 #account-header {
@@ -38,6 +94,10 @@ body {
 
 #account-header a:visited {
 	color: blue;
+}
+
+#account-header .logout {
+	float: right;
 }
 
 /* ---------- Search header ---------- */
@@ -168,4 +228,47 @@ body {
 
 #footer-bottom {
 	text-align: center;
+}
+
+/* ---------- Product List Page ---------- */
+
+.product-container {
+	margin: 20px 10px;
+	height: 110px;
+	border-bottom: 1px solid #CDCDCD;
+}
+
+.product-container .product-name, .product-container a:visited {
+	font-size: 17px;
+	text-decoration: none;
+	color: #0066c0;
+}
+
+.product-container span {
+	line-height: 1.25;
+}
+
+.product-container img {
+	vertical-align: text-top;
+	margin-right: 17px;
+	float: left;
+}
+
+.product-container .release-date {
+	margin-left: 20px;
+	font-size: 12px;
+}
+
+.product-container .author-names {
+	font-size: 12px;
+}
+
+.product-container .book-type {
+	font-size: 12px;
+}
+
+.product-container .product-price {
+	color: #b12704;
+	font-size: 14px;
+	font-weight: 700;
 }

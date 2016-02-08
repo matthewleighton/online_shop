@@ -112,6 +112,7 @@
 			}
 		}
 
+		// Generates the sql needed to add entries to the database
 		protected function generateSql($method, $column, $entries) {
 			$sql = $method . ' ' . $column . ' (';
 
@@ -146,20 +147,16 @@
 
 /* ---------- Search functions ---------- */
 
-		public function findAll() {
+		// Creates the sql required to search and properly join the required tables
+		protected function generateSearchSql($sql, $where = '') {
 			
 			if(isset($this->sqlOptions['concat'])) {
-				$concatBy = $this->sqlOptions['concat'][0];
-				$concat = ", GROUP_CONCAT(" . $concatBy . " ORDER BY " . $concatBy . ") " . $this->sqlOptions['concat'][1] . " ";
+				foreach ($this->sqlOptions['concat'] as $concat => $value) {
+					$sql .= ", GROUP_CONCAT(" . $value[0] . ") " . $value[1];
+				}
 			}
 
-			$sql = "SELECT *";
-
-			if(isset($concat)) {
-				$sql .= $concat;
-			}
-
-			$sql .= "FROM " . $this->table;
+			$sql .= " FROM " . $this->table;
 
 			if(isset($this->sqlOptions['join'])) {
 				foreach($this->sqlOptions['join'] as $join => $on) {
@@ -167,26 +164,50 @@
 				}
 			}
 
+			$sql .= $where;
+
 			if(isset($this->sqlOptions['groupby'])) {
 				$sql .= " GROUP BY " . $this->sqlOptions['groupby'];
 			}
 
-			//echo $sql;
+			return $sql;
+		}
 
+		protected function searchDb($sql) {
 			$conn = Db::connect();
 			$results = $conn->query($sql);
 			$conn->close();
-			
-			//var_dump($results);
+			return $results;
+		}
 
-			//print_r($results->fetch_assoc());
-
+		protected function createResultsArray($results) {
 			$array = [];
+			//var_dump($results);
 			while($row = $results->fetch_assoc()) {
 				array_push($array, $row);
 			}
-			return $array;		
+
+			return $array;
 		}
+
+		public function findAll() {
+			$sql = "SELECT *";
+			$sql = $this->generateSearchSql($sql);
+			$results = $this->searchDb($sql);
+
+			return $this->createResultsArray($results);
+		}
+
+		public function findById($id) {
+			$sql = "SELECT *";
+			$where = " WHERE " . get_class($this) . "." . get_class($this) . "_id = '" . $id . "' ";
+			$sql = $this->generateSearchSql($sql, $where);
+			$results = $this->searchDb($sql);
+			
+			return $results->fetch_assoc();
+		}
+
+		
 
 	}
 ?>

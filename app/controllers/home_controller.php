@@ -15,5 +15,6 @@
 		public function test() {
 			$this->load_view('home/test');
 		}
+
 	}
 ?>

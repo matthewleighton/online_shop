@@ -84,18 +84,18 @@
 		}
 
 		protected function image_tag($image, $options = []) {
-			echo "<img src='/online_shop/public/assets/img/" . $image . "' ";
+			$tag = "<img src='/online_shop/public/assets/img/" . $image . "' ";
 
-			$this->listIdents($options);
+			$tag .= $this->listIdents($options);
 
 			if(array_key_exists('height', $options)) {
-				echo "height='" . $options['height'] . "' ";
+				$tag .= "height='" . $options['height'] . "' ";
 			}
 			if(array_key_exists('width', $options)) {
-				echo "width='" . $options['width'] . "' ";
+				$tag .= "width='" . $options['width'] . "' ";
 			}
 
-			echo ">";
+			echo $tag .= ">";
 
 
 		}
@@ -113,6 +113,27 @@
 			} elseif (array_key_exists('class', $ident)) {
 				return "class='" . $ident['class'] . "' ";
 			}
+		}
+
+		protected function formatPrice($price) {
+			return substr($price, 0, strlen($price) - 2);
+		}
+
+		protected function totalPrice($cart) {
+			$total = 0;
+			foreach ($cart as $item) {
+				$n = $item['price'] * intval($item['cart_quantity']);
+				$total += $n;
+			}
+
+			return $total;
+		}
+
+		protected function removeFromCart($product_id, $cart) {
+			echo "<form action='/online_shop/public/carts/removeitem' method='post'>";
+				echo "<input type='hidden' name='product_id' value='" . $product_id . "'>";
+				echo "<input type='submit' value='Delete' class='cart-delete-btn'>";
+			echo "</form>";
 		}
 	}
 	

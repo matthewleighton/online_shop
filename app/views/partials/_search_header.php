@@ -2,7 +2,7 @@
 	<div class="nav-col-1">
 		<a href="/online_shop/public"><img src='/online_shop/public/assets/img/logo_placeholder.png' alt='logo' height='70'/></a>
 		<span>
-			<?php $this->link_to('cart/index', 'Shopping Cart'); ?>
+			<?php $this->link_to('carts/index', 'Shopping Cart'); ?>
 		</span>
 	</div>
 	
@@ -11,7 +11,7 @@
 			<button class="dropbtn">Departments...</button>
 			<div class="dropdown-content">
 				<ul>
-					<li><?php $this->link_to('products/books', 'Books') ?></li>
+					<li><?php $this->link_to('products/catagory/books', 'Books') ?></li>
 					<li><?php $this->link_to('#', 'Movies & TV') ?></li>
 					<li><?php $this->link_to('#', 'Music') ?></li>
 					<li><?php $this->link_to('#', 'Video Games') ?></li>

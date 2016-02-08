@@ -11,13 +11,12 @@
 			} else {
 				$releaseDate = '';
 			}
-			$price = substr($product['price'], 0, strlen($product['price']) - 2);
+			$price = $this->formatPrice($product['price']);
 
 			echo "<div class='product-container'>";
 				$this->image_tag('placeholder-image.png', ['height' => 100, 'class' => 'product-list-image']);
-				
-				
-				$this->link_to('#', $product['product_name'], ['class' => 'product-name']);
+					
+				$this->link_to('products/item/' . $product['product_id'], $product['product_name'], ['class' => 'product-name']);
 				
 				echo "<span class='release-date'>" . $releaseDate . "</span>";
 

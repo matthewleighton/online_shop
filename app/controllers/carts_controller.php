@@ -31,7 +31,7 @@
 				// Add item to cart table in DB
 				require_once('../app/models/product.php');
 				$model = new Product;
-				$model->addToCart();
+				$model->addToCart($_POST['product_id'], $_POST['quantity']);
 			} else {
 				// Add item to cart in session variable
 				if(session_status() == PHP_SESSION_NONE) {

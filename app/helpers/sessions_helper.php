@@ -10,6 +10,15 @@
 			} else {
 				session_start();
 				$_SESSION['user_id'] = $result['user_id'];
+				
+				if(isset($_SESSION['cart']) && $_SESSION['cart'] != []) {
+				foreach ($_SESSION['cart'] as $product_id => $quantity) {
+					require_once('../app/models/Product.php');
+					$Product = new Product;
+					$Product->addToCart($product_id, $quantity);
+				}
+			}
+				
 				return true;
 			}
 		}

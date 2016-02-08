@@ -17,7 +17,7 @@
 				$user->assignProperties();
 				if($user->createUser()) {
 					Sessions_helper::login();
-					$this->redirect_to();
+					$this->redirect_to('');
 				}
 			}
 

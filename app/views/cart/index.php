@@ -25,7 +25,9 @@
 ?>
 		<div class='cart-item'>
 			<div class='cart-product-image'>
-				<?php $this->image_tag('placeholder-image.png', ['height' => 100]); ?>
+				<?php
+					 $this->productImage($product['product_id'], 100);					 
+				?>
 			</div>
 
 			<div class='cart-product-details'>

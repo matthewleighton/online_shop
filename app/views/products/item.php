@@ -1,7 +1,7 @@
 <?php $product = $this->data['product']; ?>
 <div class='product-section-1'>
 	<div class='product-image'>
-		<?php $this->image_tag('placeholder-image.png', ['height' => 250, 'class' => 'product-image']); ?>
+		<?php $this->productImage($product['product_id'], 250, ['class' => 'product-image']); ?>
 	</div>
 	
 	<div class='product-details'>

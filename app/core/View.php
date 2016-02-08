@@ -126,7 +126,7 @@
 				$total += $n;
 			}
 
-			return $total;
+			return number_format($total, 2);
 		}
 
 		protected function removeFromCart($product_id, $cart) {
@@ -134,6 +134,14 @@
 				echo "<input type='hidden' name='product_id' value='" . $product_id . "'>";
 				echo "<input type='submit' value='Delete' class='cart-delete-btn'>";
 			echo "</form>";
+		}
+
+		protected function productImage($product_id, $height, $ident = []) {
+			if(file_exists('../public/assets/img/products/product' . $product_id . '.jpg')) {
+			 	$this->image_tag('products/product' . $product_id . '.jpg', ['height' => $height, $ident]);
+			 } else {
+			 	$this->image_tag('placeholder-image.png', ['height' => $height]);
+			 }
 		}
 	}
 	

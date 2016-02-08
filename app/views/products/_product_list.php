@@ -14,7 +14,8 @@
 			$price = $this->formatPrice($product['price']);
 
 			echo "<div class='product-container'>";
-				$this->image_tag('placeholder-image.png', ['height' => 100, 'class' => 'product-list-image']);
+				$this->productImage($product['product_id'], 100, ['class' => 'product-list-image']);
+				//$this->image_tag('placeholder-image.png', ['height' => 100, 'class' => 'product-list-image']);
 					
 				$this->link_to('products/item/' . $product['product_id'], $product['product_name'], ['class' => 'product-name']);
 				

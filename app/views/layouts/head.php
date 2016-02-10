@@ -21,7 +21,8 @@
 			<div id="wrapper">
 				<?php
 					if($this->partials['header'] == true) {
-						include_once('../app/views/partials/_search_header.php');
+						//include_once('../app/views/partials/_search_header.php');
+						include_once('../app/views/partials/_new_header.php');
 					}
 				?>
 			

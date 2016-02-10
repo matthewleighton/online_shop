@@ -12,7 +12,14 @@
 			if(isset($_POST['email']) && isset($_POST['password'])) {
 				if($_POST['email'] != '' && $_POST['password'] != '') {
 					if(Sessions_helper::login()) {
-						$this->redirect_to('home/index');
+						if(array_key_exists('redirect', $_GET)) {
+							//$this->redirect_to($_GET[['redirect']]);
+							echo "frdgdfg";
+						} else {
+							print_r($_GET['redirect']);
+							//$this->redirect_to('home/index');	
+						}
+						
 					} else {
 						$_POST['email'] = '';
 						$_POST['password'] = '';

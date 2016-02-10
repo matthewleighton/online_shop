@@ -23,8 +23,9 @@ body {
 /* ---------- Dropdown Menus ---------- */
 
 .dropdown {
-	position: relative;
-    display: inline-block;
+    margin-bottom: 10px;
+    margin-left: 10px;
+    width: 30px;
 }
 
 .dropbtn {
@@ -106,14 +107,40 @@ body {
 	float: right;
 }
 
+/* ---------- New header ---------- */
+
+#main-header {
+	border-bottom: 1px solid #CDCDCD;
+}
+
+#main-header div {
+	
+	
+	
+}
+
+.header-left {
+	width: 24%;
+	display: inline-block;
+}
+
+.header-middle {
+	width: 51%;
+	display: inline-block;
+}
+
+
+
+
 /* ---------- Search header ---------- */
 
 #navbar {
+	display: block;
 	border-bottom: 1px solid #CDCDCD;
 	margin-bottom: 10px;
 	margin-top: 10px;
 	width: 100%;
-	height: 115px;
+	height: 110px;
 }
 
 .nav-col-1 span {
@@ -121,20 +148,69 @@ body {
 	margin-left: 30px;
 }
 
-#navbar form {
-	float: right;	
+.search-form {
+	display: inline-block;
+	text-align: center;
 }
 
-#search-bar {
-	font-size: 25px;
-	border-radius: 15px;
+.nav-col-2 {
+	text-align: center;
 }
 
-.nav-col-2 span {
+/* - Search Bar - */
+
+.search-form {
 	position: relative;
-	top: 10px;
-	font-size: 22px;
+	bottom: 30px;
+	height: 40px;
+	width: 100%;	
 }
+
+.search-form form {
+	height: 100%;
+}
+
+.search-form input {
+	display: inline-block;
+	height: 100%;
+}
+
+.search-text-div {
+
+}
+
+.search-bar {
+	width: 92%;
+	float: left;
+}
+
+.search-submit {
+	width: 8%;
+}
+
+.search-text-div {
+	
+}
+
+.search-submit-div {
+	
+}
+
+/* - Header right - */
+
+.header-right {
+	width: 24%;
+	display: inline-block;
+}
+
+.header-right a {
+	text-decoration: none;
+	color: #0066c0;
+	float: right;
+}
+
+
+
 
 /* ---------- Account Creation ---------- */
 #login-register-page {
@@ -354,33 +430,44 @@ body {
 	display: inline-block;
 }
 
-/* ---------- Product Show Page ---------- */
+/* ---------- Basket/Cart Page ---------- */
+.cart-main {
+	display: inline-block;
+	width: 75%;
+}
+
 .cart-top div {
 	display: inline-block;
 	position: relative;
 	top: 30px;
 }
 
+.cart-quantity-label {
+	float: right;
+}
+
 .cart-title {
 	font-weight: bold;
 	font-size: 20px;
-	width: 67%;
+	width: 70%;
 }
 
-.cart-price, .cart-quantity {
+.cart-item-list {
+	
+}
+
+.cart-price-label, .cart-quantity-label {
 	color: #555;
 	font-size: 13px;
 }
 
 .cart-price {
-	width: 25%;
+	width: 10%;
 }
 
 .cart-item {
 	border-top: 1px solid #CDCDCD;
 	padding: 5px 0;
-
-
 }
 
 .cart-item div {
@@ -398,7 +485,11 @@ body {
 }
 
 .cart-item .cart-product-price {
-	width: 25%;
+	width: 12%;
+}
+
+.cart-item .cart-product-quantity {
+	float: right;
 }
 
 /* - Product details - */
@@ -455,4 +546,16 @@ body {
 	float: right;
 	font-weight: bold;
 	margin-right: 30px;
+}
+
+/* - Cart Purchase box - */
+.cart-checkout-box {
+	display: inline-block;
+	vertical-align: top;
+	margin: 30px 0 0 30px;
+	height: 100px;
+	width: 250px;
+	border: 1px solid #CDCDCD;
+	border-radius: 5px;
+	background-color: white;
 }

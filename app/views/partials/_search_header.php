@@ -1,6 +1,12 @@
 <div id="navbar">
 	<div class="nav-col-1">
 		<a href="/online_shop/public"><img src='/online_shop/public/assets/img/logo_placeholder.png' alt='logo' height='70'/></a>
+		<div class='search-form'>
+			<form>
+				<input type="text" name="search" class="search-bar">
+				<input type="submit" value="GO!" class="search-submit">
+			</form>
+		</div>
 		<span>
 			<?php $this->link_to('carts/index', 'Shopping Cart'); ?>
 		</span>
@@ -18,10 +24,7 @@
 				</ul>
 			</div>
 		</div>
-		<form>
-			<input type="text" name="search" id="search-bar">
-			<input type="submit" value="search">
-		</form>
+
 		
 	</div>
 </div>

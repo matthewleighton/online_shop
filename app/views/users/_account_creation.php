@@ -21,6 +21,11 @@
 		</div>
 
 		<br>
+		<?php
+			if(array_key_exists('redirect', $_GET)) {
+				echo "<input type='hidden' name='redirect' value='" . $_GET['redirect'] . "'>";
+			}
+		?>
 		<input type="submit" value="Register">
 	</form>
 </div>

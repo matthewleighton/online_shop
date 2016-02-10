@@ -212,7 +212,7 @@ body {
 
 
 
-/* ---------- Account Creation ---------- */
+/* ---------- Account Creation/Login ---------- */
 #login-register-page {
 	text-align: center;
 	margin: 20px 0;
@@ -272,6 +272,10 @@ body {
 	text-align: left;
 	font-size: 11px;
 	margin: -5px 0 5px 5px;
+}
+
+.register-link {
+	margin: 20px 0;
 }
 
 /* ---------- Footer ---------- */

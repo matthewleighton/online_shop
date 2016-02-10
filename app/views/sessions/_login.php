@@ -17,4 +17,16 @@
 		<?php } ?>
 		<input type='submit', value='Log in'>
 	</form>
+	
+<?php
+	$link = 'users/newuser';
+	if(array_key_exists('redirect', $_GET)) {
+		$link .= "?redirect=" . $_GET['redirect'];
+	}
+?>
+
+
+	<div class='register-link'>
+		<p>Don't have an account? <?php $this->link_to($link, 'Click here'); ?></p>
+	</div>
 </div>

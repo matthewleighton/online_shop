@@ -17,7 +17,11 @@
 				$user->assignProperties();
 				if($user->createUser()) {
 					Sessions_helper::login();
-					$this->redirect_to('');
+					if(array_key_exists('redirect', $_POST)) {
+						$this->redirect_to($_POST['redirect']);
+					} else {
+						$this->redirect_to('home/index');	
+					}
 				}
 			}
 

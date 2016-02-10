@@ -1,9 +1,13 @@
 <div id='main-header'>
 	<div class='header-left'>
-		<a href="/online_shop/public">
-			<img src='/online_shop/public/assets/img/logo_placeholder.png' alt='logo' height='70'/>
-		</a>
-		<div class="dropdown">
+		
+		<div class='logo'>
+			<a href="/online_shop/public">
+				<img src='/online_shop/public/assets/img/logo_placeholder.png' alt='logo' height='70'/>
+			</a>
+		</div>
+
+		<div class="departments-dropdown">
 			<button class="dropbtn">Departments...</button>
 			<div class="dropdown-content">
 				<ul>
@@ -14,6 +18,7 @@
 				</ul>
 			</div>
 		</div>
+		
 	</div>
 
 	<div class='header-middle'>

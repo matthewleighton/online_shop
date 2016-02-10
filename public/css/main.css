@@ -20,12 +20,65 @@ body {
 	color: #b12704;
 }
 
-/* ---------- Dropdown Menus ---------- */
+/* ---------- Account header ---------- */
 
-.dropdown {
+#account-header {
+	background-color: white;
+	padding: 6px 0;
+	box-shadow: 0px 5px 2px #CFCFCF;
+	font-size: 12px;
+}
+
+#account-header div {
+	width: 1200px;
+	margin: 0 auto;
+}
+
+#account-header a {
+	text-decoration: none;
+}
+
+#account-header a:hover {
+	text-decoration: underline;
+}
+
+#account-header a:visited {
+	color: blue;
+}
+
+#account-header .logout {
+	float: right;
+}
+
+
+/* ---------- Search Header ---------- */
+
+#main-header {
+	border-bottom: 1px solid #CDCDCD;
+	height: 75px;
+	margin-bottom: 15px;
+}
+
+
+/* - Left Section - */
+.header-left {
+	display: inline-block;
+	width: 24%;
+}
+
+.header-left .logo {
+	display: inline-block;
+	position: relative;
+	top: 10px;
+}
+
+.departments-dropdown {
     margin-bottom: 10px;
     margin-left: 10px;
     width: 30px;
+    display: inline-block;
+	position: relative;
+	bottom: 19px;
 }
 
 .dropbtn {
@@ -68,100 +121,23 @@ body {
 	font-weight: 600;
 }
 
-.dropdown:hover .dropdown-content {
+.departments-dropdown:hover .dropdown-content {
 	display: block;
 }
 
-.dropdown:hover .dropbtn {
+.departments-dropdown:hover .dropbtn {
 	background-color: #3e8e41;
 }
 
-
-/* ---------- Account header ---------- */
-
-#account-header {
-	background-color: white;
-	padding: 6px 0;
-	box-shadow: 0px 5px 2px #CFCFCF;
-	font-size: 12px;
-}
-
-#account-header div {
-	width: 1200px;
-	margin: 0 auto;
-}
-
-#account-header a {
-	text-decoration: none;
-}
-
-#account-header a:hover {
-	text-decoration: underline;
-}
-
-#account-header a:visited {
-	color: blue;
-}
-
-#account-header .logout {
-	float: right;
-}
-
-/* ---------- New header ---------- */
-
-#main-header {
-	border-bottom: 1px solid #CDCDCD;
-}
-
-#main-header div {
-	
-	
-	
-}
-
-.header-left {
-	width: 24%;
-	display: inline-block;
-}
-
+/* - Middle section - */
 .header-middle {
 	width: 51%;
 	display: inline-block;
 }
 
-
-
-
-/* ---------- Search header ---------- */
-
-#navbar {
-	display: block;
-	border-bottom: 1px solid #CDCDCD;
-	margin-bottom: 10px;
-	margin-top: 10px;
-	width: 100%;
-	height: 110px;
-}
-
-.nav-col-1 span {
-	float: right;
-	margin-left: 30px;
-}
-
-.search-form {
-	display: inline-block;
-	text-align: center;
-}
-
-.nav-col-2 {
-	text-align: center;
-}
-
-/* - Search Bar - */
-
 .search-form {
 	position: relative;
-	bottom: 30px;
+	bottom: 21px;
 	height: 40px;
 	width: 100%;	
 }
@@ -175,10 +151,6 @@ body {
 	height: 100%;
 }
 
-.search-text-div {
-
-}
-
 .search-bar {
 	width: 92%;
 	float: left;
@@ -188,29 +160,26 @@ body {
 	width: 8%;
 }
 
-.search-text-div {
-	
-}
-
-.search-submit-div {
-	
-}
-
 /* - Header right - */
-
 .header-right {
 	width: 24%;
 	display: inline-block;
 }
 
 .header-right a {
+	border-radius: 5px;
 	text-decoration: none;
-	color: #0066c0;
+	color: black;
 	float: right;
+	margin: 10px 20px;
+	background-color: #ADD8E6;
+	border: 1px solid black;
+	padding: 5px 10px;
 }
 
-
-
+.header-right a:hover {
+	background-color: #85C0CE;
+}
 
 /* ---------- Account Creation/Login ---------- */
 #login-register-page {
@@ -454,10 +423,6 @@ body {
 	font-weight: bold;
 	font-size: 20px;
 	width: 70%;
-}
-
-.cart-item-list {
-	
 }
 
 .cart-price-label, .cart-quantity-label {

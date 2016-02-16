@@ -16,7 +16,7 @@
 			$where = " WHERE shopping_cart.user_id = '" . $_SESSION['user_id'] . "'";
 
 			$sql = $this->generateSearchSql($sql, $where);
-			$results = $this->searchDb($sql);
+			$results = $this->runSql($sql);
 			$cart = $this->createResultsArray($results);
 			$_SESSION['cart'] = $cart;
 
@@ -26,7 +26,7 @@
 		public function removeItem($product_id) {
 			$sql = "DELETE FROM shopping_cart WHERE user_id='";
 			$sql .= $_SESSION['user_id'] . "' AND product_id='" . $product_id . "'";
-			$this->searchDb($sql);
+			$this->runSql($sql);
 		}
 	}
 ?>

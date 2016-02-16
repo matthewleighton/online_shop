@@ -15,7 +15,7 @@
 			$user = new User;
 			if(isset($_POST['first_name'])){
 				$user->assignProperties();
-				if($user->createUser()) {
+				if($user->saveToDb('INSERT INTO', 'users', $user->properties)) {
 					Sessions_helper::login();
 					if(array_key_exists('redirect', $_POST)) {
 						$this->redirect_to($_POST['redirect']);

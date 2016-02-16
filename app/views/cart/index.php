@@ -69,8 +69,5 @@
 		<span class='price'>£<?php echo $this->totalPrice($cart); ?></span>
 	</span>
 
-	<div class='checkout-link'>
-		<?php $this->link_to('checkout/address', 'Proceed to Checkout'); ?>
-	</div>
-
+	<?php $this->link_to('checkout', 'Proceed to Checkout', ['class' => 'checkout-link']); ?>
 </div>

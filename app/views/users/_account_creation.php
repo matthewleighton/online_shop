@@ -1,6 +1,6 @@
 <div id="box">
 	<h2>Create an Account</h2>
-	<form action="newuser" method="post"> 
+	<form action="newuser" method="post" class="input-page"> 
 		<?php $this->createInput('text', 'email', 'Email', 'user'); ?> <br>
 		<?php $this->displayError($this->data['user'], 'email'); ?>
 

@@ -10,6 +10,7 @@
 		public function index($name = '') {
 			$view = new View('home/index');
 			$view->load_page();
+			//unset($_SESSION['checkout']);
 		}
 
 		public function test() {

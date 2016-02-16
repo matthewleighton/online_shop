@@ -10,6 +10,8 @@
 			?>
 		</title>
 		<link rel='stylesheet' href='/online_shop/public/css/main.css'/>
+		<script src="/online_shop/public/js/jquery-1.12.0.js"></script>
+		<script src="/online_shop/public/js/main.js"></script>
 	</head>
 	<body>
 			<!--TODO change logged out header to only display while logged out-->

@@ -34,7 +34,7 @@
 			}
 		}
 
-		public function createInput($type, $name, $placeholder, $object, $ident = []) {
+		public function createInput($type, $name, $placeholder, $object, $options = []) {
 
 			$contains_errors = false;
 			if($object != '' && array_key_exists($name, $this->data[$object]->errorsList)) {
@@ -47,15 +47,17 @@
 
 			if(array_key_exists($name, $_POST)) {
 			  	$input .= "value='" . $_POST[$name]. "' ";
+			} else if(isset($_SESSION[$object])) {
+				$input .= "value='" . $_SESSION[$object]->properties[$name] ."'";
 			}
 
-			if(array_key_exists('class', $ident) || $contains_errors) {
+			if(array_key_exists('class', $options) || $contains_errors) {
 				$input .= "class='";
 				if($contains_errors) {
 					$input .= "field-with-errors ";
 				}
-				if(array_key_exists('class', $ident)) {
-					$input .= $ident['class'];
+				if(array_key_exists('class', $options)) {
+					$input .= $options['class'];
 				}
 				$input .= "'";
 			}
@@ -63,6 +65,40 @@
 			$input .= ">";
 
 			echo $input;
+		}
+
+		// Creates a form select element.
+		// By default an option's text will be a clean version of its value.
+		// To specify different text, submit the choice as an array with [0] = value and [1] = text.
+		public function createSelect($name, $choices, $object, $ident = []) {
+			
+			if($object != '' && array_key_exists($name, $this->data[$object]->errorsList)) {
+				if(array_key_exists('class', $ident)) {
+					$ident['class'] .= " " . "field-with-errors";
+				} else {
+					$ident['class'] = "field-with-errors";
+				}
+			}
+
+			$select = "<select name='" . $name . "'";
+			$select .= $this->listIdents($ident);
+			$select .= ">";
+
+			foreach ($choices as $value) {
+				$select .= "<option value='";
+				if(is_array($value)) {
+					$select .= $value[0];
+
+					$value = $value[1];
+				} else {
+					$select .= $value;
+				}
+
+				$select .= "'>" . ucwords(str_replace('_', ' ', $value)) . "</option>";
+			}
+			$select .= "</select>";
+
+			echo $select;
 		}
 
 		public function displayError($object, $attr, $ident = []) {
@@ -142,6 +178,33 @@
 			 } else {
 			 	$this->image_tag('placeholder-image.png', ['height' => $height]);
 			 }
+		}
+
+		protected function formatLabel($label) {
+			$label = str_replace('_', ' ', $label);
+			return ucfirst($label);
+		}
+
+		// Displays a payment card number safely, with only the last 4 digits visible.
+		protected function safeCardNum($num) {
+			$show = substr($num, -4, 4);
+			$hide = str_repeat("*", strlen(substr($num, 0, -4)));
+			return $hide . $show;
+		}
+
+		protected function printAddress($address) {
+			echo "<p>" . $address['full_name'] . "</p>";
+			echo "<p>" . $address['address_line_1'] . "</p>";
+			echo "<p>" . $address['city'] . ", " . $address['county'] . " " . $address['postcode'] . "</p>";
+			echo "<p>" . $address['country'] . "</p>";
+			echo "<p>Phone: " . $address['phone_number'] . "</p>";
+		}
+
+		protected function productCreator($product) {
+			if(isset($product['authors'])) {
+				return $product['authors'];
+			}
+			//TODO - Add other ways of accessing creators as I add more product types
 		}
 	}
 	

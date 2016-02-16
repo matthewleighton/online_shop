@@ -42,17 +42,15 @@
 		}
 
 		public function createUser() {
-			
 			if($this->runValidations()) {
 				$sql = $this->generateSql('INSERT INTO', 'users', $this->properties);
-				$this->saveToDatabase($sql);
+				$this->runSql($sql);
 				return true;
 			} else {
 				return false;
 			}
 		}
 
-	
 		public function findBy($columns, $val) {
 			$conn = Db::connect();
 			$sql = "SELECT  user_id, first_name, last_name, email FROM users WHERE ";

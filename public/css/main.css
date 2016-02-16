@@ -18,6 +18,11 @@ body {
 
 .price {
 	color: #b12704;
+	font-weight: bold;
+}
+
+.inline-block {
+	display: inline-block;
 }
 
 /* ---------- Account header ---------- */
@@ -173,8 +178,7 @@ body {
 	float: right;
 	margin: 10px 20px;
 	background-color: #ADD8E6;
-	border: 1px solid black;
-	padding: 5px 10px;
+	padding: 6px 11px;
 }
 
 .header-right a:hover {
@@ -187,7 +191,7 @@ body {
 	margin: 20px 0;
 }
 
-#login-register-page #box {
+#box {
 	background-color: white;
 	border-radius: 5px;
 	margin: 20px auto;
@@ -201,11 +205,11 @@ body {
 	font-weight: normal;
 }
 
-#login-register-page input[type=text], #login-register-page input[type=password] {
+.input-page input[type=text], .input-page input[type=password], .input-page select {
 	border: 1px solid #ADADAD;
 	border-radius: 5px;
 	height: 35px;
-	margin: 10px 0px;
+	margin: 0 0 20px 0;
 	padding: 0 0 0 5px;
 	width: 100%;
 }
@@ -224,9 +228,9 @@ body {
 	float: right;
 }
 
-#login-register-page input[type=submit] {
+.input-page input[type=submit] {
 	font-weight: bold;
-	padding:10px 15px; 
+	padding: 10px 15px; 
     background: -webkit-gradient(linear,left top,left bottom,from(#1079bc),to(#00509d));
     color: white;
     border:0 none;
@@ -511,14 +515,19 @@ body {
 	padding: 30px;
 }
 
+.subtotal {
+	font-weight: bold;
+}
+
 .cart-bottom .subtotal {
 	float: right;
-	font-weight: bold;
 	margin-right: 30px;
 }
 
 /* - Cart Purchase box - */
 .cart-checkout-box {
+	padding: 10px;
+	text-align: center;
 	display: inline-block;
 	vertical-align: top;
 	margin: 30px 0 0 30px;
@@ -527,4 +536,245 @@ body {
 	border: 1px solid #CDCDCD;
 	border-radius: 5px;
 	background-color: white;
+}
+
+.checkout-link {
+	background-color: #ffa500;
+	border-radius: 5px;
+	padding: 10px 20px;
+	text-decoration: none;
+	color: black;
+	position: relative;
+	top: 20px;
+}
+
+.checkout-link:hover {
+	background-color: #FAA000;
+}
+
+/* ---------- Checkout ---------- */
+.checkout-logo {
+	text-align: center;
+	margin-top: 10px;
+}
+
+.checkout-page {
+	margin: 15px 0 20px 0;
+	padding: 15px 10px;
+	border: 1px solid #ADADAD;
+	border-radius: 5px;
+	background-color: white;
+	height: 100%;
+}
+
+.checkout-half {
+	display: inline-block;
+	width: 50%;
+	margin: 10px 0;
+	padding: 0 10px;
+	vertical-align: top;
+}
+
+.checkout-left {
+	border-right: 1px solid #ADADAD;
+}
+
+.checkout-right {
+	border-left: 1px solid #ADADAD;
+	
+}
+
+.checkout-page h2 {
+	text-align: center;
+	font-size: 16px;
+	margin-bottom: 10px;
+}
+
+.div-select {
+	background-color: #DEDEDE;
+	border: 1px solid black;
+	border-radius: 5px;
+	cursor: pointer;
+	margin: 10px auto;
+	padding: 5px;
+	width: 400px;
+}
+
+.div-select:hover {
+	background-color: pink;
+}
+
+.div-select input[type=submit] {
+	margin: 5px;
+}
+
+.half-size {
+	width: 53%;
+	margin: 0 auto;
+}
+
+/* - Payment Methods - */
+.card-details-entry {
+	width: 300px;
+	margin: 0 auto;
+}
+
+.checkout-listing {
+	font-size: 14px;
+}
+
+.listing-label {
+	font-weight: bold;
+	display: inline-block;
+
+}
+
+.billing-address-listing {
+	display: inline-block;
+	text-align: vertical;
+	vertical-align: text-top;	
+}
+
+.card-exp select {
+	width: 60px;
+}
+
+.card-type select {
+	width: 160px;
+	margin-right: 10px;
+}
+
+.small-field-label {
+	font-size: 12px;
+}
+
+#card-creation-existing-address {
+	background-color: blue;
+	width: 100px;
+	height: 50px;
+	cursor: pointer;
+}
+
+.div-btn {
+	border: 1px solid gray;
+	border-radius: 5px;
+	cursor: pointer;
+	padding: 5px;
+	margin: 10px 5%;
+	width: 40%;
+	height: 30px;
+	display: inline-block;
+	text-align: center;
+}
+
+#card-creation-new-address-form {
+	display: none;
+}
+
+#card-creation-existing-address-form {
+	display: none;
+}
+
+/* - Checkout Confirm - */
+.checkout-confirm {
+	font-size: 13px;
+	margin: 15px;
+}
+
+.payment-and-address, .checkout-confirm-top .purchase-box {
+	display: inline-block;
+	margin: 5px;
+}
+
+.payment-and-address {
+	float: left;
+	margin-bottom: 20px;
+}
+
+.payment-and-address div {
+	display: inline-block;
+	vertical-align: top;
+	margin-right: 10px;
+}
+
+.checkout-confirm-top {
+	margin: 5px 0 20px 0;
+}
+
+.checkout-confirm-top div {
+}
+
+
+
+.checkout-confirm-top .purchase-box .right {
+	
+}
+
+.checkout-final-total {
+	color: #b12704;
+	font-size: 17px;
+	font-weight: bold;
+}
+
+.buy-now-btn {
+	background-color: #F0C14B;
+	border: 1px solid #E0B13B;
+	border-radius: 5px;
+	padding: 9px;
+	width: 100%;
+}
+
+/* - Checkout Confirm - Purchase Boxes - */
+.purchase-box-area {
+	float: right;
+	height: 100%;
+	display: inline-block;
+}
+
+.purchase-box {
+	border: 1px solid #D5D5D5;
+	border-radius: 5px;
+	float: right;
+	padding: 10px;
+	margin-left: 10px;
+	width: 100%;
+	clear: both;
+}
+
+.purchase-box h4 {
+	margin-top: 15px;
+}
+
+.purchase-box hr {
+	margin: 8px 0;
+}
+
+.purchase-box-1{
+	
+}
+
+.purchase-box-2 {
+	position: relative;
+	bottom: 60px;
+	width: 210px;
+}
+
+/* - Checkout Confirm Cart - */
+.checkout-confirm-cart {
+	display: inline-block;
+}
+
+.checkout-cart-item {
+	line-height: 1.5;
+	margin: 10px;
+}
+
+.checkout-cart-item div {
+	display: inline-block;
+	vertical-align: top;
+}
+
+.delivery-time {
+	color: #090;
+	font-size: 15px;
 }

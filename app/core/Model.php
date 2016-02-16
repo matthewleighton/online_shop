@@ -25,9 +25,6 @@
 				$this->validationsList[$attr][$quality] = $value;
 			}
 
-			//echo '<br>';
-			//print_r($this->validationsList);
-			//echo '<br>';
 		}
 
 		// Loop through the validations held in the validations list
@@ -112,11 +109,27 @@
 			}
 		}
 
+		// Assign values to the object's properties array, based on info submitted via POST
+		public function assignProperties() {
+			foreach(array_keys($_POST) as $postKey) {
+				
+				if(array_key_exists($postKey, $this->properties)) {
+					$this->properties[$postKey] = $_POST[$postKey];
+				}
+
+				if(isset($this->{$postKey})) {
+					$this->{$postKey} = $_POST[$postKey];
+				}
+			}
+		}
+
+/* ---------- SQL functions ---------- */
+
 		// Generates the sql needed to add entries to the database
 		protected function generateSql($method, $column, $entries) {
 			$sql = $method . ' ' . $column . ' (';
 
-			foreach(array_keys($this->properties) as $key) {
+			foreach(array_keys($entries) as $key) {
 				$sql .= $key . ', ';
 			}
 
@@ -126,7 +139,7 @@
 
 			$sql = rtrim($sql, ', ') . ') VALUES (';
 
-			foreach($this->properties as $value) {
+			foreach($entries as $value) {
 				$sql .= "'" . $value . "', ";
 			}
 
@@ -135,21 +148,40 @@
 			}
 
 			$sql = rtrim($sql, ', ') . ')';
+
 			return $sql;
 		}
-
-		protected function saveToDatabase($sql) {
+		
+		// Run an SQL statement
+		// $returnId can be set to true in order to return the id of the newly created entry.
+		protected function runSql($sql, $returnId = false) {
 			$conn = Db::connect();
-			$conn->query($sql);
+			$results = $conn->query($sql);
+			
+			if($returnId == true) {
+				$id = $conn->insert_id;
+				$conn->close();
+				return $id;
+			}
+
 			$conn->close();
-			return true;
+			return $results;
+		}
+		
+		// Run an object's validations and save it to the database.
+		public function saveToDb($sqlMethod, $table, $data) {
+			if($this->runValidations()) {
+				$sql = $this->generateSql($sqlMethod, $table, $data);
+				echo $sql;
+				$results = $this->runSql($sql, true);
+				return $results;
+			} else {
+				return false;
+			}
 		}
 
-/* ---------- Search functions ---------- */
-
-		// Creates the sql required to search and properly join the required tables
+		// Creates the sql to search and join the required tables for the model this is called from.
 		protected function generateSearchSql($sql, $where = '') {
-			
 			if(isset($this->sqlOptions['concat'])) {
 				foreach ($this->sqlOptions['concat'] as $concat => $value) {
 					$sql .= ", GROUP_CONCAT(" . $value[0] . ") " . $value[1];
@@ -160,7 +192,7 @@
 
 			if(isset($this->sqlOptions['join'])) {
 				foreach($this->sqlOptions['join'] as $join => $on) {
-					$sql .= " JOIN " . $join . " ON " . $on[0] . " = " . $on[1];
+					$sql .= " LEFT JOIN " . $join . " ON " . $on[0] . " = " . $on[1];
 				}
 			}
 
@@ -173,16 +205,9 @@
 			return $sql;
 		}
 
-		protected function searchDb($sql) {
-			$conn = Db::connect();
-			$results = $conn->query($sql);
-			$conn->close();
-			return $results;
-		}
-
+		// Turns the PDO object returned from a query into an associative array
 		protected function createResultsArray($results) {
 			$array = [];
-			//var_dump($results);
 			while($row = $results->fetch_assoc()) {
 				array_push($array, $row);
 			}
@@ -193,7 +218,7 @@
 		public function findAll() {
 			$sql = "SELECT *";
 			$sql = $this->generateSearchSql($sql);
-			$results = $this->searchDb($sql);
+			$results = $this->runSql($sql);
 
 			return $this->createResultsArray($results);
 		}
@@ -202,9 +227,20 @@
 			$sql = "SELECT *";
 			$where = " WHERE " . get_class($this) . "." . get_class($this) . "_id = '" . $id . "' ";
 			$sql = $this->generateSearchSql($sql, $where);
-			$results = $this->searchDb($sql);
+			$results = $this->runSql($sql);
 			
 			return $results->fetch_assoc();
+		}
+
+		public function findByUserId($userId) {
+			$sql = "SELECT *";
+			$where = " WHERE " . get_class($this) . "." . "user_id = '" . $userId ."' ";
+			$sql = $this->generateSearchSql($sql, $where);
+			//echo $sql; // REMOVE LATER
+			
+			$results = $this->runSql($sql);
+
+			return $this->createResultsArray($results);
 		}
 
 		

@@ -41,7 +41,7 @@
 			$where = rtrim($where, " OR ");
 			$sql = $this->generateSearchSql($sql, $where);
 
-			$results = $this->searchDb($sql);
+			$results = $this->runSql($sql);
 			$array = $this->createResultsArray($results);
 
 			$cart = [];

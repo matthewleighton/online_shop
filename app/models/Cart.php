@@ -6,21 +6,53 @@
 		// Specifies how to correctly use joins, etc for this table in queries.
 		protected $sqlOptions = ['join' => ['book' => ['book.product_id', 'product.product_id'],
 							 	 			'author_book' => ['author_book.book_id', 'book.book_id'],
-								 			'author' => ['author.author_id', 'author_book.author_id'],
-								 			'shopping_cart' => ['shopping_cart.product_id', 'product.product_id']],
+								 			'author' => ['author.author_id', 'author_book.author_id']],
 								 'concat' => [['author.author_name', 'authors']],
 								 'groupby' => 'product.product_id'];
 
-		public function generateCart() {
-			$sql = "SELECT *";
-			$where = " WHERE shopping_cart.user_id = '" . $_SESSION['user_id'] . "'";
+		public function generateCartFromDb() {
+			// Add shopping_cart to the list of tables to be joined
+			$this->sqlOptions['join']['shopping_cart'] = ['shopping_cart.product_id', 'product.product_id'];
 
+			$sql = "SELECT *";
+			$where = " WHERE shopping_cart.user_id = '" . $_SESSION['user_id'] . "'";			
 			$sql = $this->generateSearchSql($sql, $where);
+
 			$results = $this->runSql($sql);
+			
 			$cart = $this->createResultsArray($results);
-			$_SESSION['cart'] = $cart;
+
+			unset($_SESSION['cart']);
+
+			// Also create a session cart variable, containing only IDs and quantities
+			foreach($cart as $product) {
+				$_SESSION['cart'][$product['product_id']] = $product['cart_quantity'];
+			}
 
 			return $cart;
+		}
+
+		public function generateCartFromSession($cart) {
+			$sql = "SELECT *";
+			$where = " WHERE ";
+			
+			foreach ($cart as $product_id => $quality) {
+				$where .= "(product.product_id='" . $product_id . "') OR ";
+			}
+
+			$where = rtrim($where, " OR ");
+			$sql = $this->generateSearchSql($sql, $where);
+
+			$results = $this->runSql($sql);
+			$array = $this->createResultsArray($results);
+
+			$finishedCart = [];
+			foreach ($array as $product) {
+				$product['cart_quantity'] = $cart[$product['product_id']];
+				array_push($finishedCart, $product);
+			}
+
+			return $finishedCart;
 		}
 
 		public function removeItem($product_id) {

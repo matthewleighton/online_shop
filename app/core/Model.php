@@ -202,6 +202,8 @@
 				$sql .= " GROUP BY " . $this->sqlOptions['groupby'];
 			}
 
+			//echo $sql;
+			//die();
 			return $sql;
 		}
 

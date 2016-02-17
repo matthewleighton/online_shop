@@ -8,7 +8,7 @@
 	<div class='checkout-left checkout-half'>
 		<h2>Select a delivery address</h2>
 		
-		<form action="index" method="post">
+		<form method="post">
 			<input type='hidden' name='addressId' value='' id='address-id-input'>
 			<?php include_once('../app/views/addresses/_address_list.php'); ?>
 		</form>

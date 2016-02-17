@@ -7,7 +7,6 @@
 <div class="checkout-page half-size">
 	<h2>Review your order</h2>
 	<form method="post" action="submit">
-		<input type="hidden" name="" value= "">
 		<div class="checkout-confirm">
 			<div class="checkout-confirm-top">
 				<div class="payment-and-address">

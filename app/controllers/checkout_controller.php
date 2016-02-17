@@ -1,52 +1,54 @@
 <?php
 	Class checkout extends Controller {
-		public function index() {
+		
+		public function __construct() {
+			session_start();
+			//var_dump($_SESSION['checkout']);
+			//echo "<br>";
+			//var_dump($_POST);
 			if(!Sessions_helper::logged_in()) {
 				$this->redirect_to('sessions/login?redirect=checkout');
 				break;
-			}
-		
-			if(!array_key_exists('checkout', $_SESSION)) {
-				echo "creating checkout key";
+			} elseif (!isset($_SESSION['checkout'])) {
 				$_SESSION['checkout'] = [];
-			}
+				$this->redirect_to('checkout/index');
+				break;
+ 			}
 
-			if(isset($_POST['addressId'])) {
-				$_SESSION['checkout']['address'] = $_POST['addressId'];
-			}
+		}
 
-			if(isset($_POST['paymentMethodId'])) {
-				$_SESSION['checkout']['paymentMethod'] = $_POST['paymentMethodId'];
-			}
-
-			if(!isset($_SESSION['checkout']['address'])) {
-				$this->redirect_to('checkout/address');
-			} elseif(!isset($_SESSION['checkout']['deliveryMethod'])) {
-				$this->redirect_to('checkout/deliverymethod');
-			} elseif(!isset($_SESSION['checkout']['paymentMethod'])) {
-				$this->redirect_to('checkout/paymentmethod');
-			} else {
-				
-				$this->redirect_to('checkout/confirm');
-			}
+		public function index() {
+			//session_start();
+			$_SESSION['checkout']['cart'] = $_SESSION['cart'];
+			$_SESSION['checkout']['address'] = null;
+			$_SESSION['checkout']['deliveryMethod'] = null;
+			$_SESSION['checkout']['paymentMethod'] = null;
+			//$this->address();
+			$this->redirect_to('checkout/address');
 		}
 
 		public function address() {
 			require_once('../app/models/Address.php');
-			session_start();
+			//session_start();
+			if(isset($_POST['addressId'])) {
+				$_SESSION['checkout']['address'] = $_POST['addressId'];
+				$this->redirect_to('checkout/deliveryMethod');
+				break;
+			}
 			if(isset($_SESSION['address'])) {
 				$address = $_SESSION['address'];
 				if(count($_SESSION['address']->errorsList) == 0) {
 					$_SESSION['checkout']['address'] = $_SESSION['addressId'];
 					unset($_SESSION['addressId']);
 					unset($_SESSION['address']);
-					$this->redirect_to('checkout/index');
+					
+					$this->redirect_to('checkout/deliveryMethod');
 					break;
 				}
 			} else {
 				$address = new Address;
 			}
-			
+
 			$addressList = $address->findByUserId($_SESSION['user_id']);
 
 			$view = new View('checkout/address', ['header' => false, 'footer' => false]);
@@ -64,7 +66,7 @@
 			if(isset($_POST['deliveryMethod'])) {
 				session_start();
 				$_SESSION['checkout']['deliveryMethod'] = $_POST['deliveryMethod'];
-				$this->redirect_to('checkout');
+				$this->redirect_to('checkout/paymentMethod');
 			}
 
 			$view = new View('checkout/delivery_method', ['header' => false, 'footer' => false]);
@@ -76,8 +78,12 @@
 		public function paymentMethod() {
 			require_once('../app/models/Payment_Method.php');
 			require_once('../app/models/Address.php');
-			session_start();
-			
+			if(isset($_POST['paymentMethodId'])) {
+				$_SESSION['checkout']['paymentMethod'] = $_POST['paymentMethodId'];
+				$this->redirect_to('checkout/confirm');
+				break;
+			}
+
 			if(isset($_SESSION['payment_method'])) {
 				$paymentMethod = $_SESSION['payment_method'];
 
@@ -85,7 +91,7 @@
 					$_SESSION['checkout']['paymentMethod'] = $_SESSION['paymentMethodId'];
 					unset($_SESSION['paymentMethodId']);
 					unset($_SESSION['paymentMethod']);
-					$this->redirect_to('checkout/index');
+					$this->redirect_to('checkout/confirm');
 					break;
 				}
 
@@ -123,7 +129,6 @@
 		}
 
 		public function confirm() {
-			session_start();
 			require_once('../app/models/Payment_Method.php');
 			require_once('../app/models/Address.php');
 			require_once('../app/models/Cart.php');
@@ -140,12 +145,12 @@
 			}
 
 			$cart = new Cart;
-			$cart = $cart->generateCart();
+			$cart = $cart->generateCartFromSession($_SESSION['checkout']['cart']);
 
 			switch ($_SESSION['checkout']['deliveryMethod']) {
 				case 'same-day':
 					$deliveryTime = 'today';
-					$deliveryPrice = 4.99;
+					$deliveryPrice = 4.49;
 					break;
 				case 'one-day':
 					$deliveryTime = '+1 day';
@@ -178,7 +183,9 @@
 		}
 
 		public function submit() {
-			echo "Thanks for placing your order";
+			echo "Thanks for placing your order!";
+
+			
 		}
 	}
 ?>

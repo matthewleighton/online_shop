@@ -10,7 +10,7 @@
 		<?php
 			if(!$this->data['paymentList'] == []) {
 		?>
-				<form action="index" method="post">
+				<form method="post">
 					<input type="hidden" name="paymentMethodId" value="" id="payment-method-id-input">
 		<?php
 					foreach($this->data['paymentList'] as $payment) {

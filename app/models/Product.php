@@ -32,26 +32,6 @@
 			$conn->close();
  		}
 
- 		public function generateCart() {
-			$sql = "SELECT *";
-			$where = " WHERE ";
-			foreach ($_SESSION['cart'] as $product_id => $quality) {
-				$where .= "(product.product_id='" . $product_id . "') OR ";
-			}
-			$where = rtrim($where, " OR ");
-			$sql = $this->generateSearchSql($sql, $where);
-
-			$results = $this->runSql($sql);
-			$array = $this->createResultsArray($results);
-
-			$cart = [];
-			foreach ($array as $product) {
-				$product['cart_quantity'] = $_SESSION['cart'][$product['product_id']];
-				array_push($cart, $product);
-			}
-
-			return $cart;
-		}
 	}
 
 ?>

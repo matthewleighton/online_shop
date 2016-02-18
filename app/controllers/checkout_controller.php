@@ -3,9 +3,6 @@
 		
 		public function __construct() {
 			session_start();
-			//var_dump($_SESSION['checkout']);
-			//echo "<br>";
-			//var_dump($_POST);
 			if(!Sessions_helper::logged_in()) {
 				$this->redirect_to('sessions/login?redirect=checkout');
 				break;
@@ -15,15 +12,31 @@
 				break;
  			}
 
+ 			if ($_SESSION['cart'] == null) {
+ 				$this->redirect_to('carts');
+ 			}
+
+ 			//Redirect to earlier page if previous information is missing
+			if(!isset($_SESSION['redirecting'])) {
+				$stages = ['address', 'deliveryMethod', 'paymentMethod'];
+				foreach ($stages as $stage) {
+					if ($_SESSION['checkout'][$stage] == null) {
+						$_SESSION['redirecting'] = true;
+						$this->redirect_to('checkout/' . $stage);
+						break;
+					}
+				}
+				
+			} else {
+				unset($_SESSION['redirecting']);
+			}
 		}
 
 		public function index() {
-			//session_start();
 			$_SESSION['checkout']['cart'] = $_SESSION['cart'];
 			$_SESSION['checkout']['address'] = null;
 			$_SESSION['checkout']['deliveryMethod'] = null;
 			$_SESSION['checkout']['paymentMethod'] = null;
-			//$this->address();
 			$this->redirect_to('checkout/address');
 		}
 
@@ -64,9 +77,28 @@
 
 		public function deliveryMethod() {
 			if(isset($_POST['deliveryMethod'])) {
-				session_start();
-				$_SESSION['checkout']['deliveryMethod'] = $_POST['deliveryMethod'];
-				$this->redirect_to('checkout/paymentMethod');
+				$validDeliveryMethods = ['free' => ['price' => 0, 'deliveryTime' => '+3 days'], 
+										 'first-class' => ['price' => 1.50, 'deliveryTime' => '+1 day'],
+										 'one-day' => ['price' => 3.49, 'deliveryTime' => 'today']];
+
+				if(in_array($_POST['deliveryMethod'], array_keys($validDeliveryMethods))) {
+					// TODO - change DeliveryTime to DeliveryDue
+					$delivery = $validDeliveryMethods[$_POST['deliveryMethod']];
+					$_SESSION['checkout']['deliveryMethod'] = [];
+					$_SESSION['checkout']['deliveryMethod']['deliveryMethodName'] = $_POST['deliveryMethod'];
+					$_SESSION['checkout']['deliveryMethod']['deliveryPrice'] = $delivery['price'];
+					$_SESSION['checkout']['deliveryMethod']['deliveryTime'] = $delivery['deliveryTime'];
+
+					$deliveryDue = date('l d M. Y', strtotime($delivery['deliveryTime'], time()));
+					$_SESSION['checkout']['deliveryMethod']['deliveryDue'] = $deliveryDue;
+
+
+
+
+
+
+					$this->redirect_to('checkout/paymentMethod');
+				}
 			}
 
 			$view = new View('checkout/delivery_method', ['header' => false, 'footer' => false]);
@@ -90,13 +122,14 @@
 				if(count($paymentMethod->errorsList) == 0) {
 					$_SESSION['checkout']['paymentMethod'] = $_SESSION['paymentMethodId'];
 					unset($_SESSION['paymentMethodId']);
-					unset($_SESSION['paymentMethod']);
+					unset($_SESSION['payment_method']);
 					$this->redirect_to('checkout/confirm');
 					break;
 				}
-
 			} else {
-				$paymentMethod = new Payment_Method;	
+				$paymentMethod = new Payment_Method;
+				unset($_SESSION['payment_method']);
+				unset($_SESSION['paymentMethodId']);
 			}
 
 			if(isset($_SESSION['address'])) {
@@ -147,22 +180,9 @@
 			$cart = new Cart;
 			$cart = $cart->generateCartFromSession($_SESSION['checkout']['cart']);
 
-			switch ($_SESSION['checkout']['deliveryMethod']) {
-				case 'same-day':
-					$deliveryTime = 'today';
-					$deliveryPrice = 4.49;
-					break;
-				case 'one-day':
-					$deliveryTime = '+1 day';
-					$deliveryPrice = 2.99;
-					break;
-				default:
-					$deliveryTime = '+3 days';
-					$deliveryPrice = 0;
-					break;
-			}
-
-			$deliveryDate = date('l d M. Y', strtotime($deliveryTime, time()));
+			$delivery = $_SESSION['checkout']['deliveryMethod'];
+			$deliveryDate = date('l d M. Y', strtotime($delivery['deliveryTime'], time()));
+			$deliveryPrice = $delivery['deliveryPrice'];
 
 			$view = new View('checkout/confirm', ['header' => false, 'footer' => false]);
 			$view->set_title('Confirm Purchase Details');
@@ -183,9 +203,16 @@
 		}
 
 		public function submit() {
-			echo "Thanks for placing your order!";
-
-			
+			echo "Thanks for placing your order!<br><br>";
+			var_dump($_SESSION['checkout']);
+			echo "<br><br>";
+			var_dump(array_keys($_SESSION['checkout']));
+			/*require_once('../app/models/Purchase.php');
+			$purchase = new Purchase;
+			$purchase->assignProperties();
+			if ($purchaseId = $purchase->saveToDb('INSERT INTO', 'purchase', $purchase->properties)) {
+				$purchase->addToPurchase($_SESSION['checkout']);
+			}*/
 		}
 	}
 ?>

@@ -49,9 +49,5 @@
 				$view->load_page();
 		}
 
-		public function addToBasket() {
-			echo "Adding to basket";
-		}
-
 	}
 ?>

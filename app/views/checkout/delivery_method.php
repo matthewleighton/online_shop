@@ -8,7 +8,8 @@
 	<h2>Choose a delivery method</h2>
 	<form method='post'>
 		<input type='radio' name='deliveryMethod' value ='free' checked='checked'>Free Standard Delivery<br>
-		<input type='radio' name='deliveryMethod' value ='one-day'>£4.49 Express Delivery<br>
+		<input type='radio' name='deliveryMethod' value ='first-class'>£1.50 First Class Delivery<br>
+		<input type='radio' name='deliveryMethod' value ='one-day'>£4.49 One-Day Delivery<br>
 		<input type='submit' value='Continue'>
 	</form>
 </div>

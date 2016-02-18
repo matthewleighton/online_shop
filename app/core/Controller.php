@@ -13,6 +13,9 @@
 			header('location: http://localhost/online_shop/public/' . $location);
 		}
 
-		
+		protected function currentMethod() {
+			$url = $_SERVER['REQUEST_URI'];
+			return substr($url, strrpos($url, '/') + 1);
+		}
 	}
 ?>

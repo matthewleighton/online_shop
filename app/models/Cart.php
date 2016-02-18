@@ -26,7 +26,8 @@
 
 			// Also create a session cart variable, containing only IDs and quantities
 			foreach($cart as $product) {
-				$_SESSION['cart'][$product['product_id']] = $product['cart_quantity'];
+				$_SESSION['cart'][$product['product_id']] = ['cart_quantity' => $product['cart_quantity'],
+															 'product_price' => $product['price']];
 			}
 
 			return $cart;
@@ -35,7 +36,6 @@
 		public function generateCartFromSession($cart) {
 			$sql = "SELECT *";
 			$where = " WHERE ";
-			
 			foreach ($cart as $product_id => $quality) {
 				$where .= "(product.product_id='" . $product_id . "') OR ";
 			}
@@ -48,7 +48,7 @@
 
 			$finishedCart = [];
 			foreach ($array as $product) {
-				$product['cart_quantity'] = $cart[$product['product_id']];
+				$product['cart_quantity'] = $cart[$product['product_id']]['cart_quantity'];
 				array_push($finishedCart, $product);
 			}
 

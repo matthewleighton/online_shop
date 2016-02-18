@@ -14,7 +14,6 @@
 		<script src="/online_shop/public/js/main.js"></script>
 	</head>
 	<body>
-			<!--TODO change logged out header to only display while logged out-->
 			<?php
 				if($this->partials['header'] == true) {
 					include_once('../app/views/partials/_account_header.php');
@@ -23,7 +22,6 @@
 			<div id="wrapper">
 				<?php
 					if($this->partials['header'] == true) {
-						//include_once('../app/views/partials/_search_header.php');
 						include_once('../app/views/partials/_new_header.php');
 					}
 				?>

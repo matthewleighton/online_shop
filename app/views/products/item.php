@@ -39,8 +39,8 @@
 				<option value='4'>4</option>
 			</select>
 
+			<input type='hidden' name='price' value=<?php echo "'" . $product['price'] . "'"; ?>>
 			<input type='hidden' name='product_id' value=<?php echo "'" . $product['product_id'] . "'" ?>>
-
 			<input type='submit' value='Add to Basket' class='add-to-basket'>
 		</form>
 

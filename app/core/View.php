@@ -152,7 +152,7 @@
 		}
 
 		protected function formatPrice($price) {
-			return substr($price, 0, strlen($price) - 2);
+			return number_format($price, 2, '.', '');
 		}
 
 		protected function totalPrice($cart) {

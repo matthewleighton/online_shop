@@ -1,10 +1,10 @@
 <?php
 	class sessions_helper {
 		public function login() {
-			
 			$conn = Db::connect();
 			$sql = "SELECT user_id FROM users WHERE email = '" . $_POST['email'] . "' AND password = '" . md5($_POST['password']) . "'";
 			$result = $conn->query($sql)->fetch_assoc();
+			
 			if($result == NULL) {
 				return false;
 			} else {
@@ -14,8 +14,10 @@
 				if(isset($_SESSION['cart']) && $_SESSION['cart'] != []) {
 					require_once('../app/models/Product.php');
 					$Product = new Product;
-					foreach ($_SESSION['cart'] as $product_id => $quantity) {
-						$Product->addToCart($product_id, $quantity);
+					foreach ($_SESSION['cart'] as $product_id => $value) {
+						//var_dump($product_id);
+						//die();
+						$Product->addToCart($product_id, $_SESSION['cart'][$product_id]['cart_quantity']);
 					}
 				}
 

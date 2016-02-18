@@ -36,7 +36,7 @@
 				<div class="purchase-box-area">
 					<?php
 						$itemsPrice = $this->totalPrice($this->data['cart']);
-						$totalPrice = floatval($itemsPrice) + $this->data['deliveryPrice'];
+						$totalPrice = $this->formatPrice(floatval($itemsPrice) + $this->data['deliveryPrice']);
 					?>
 					
 					<div class="purchase-box-1 purchase-box">
@@ -49,7 +49,7 @@
 							</tr>
 							<tr>
 								<td>Postage & Packing:</td>
-								<td class='right'>£<?php echo $this->data['deliveryPrice']; ?></td>
+								<td class='right'>£<?php echo $this->formatPrice($this->data['deliveryPrice']); ?></td>
 							</tr>
 							<tr>
 								<td colspan='2'>

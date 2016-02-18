@@ -26,12 +26,12 @@
 			$this->validates('password', 'length', ['minimum' => 6]);
 		}
 
-		public function assignProperties() {
-			foreach(array_keys($_POST) as $postKey) {
+		public function assignProperties($list) {
+			foreach(array_keys($list) as $attr) {
 				
-				if(array_key_exists($postKey, $this->properties)) {
-					$this->properties[$postKey] = $_POST[$postKey];
-				} else if ($postKey == 'password' && array_key_exists('password_confirmation', $_POST)) {
+				if(array_key_exists($attr, $this->properties)) {
+					$this->properties[$attr] = $list[$attr];
+				} else if ($attr == 'password' && array_key_exists('password_confirmation', $_POST)) {
 					
 				}
 

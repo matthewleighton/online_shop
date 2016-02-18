@@ -110,15 +110,15 @@
 		}
 
 		// Assign values to the object's properties array, based on info submitted via POST
-		public function assignProperties() {
-			foreach(array_keys($_POST) as $postKey) {
+		public function assignProperties($list) {
+			foreach(array_keys($list) as $attr) {
 				
-				if(array_key_exists($postKey, $this->properties)) {
-					$this->properties[$postKey] = $_POST[$postKey];
+				if(array_key_exists($attr, $this->properties)) {
+					$this->properties[$attr] = $list[$attr];
 				}
 
-				if(isset($this->{$postKey})) {
-					$this->{$postKey} = $_POST[$postKey];
+				if(isset($this->{$attr})) {
+					$this->{$attr} = $list[$attr];
 				}
 			}
 		}

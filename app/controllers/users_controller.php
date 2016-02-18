@@ -14,7 +14,7 @@
 		public function newUser() {
 			$user = new User;
 			if(isset($_POST['first_name'])){
-				$user->assignProperties();
+				$user->assignProperties($_POST);
 				if($user->saveToDb('INSERT INTO', 'users', $user->properties)) {
 					Sessions_helper::login();
 					if(array_key_exists('redirect', $_POST)) {

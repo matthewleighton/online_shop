@@ -16,13 +16,13 @@
 			}
 
 			$paymentMethod = new Payment_Method;
-			$paymentMethod->assignProperties();
+			$paymentMethod->assignProperties($_POST);
 			$paymentMethod->runValidations();
 
 			if($_POST['include_new_address'] == "1") {
 				require_once('../app/models/Address.php');
 				$address = new Address;
-				$address->assignProperties();
+				$address->assignProperties($_POST);
 				$address->runValidations();
 
 				// A valid payment method will still have one error - the address_id will be missing.

@@ -20,7 +20,7 @@
 			if(!isset($_SESSION['redirecting'])) {
 				$stages = ['address', 'deliveryMethod', 'paymentMethod'];
 				foreach ($stages as $stage) {
-					if ($_SESSION['checkout'][$stage] == null) {
+					if ($_SESSION['checkout']['properties'][$stage] == null) {
 						$_SESSION['redirecting'] = true;
 						$this->redirect_to('checkout/' . $stage);
 						break;
@@ -30,13 +30,16 @@
 			} else {
 				unset($_SESSION['redirecting']);
 			}
+			var_dump($_SESSION['checkout']);
 		}
 
 		public function index() {
+			$_SESSION['checkout'] = [];
 			$_SESSION['checkout']['cart'] = $_SESSION['cart'];
-			$_SESSION['checkout']['address'] = null;
-			$_SESSION['checkout']['deliveryMethod'] = null;
-			$_SESSION['checkout']['paymentMethod'] = null;
+			$_SESSION['checkout']['properties']['address'] = null;
+			$_SESSION['checkout']['properties']['deliveryMethod'] = null;
+			$_SESSION['checkout']['properties']['paymentMethod'] = null;
+			$_SESSION['checkout']['properties']['userId'] = $_SESSION['user_id'];
 			$this->redirect_to('checkout/address');
 		}
 
@@ -44,14 +47,14 @@
 			require_once('../app/models/Address.php');
 			//session_start();
 			if(isset($_POST['addressId'])) {
-				$_SESSION['checkout']['address'] = $_POST['addressId'];
+				$_SESSION['checkout']['properties']['address'] = $_POST['addressId'];
 				$this->redirect_to('checkout/deliveryMethod');
 				break;
 			}
 			if(isset($_SESSION['address'])) {
 				$address = $_SESSION['address'];
 				if(count($_SESSION['address']->errorsList) == 0) {
-					$_SESSION['checkout']['address'] = $_SESSION['addressId'];
+					$_SESSION['checkout']['properties']['address'] = $_SESSION['addressId'];
 					unset($_SESSION['addressId']);
 					unset($_SESSION['address']);
 					
@@ -84,18 +87,12 @@
 				if(in_array($_POST['deliveryMethod'], array_keys($validDeliveryMethods))) {
 					// TODO - change DeliveryTime to DeliveryDue
 					$delivery = $validDeliveryMethods[$_POST['deliveryMethod']];
-					$_SESSION['checkout']['deliveryMethod'] = [];
-					$_SESSION['checkout']['deliveryMethod']['deliveryMethodName'] = $_POST['deliveryMethod'];
-					$_SESSION['checkout']['deliveryMethod']['deliveryPrice'] = $delivery['price'];
-					$_SESSION['checkout']['deliveryMethod']['deliveryTime'] = $delivery['deliveryTime'];
+					
 
 					$deliveryDue = date('l d M. Y', strtotime($delivery['deliveryTime'], time()));
-					$_SESSION['checkout']['deliveryMethod']['deliveryDue'] = $deliveryDue;
-
-
-
-
-
+					$_SESSION['checkout']['properties']['deliveryDue'] = $deliveryDue;
+					$_SESSION['checkout']['properties']['deliveryPrice'] = $delivery['price'];
+					$_SESSION['checkout']['properties']['deliveryMethod'] = $_POST['deliveryMethod'];
 
 					$this->redirect_to('checkout/paymentMethod');
 				}
@@ -111,7 +108,7 @@
 			require_once('../app/models/Payment_Method.php');
 			require_once('../app/models/Address.php');
 			if(isset($_POST['paymentMethodId'])) {
-				$_SESSION['checkout']['paymentMethod'] = $_POST['paymentMethodId'];
+				$_SESSION['checkout']['properties']['paymentMethod'] = $_POST['paymentMethodId'];
 				$this->redirect_to('checkout/confirm');
 				break;
 			}
@@ -120,7 +117,7 @@
 				$paymentMethod = $_SESSION['payment_method'];
 
 				if(count($paymentMethod->errorsList) == 0) {
-					$_SESSION['checkout']['paymentMethod'] = $_SESSION['paymentMethodId'];
+					$_SESSION['checkout']['properties']['paymentMethod'] = $_SESSION['paymentMethodId'];
 					unset($_SESSION['paymentMethodId']);
 					unset($_SESSION['payment_method']);
 					$this->redirect_to('checkout/confirm');
@@ -167,22 +164,16 @@
 			require_once('../app/models/Cart.php');
 
 			$address = new Address;
-			$address = $address->findById($_SESSION['checkout']['address']);
+			$address = $address->findById($_SESSION['checkout']['properties']['address']);
 
 			$paymentMethod = new Payment_Method;
-			$paymentMethod = $paymentMethod->findById($_SESSION['checkout']['paymentMethod']);
-
-			if($address['address_id'] != $paymentMethod['address_id']) {
-				$billingAddress = new Address;
-				$billingAddress = $billingAddress->findById($paymentMethod['address_id']);
-			}
+			$paymentMethod = $paymentMethod->findById($_SESSION['checkout']['properties']['paymentMethod']);
 
 			$cart = new Cart;
 			$cart = $cart->generateCartFromSession($_SESSION['checkout']['cart']);
 
-			$delivery = $_SESSION['checkout']['deliveryMethod'];
-			$deliveryDate = date('l d M. Y', strtotime($delivery['deliveryTime'], time()));
-			$deliveryPrice = $delivery['deliveryPrice'];
+			$deliveryDate = $_SESSION['checkout']['properties']['deliveryDue'];
+			$deliveryPrice = $_SESSION['checkout']['properties']['deliveryPrice'];
 
 			$view = new View('checkout/confirm', ['header' => false, 'footer' => false]);
 			$view->set_title('Confirm Purchase Details');
@@ -192,6 +183,16 @@
 				$billingAddress = $billingAddress->findById($paymentMethod['address_id']);
 				$view->pass_data('billingAddress', $billingAddress);
 			}
+
+			$productsPrice = 0;
+			foreach ($_SESSION['cart'] as $product) {
+				$productsPrice += ((floatval($product['product_price'])) * $product['cart_quantity']);
+			}
+			$_SESSION['checkout']['properties']['productsPrice'] = $productsPrice;
+
+			// TODO - Change original naming of properties to include "id", so these lines aren't needed.
+			$_SESSION['checkout']['properties']['paymentMethodId'] = $_SESSION['checkout']['properties']['paymentMethod'];
+			$_SESSION['checkout']['properties']['addressId'] = $_SESSION['checkout']['properties']['address'];
 
 			$view->pass_data('deliveryDate', $deliveryDate);
 			$view->pass_data('deliveryPrice', $deliveryPrice);
@@ -204,15 +205,19 @@
 
 		public function submit() {
 			echo "Thanks for placing your order!<br><br>";
-			var_dump($_SESSION['checkout']);
+			var_dump($_SESSION['checkout']['properties']);
 			echo "<br><br>";
 			var_dump(array_keys($_SESSION['checkout']));
-			/*require_once('../app/models/Purchase.php');
+			echo "<br><br>";
+			require_once('../app/models/Purchase.php');
 			$purchase = new Purchase;
-			$purchase->assignProperties();
-			if ($purchaseId = $purchase->saveToDb('INSERT INTO', 'purchase', $purchase->properties)) {
-				$purchase->addToPurchase($_SESSION['checkout']);
-			}*/
+			$purchase->assignProperties($_SESSION['checkout']['properties']);
+			echo $purchase->saveToDb('INSERT INTO', 'purchase', $purchase->properties);
+			
+
+			//if ($purchaseId = $purchase->saveToDb('INSERT INTO', 'purchase', $purchase->properties)) {
+			//	$purchase->addToPurchase($_SESSION['checkout']);
+			//}
 		}
 	}
 ?>

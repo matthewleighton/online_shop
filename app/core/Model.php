@@ -126,10 +126,11 @@
 /* ---------- SQL functions ---------- */
 
 		// Generates the sql needed to add entries to the database
-		protected function generateSql($method, $column, $entries) {
-			$sql = $method . ' ' . $column . ' (';
+		protected function generateSql($method, $table, $entries) {
+			$sql = $method . ' ' . $table . ' (';
 
 			foreach(array_keys($entries) as $key) {
+				$key = ltrim(strtolower(preg_replace('/[A-Z]/', '_$0', $key)), '_');
 				$sql .= $key . ', ';
 			}
 

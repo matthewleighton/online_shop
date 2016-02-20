@@ -130,7 +130,7 @@
 			$sql = $method . ' ' . $table . ' (';
 
 			foreach(array_keys($entries) as $key) {
-				$key = ltrim(strtolower(preg_replace('/[A-Z]/', '_$0', $key)), '_');
+				$key = $this->toCamelCase($key);
 				$sql .= $key . ', ';
 			}
 
@@ -174,8 +174,10 @@
 			if($this->runValidations()) {
 				$sql = $this->generateSql($sqlMethod, $table, $data);
 				echo $sql;
-				$results = $this->runSql($sql, true);
-				return $results;
+				$entryId = $this->runSql($sql, true);
+				
+				$this->id = $entryId;
+				return $entryId;
 			} else {
 				return false;
 			}
@@ -239,11 +241,37 @@
 			$sql = "SELECT *";
 			$where = " WHERE " . get_class($this) . "." . "user_id = '" . $userId ."' ";
 			$sql = $this->generateSearchSql($sql, $where);
-			//echo $sql; // REMOVE LATER
 			
 			$results = $this->runSql($sql);
 
 			return $this->createResultsArray($results);
+		}
+
+		public function addToJoinTable($propertiesList, $table) {
+			if (isset($this->id)) {
+				$sql = "INSERT INTO " . $table . " (" . get_class($this) . "_id, ";
+
+				foreach (array_keys($propertiesList[0]) as $colName) {
+					$sql .= $this->toCamelCase($colName) . ", ";
+				}
+				$sql = substr($sql, 0, -2) . ") VALUES ";
+				foreach ($propertiesList as $key => $value) {
+					$sql .= "('" . $this->id . "', ";
+					foreach ($value as $colValue) {
+						$sql .= "'" . $colValue . "', ";
+					}
+					$sql = substr($sql, 0, -2) . "), ";
+				}
+				$sql = substr($sql, 0, -2);
+
+				
+
+				$this->runSql($sql);
+			}
+		}
+
+		private function toCamelCase($str) {
+			return ltrim(strtolower(preg_replace('/[A-Z]/', '_$0', $str)), '_');
 		}
 
 		

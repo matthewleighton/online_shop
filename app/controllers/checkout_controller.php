@@ -205,14 +205,30 @@
 
 		public function submit() {
 			echo "Thanks for placing your order!<br><br>";
-			var_dump($_SESSION['checkout']['properties']);
-			echo "<br><br>";
-			var_dump(array_keys($_SESSION['checkout']));
-			echo "<br><br>";
+						
 			require_once('../app/models/Purchase.php');
 			$purchase = new Purchase;
 			$purchase->assignProperties($_SESSION['checkout']['properties']);
-			echo $purchase->saveToDb('INSERT INTO', 'purchase', $purchase->properties);
+			$purchaseId = $purchase->saveToDb('INSERT INTO', 'purchase', $purchase->properties);
+
+			echo "<br><br><br><br>";
+			var_dump($_SESSION['checkout']['cart']);
+			
+
+
+			$products = [];
+			foreach ($_SESSION['checkout']['cart'] as $key => $value) {
+				if (is_array($value)) {
+					array_push($products, ['productId' => $key,
+										   'quantityInPurchase' => $value['cart_quantity'],
+									   	   'priceAtPurchase' => $value['product_price']]);
+
+				}
+				
+			}
+
+			$purchase->addToJoinTable($products, 'product_purchase');
+
 			
 
 			//if ($purchaseId = $purchase->saveToDb('INSERT INTO', 'purchase', $purchase->properties)) {

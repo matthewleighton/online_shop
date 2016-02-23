@@ -55,6 +55,9 @@ body {
 	float: right;
 }
 
+.admin-link {
+	margin-left: 20px;
+}
 
 /* ---------- Search Header ---------- */
 
@@ -594,12 +597,12 @@ body {
 }
 
 /* ---------- Checkout ---------- */
-.checkout-logo {
+.box-page-logo {
 	text-align: center;
 	margin-top: 10px;
 }
 
-.checkout-page {
+.box-page {
 	margin: 15px 0 20px 0;
 	padding: 15px 10px;
 	border: 1px solid #ADADAD;
@@ -625,7 +628,7 @@ body {
 	
 }
 
-.checkout-page h2 {
+.box-page h2 {
 	text-align: center;
 	font-size: 16px;
 	margin-bottom: 10px;

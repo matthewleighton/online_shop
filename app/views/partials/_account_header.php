@@ -11,7 +11,7 @@
 		</span>
 		<?php
 			if (Sessions_helper::userIsAdmin()){
-				echo "<a href='" . $this->rootPath() . "admin'>Admin controls</a>";
+				echo "<a href='" . $this->rootPath() . "products/create' class='admin-link'>Admin controls</a>";
 			}
 		?>
 	</div>

@@ -1,10 +1,6 @@
-<div class='checkout-logo'>
-	<a href="/online_shop/public">
-		<img src='/online_shop/public/assets/img/logo_placeholder.png' alt='logo' height='70'/>
-	</a>
-</div>
+<?php $this->boxPageLogo(); ?>
 
-<div class='checkout-page half-size choose-delivery-method'>
+<div class='box-page half-size choose-delivery-method'>
 	<h2>Choose a delivery method</h2>
 
 	<form method='post'>

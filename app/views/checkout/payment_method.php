@@ -1,10 +1,6 @@
-<div class='checkout-logo'>
-	<a href="/online_shop/public">
-		<img src='/online_shop/public/assets/img/logo_placeholder.png' alt='logo' height='70'/>
-	</a>
-</div>
+<?php $this->boxPageLogo(); ?>
 
-<div class='checkout-page'>
+<div class='box-page'>
 	<div class='checkout-left checkout-half'>
 		<h2>Select a payment method</h2>
 		<?php

@@ -13,6 +13,16 @@
 			$view->load_page();
 		}
 
+		public function create() {
+			if (!Sessions_helper::userIsAdmin()) {
+				$this->redirect_to();
+			}
+
+			$view = new View('products/create', ['header' => false, 'footer' =>false]);
+			$view->set_title('Add product');
+			$view->load_page();
+		}
+
 		public function search() {
 			
 		}

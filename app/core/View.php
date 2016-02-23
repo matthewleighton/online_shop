@@ -216,7 +216,13 @@
 
 		protected function formatDate($date) {
 			return date('l d M. Y', strtotime($date, time()));
-		}	
+		}
+
+		public function boxPageLogo($height = '70') {
+			echo "<div class='box-page-logo'><a href='" . $this->rootPath() . "'>" .
+				 "<img src='" . $this->rootPath() . "assets/img/logo_placeholder.png' alt='logo'" .
+				 " height='" . $height . "'/></a></div>";
+		}
 	}
 	
 ?>

@@ -50,14 +50,11 @@
 		}
 
 		public function userIsAdmin() {
-			#var_dump(Sessions_helper::currentUser());
-
 			if (Sessions_helper::currentUser()['admin'] == '1') {
 				return true;
 			} else {
 				return false;
 			}
-			
 		}
 
 	}

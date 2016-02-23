@@ -13,7 +13,7 @@
 		}
 
 		public function rootPath() {
-			echo "/online_shop/public/";
+			return "/online_shop/public/";
 		}
 
 		public function set($key, $value) {

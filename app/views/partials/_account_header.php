@@ -9,5 +9,10 @@
 				<?php $this->link_to('users/newuser', 'register'); ?>.
 			<?php } ?>
 		</span>
+		<?php
+			if (Sessions_helper::userIsAdmin()){
+				echo "<a href='" . $this->rootPath() . "admin'>Admin controls</a>";
+			}
+		?>
 	</div>
 </div>

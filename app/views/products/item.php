@@ -36,7 +36,7 @@
 	</div>
 
 	<div class='add-to-cart-box'>
-		<form action="<?php $this->rootPath(); ?>carts/addItem" method="post">
+		<form action="<?php echo $this->rootPath(); ?>carts/addItem" method="post">
 			<span>Quantity: </span>
 			<select name='quantity'>
 				<option value='1'>1</option>
@@ -49,7 +49,7 @@
 			<input type='hidden' name='product_id' value=<?php echo "'" . $product['product_id'] . "'" ?>>
 			<input type='submit' value='Add to Basket' class='add-to-basket-btn'>
 		</form>
-		<form action="<?php $this->rootPath(); ?>wishlist/addItem" method="post">
+		<form action="<?php echo $this->rootPath(); ?>wishlist/addItem" method="post">
 			<input type="hidden" name="productId" value=<?php echo "'" . $product['product_id'] . "'" ?>>
 			<input type="submit" value="Add to Wish List" class="add-to-wish-list-btn">
 		</form>

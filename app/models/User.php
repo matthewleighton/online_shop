@@ -53,7 +53,7 @@
 
 		public function findBy($columns, $val) {
 			$conn = Db::connect();
-			$sql = "SELECT  user_id, first_name, last_name, email FROM users WHERE ";
+			$sql = "SELECT  user_id, first_name, last_name, email, admin FROM users WHERE ";
 			if(is_array($columns)) {
 				foreach ($columns as $col) {
 					$sql .= $col . "='" . $val[array_search($col, $col_list)] . "' AND  ";

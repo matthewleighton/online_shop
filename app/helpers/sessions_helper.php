@@ -37,14 +37,27 @@
 		}
 
 		public function currentUser() {
-			if(isset($_SESSION['user_id'])) {
-				if(isset($this->currentUser)) {
-					return $this->currentUser;
-				} else {
-					$this->currentUser = User::findBy('user_id', $_SESSION['user_id']);
-					return $this->currentUser;
-				}
+			
+			if (session_status() == PHP_SESSION_NONE) {
+				session_start();
 			}
+
+			if(isset($_SESSION['user_id'])) {
+				return User::findBy('user_id', $_SESSION['user_id']);
+			}
+
+
+		}
+
+		public function userIsAdmin() {
+			#var_dump(Sessions_helper::currentUser());
+
+			if (Sessions_helper::currentUser()['admin'] == '1') {
+				return true;
+			} else {
+				return false;
+			}
+			
 		}
 
 	}

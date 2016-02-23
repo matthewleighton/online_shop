@@ -15,7 +15,7 @@
 		<?php
 					foreach($this->data['paymentList'] as $payment) {
 						?>
-						<div class='input-page div-select'>
+						<div class='input-page div-select js-select'>
 							<p hidden class='payment-method-id'><?php echo $payment['payment_method_id']; ?></p>
 
 							<span class='listing-label'>Card type:</span>

@@ -1,4 +1,21 @@
 $(document).ready(function() {
+	
+// -- Product show page -- //
+	
+	$("#product-description-more").click(function() {
+		$("#product-description-more").css("display", "none");
+		$("#product-description-less").css("display", "inline");
+		$("#product-description-text").css("height", "100%");
+	});
+
+	$("#product-description-less").click(function() {
+		$("#product-description-more").css("display", "inline");
+		$("#product-description-less").css("display", "none");
+		$("#product-description-text").css("height", "150px");
+	});
+
+// -- Checkout -- //
+
 	$("#card-creation-existing-address-btn").click(function() {
 		$("#card-creation-existing-address-form").css("display", "block");
 		$("#card-creation-new-address-form").css("display", "none");
@@ -24,9 +41,9 @@ $(document).ready(function() {
 	});
 
 	// Submits the form to select the clicked address/payment method
-	$(".div-select").click(function() {
-		var addressId = $(this).find('p').text();
-		$(this).parents("form:first").find("input:first").val(addressId);
+	$(".js-select").click(function() {
+		var value = $(this).find('p:first').text();
+		$(this).parents("form:first").find("input:first").val(value);
 		$(this).parents("form:first").submit();
 	});
 });

@@ -18,7 +18,7 @@
 				}
 				
 			}
-			var_dump($_SESSION['cart']);
+			
 			$view = new View('cart/index');
 			$view->pass_data('cart', $cart);
 			$view->set_title('Basket');

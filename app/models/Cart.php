@@ -3,6 +3,12 @@
 		// Identifies which table needs to be searched when this model is used.
 		public $table = "product";
 
+		public function __construct($userId = '') {
+			$this->userId = $userId;
+		}
+
+
+
 		// Specifies how to correctly use joins, etc for this table in queries.
 		protected $sqlOptions = ['join' => ['book' => ['book.product_id', 'product.product_id'],
 							 	 			'author_book' => ['author_book.book_id', 'book.book_id'],
@@ -59,6 +65,15 @@
 			$sql = "DELETE FROM shopping_cart WHERE user_id='";
 			$sql .= $_SESSION['user_id'] . "' AND product_id='" . $product_id . "'";
 			$this->runSql($sql);
+		}
+
+		public function emptyCart() {
+			$sql = "DELETE FROM shopping_cart WHERE user_id='" . $this->userId . "'";
+			$this->runSql($sql, true);
+
+			if (isset($_SESSION['cart'])) {
+				unset($_SESSION['cart']);
+			}
 		}
 	}
 ?>

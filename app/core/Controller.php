@@ -17,5 +17,11 @@
 			$url = $_SERVER['REQUEST_URI'];
 			return substr($url, strrpos($url, '/') + 1);
 		}
+
+		protected function mustBeLoggedIn() {
+			if (!Sessions_helper::logged_in()) {
+				$this->redirect_to('sessions/login?redirect=' . $_GET['url']);
+			}
+		}
 	}
 ?>

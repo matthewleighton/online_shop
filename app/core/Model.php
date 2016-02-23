@@ -173,7 +173,6 @@
 		public function saveToDb($sqlMethod, $table, $data) {
 			if($this->runValidations()) {
 				$sql = $this->generateSql($sqlMethod, $table, $data);
-				echo $sql;
 				$entryId = $this->runSql($sql, true);
 				
 				$this->id = $entryId;
@@ -205,7 +204,7 @@
 				$sql .= " GROUP BY " . $this->sqlOptions['groupby'];
 			}
 
-			//echo $sql;
+			#echo $sql; // TEST LINE - COMMENT OUT /////////////////////
 			//die();
 			return $sql;
 		}

@@ -32,6 +32,6 @@
 
 	<div class='header-right'>
 		<?php $this->link_to('carts/index', 'Basket'); ?>
-		<?php $this->link_to('#', 'Wish List'); ?>
+		<?php $this->link_to('account', 'Your Account'); ?>
 	</div>
 </div>

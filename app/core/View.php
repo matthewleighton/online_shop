@@ -12,6 +12,10 @@
 				}			
 		}
 
+		public function rootPath() {
+			echo "/online_shop/public/";
+		}
+
 		public function set($key, $value) {
 			$this->data[$key] = $value;
 			print_r($this->data);
@@ -113,10 +117,14 @@
 
 		protected function link_to($location, $text, $ident = []) {
 			$link = "<a ";
-
 			$link .= $this->listIdents($ident);
-
 			echo $link .= "href='/online_shop/public/" . $location . "'>" . $text . "</a>";
+		}
+
+		protected function linkToProduct($productId, $text, $ident = []) {
+			$link = "<a ";
+			$link .= $this->listIdents($ident);
+			echo $link .= "href='/online_shop/public/products/item/" . $productId . "'>" . $text ."</a>";
 		}
 
 		protected function image_tag($image, $options = []) {
@@ -141,7 +149,6 @@
 				return nill;
 			}
 		}
-
 
 		private function listIdents($ident) {
 			if(array_key_exists('id', $ident)) {
@@ -206,6 +213,10 @@
 			}
 			//TODO - Add other ways of accessing creators as I add more product types
 		}
+
+		protected function formatDate($date) {
+			return date('l d M. Y', strtotime($date, time()));
+		}	
 	}
 	
 ?>

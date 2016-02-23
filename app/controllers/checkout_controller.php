@@ -30,7 +30,7 @@
 			} else {
 				unset($_SESSION['redirecting']);
 			}
-			var_dump($_SESSION['checkout']);
+			//var_dump($_SESSION['checkout']);
 		}
 
 		public function index() {
@@ -80,15 +80,13 @@
 
 		public function deliveryMethod() {
 			if(isset($_POST['deliveryMethod'])) {
-				$validDeliveryMethods = ['free' => ['price' => 0, 'deliveryTime' => '+3 days'], 
-										 'first-class' => ['price' => 1.50, 'deliveryTime' => '+1 day'],
-										 'one-day' => ['price' => 3.49, 'deliveryTime' => 'today']];
+				$validDeliveryMethods = ['free' => ['price' => 0, 'deliveryTime' => '+4 days'], 
+										 'first-class' => ['price' => 1.50, 'deliveryTime' => '+2 day'],
+										 'one-day' => ['price' => 3.49, 'deliveryTime' => '+ 1 day']];
 
 				if(in_array($_POST['deliveryMethod'], array_keys($validDeliveryMethods))) {
-					// TODO - change DeliveryTime to DeliveryDue
 					$delivery = $validDeliveryMethods[$_POST['deliveryMethod']];
 					
-
 					$deliveryDue = date('l d M. Y', strtotime($delivery['deliveryTime'], time()));
 					$_SESSION['checkout']['properties']['deliveryDue'] = $deliveryDue;
 					$_SESSION['checkout']['properties']['deliveryPrice'] = $delivery['price'];
@@ -204,17 +202,10 @@
 		}
 
 		public function submit() {
-			echo "Thanks for placing your order!<br><br>";
-						
 			require_once('../app/models/Purchase.php');
 			$purchase = new Purchase;
 			$purchase->assignProperties($_SESSION['checkout']['properties']);
 			$purchaseId = $purchase->saveToDb('INSERT INTO', 'purchase', $purchase->properties);
-
-			echo "<br><br><br><br>";
-			var_dump($_SESSION['checkout']['cart']);
-			
-
 
 			$products = [];
 			foreach ($_SESSION['checkout']['cart'] as $key => $value) {
@@ -222,18 +213,22 @@
 					array_push($products, ['productId' => $key,
 										   'quantityInPurchase' => $value['cart_quantity'],
 									   	   'priceAtPurchase' => $value['product_price']]);
-
 				}
-				
 			}
 
 			$purchase->addToJoinTable($products, 'product_purchase');
 
+			require_once('../app/models/Cart.php');
+			$cart = new Cart($_SESSION['checkout']['properties']['userId']);
 			
-
-			//if ($purchaseId = $purchase->saveToDb('INSERT INTO', 'purchase', $purchase->properties)) {
-			//	$purchase->addToPurchase($_SESSION['checkout']);
-			//}
+			$cart->emptyCart();
+			
+			$view = new View('checkout/submit');
+			$view->set_title('Order Complete');
+			$view->pass_data('deliveryDue', $_SESSION['checkout']['properties']['deliveryDue']);
+			$view->load_page();
+			
+			unset($_SESSION['checkout']);
 		}
 	}
 ?>

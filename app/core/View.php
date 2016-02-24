@@ -50,7 +50,11 @@
 					  "' placeholder='" . $placeholder . "' ";
 
 			if(array_key_exists($name, $_POST)) {
-			  	$input .= "value='" . $_POST[$name]. "' ";
+			  	if (is_array($_POST[$name])) {
+			  		$input .= "value='" . implode(", ", $_POST[$name]) . "'";
+			  	} else {
+			  		$input .= "value='" . $_POST[$name]. "' ";	
+			  	}
 			} else if(isset($_SESSION[$object])) {
 				$input .= "value='" . $_SESSION[$object]->properties[$name] ."'";
 			}
@@ -64,6 +68,14 @@
 					$input .= $options['class'];
 				}
 				$input .= "'";
+			}
+
+			if (array_key_exists('id', $options)) {
+				$input .= " id='" . $options['id'] . "' ";
+			}
+
+			if (array_key_exists('onfocus', $options)) {
+				$input .= " onfocus=\"" . $options['onfocus'] . "\" ";
 			}
 
 			$input .= ">";

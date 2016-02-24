@@ -208,7 +208,7 @@ body {
 	font-weight: normal;
 }
 
-.input-page input[type=text], .input-page input[type=password], .input-page select {
+.input-page input[type=text], .input-page input[type=password], .input-page input[type='date'], .input-page select {
 	border: 1px solid #ADADAD;
 	border-radius: 5px;
 	height: 35px;
@@ -906,9 +906,8 @@ body {
 
 .purchase-product-details {
 	font-size: 12px;
-	margin: 10px 0;
 	line-height: 1.8;
-
+	margin: 10px 0;
 }
 
 .purchase-product-details a {
@@ -921,4 +920,39 @@ body {
 	display: inline-block;
 	vertical-align: text-top;
 	margin: 0px 30px;
+}
+
+/* ---------- Product Creation ---------- */
+
+#product-create-page {
+	margin: 0 auto;
+	width: 50%;
+}
+
+.pc-general {
+	text-align: center;
+	margin: 0 auto;
+}
+
+.pc-general div {
+	width: 20%;
+	margin: 10px 0;
+}
+
+#product-create-page .product-input-small {
+	margin-left: 0px;
+	margin-right: 0px;
+	width: 48%;
+}
+
+.product-type-forms {
+	display: none;
+}
+
+.type-creation-form {
+	display: none;
+}
+
+#product-submit-btn {
+	display: none;
 }

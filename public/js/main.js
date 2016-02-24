@@ -46,4 +46,57 @@ $(document).ready(function() {
 		$(this).parents("form:first").find("input:first").val(value);
 		$(this).parents("form:first").submit();
 	});
+
+// -- New Product Entry -- //
+
+	// Product type buttons display different forms
+	var productType;
+	$('.pc-general .div-btn').click(function(){
+		if (typeof productType !== 'undefined') {
+			$('#' + productType + '-form').css('display', 'none');
+			$('#' + productType + '-btn').css('background-color', '#FFFFFF');
+		};
+
+		productType = $(this).find('p:first').text();
+		$('#' + productType + '-form').css('display', 'block');
+		$('#' + productType + '-btn').css('background-color', '#DADADA');
+		$('#product-submit-btn').css('display', 'block');
+		$('#submitted-product-type').val(productType);
+	});
+	
+	// Release date field becomes date type when selected.
+	// And turns back to text with "Release date" placeholder if value is null when unfocused.
+	// Not supported on IE
+	$('#product-date-input').focus(function() {
+		var ua = window.navigator.userAgent;
+		var msie = ua.indexOf('MSIE ');
+
+		if (!msie > 0 || !navigator.userAgent.match(/Trident.*rv\:11\./)) {
+			$(this).removeAttr('type');
+			$(this).prop('type', 'date');
+			$(this).select();
+
+			$(this).focusout(function() {
+				if (this.value == '') {
+					$(this).removeAttr('type');
+					$(this).prop('type', 'text');	
+				}
+			});	
+		}
+	});
+
+	// Add £ sign to price input on focus
+	/*
+	$('#product-price-input').focus(function() {
+		if (this.value == '') {
+			$(this).val('£');
+			$(this).focusout(function() {
+				if (this.value == '£') {
+					$(this).val('');
+				}
+			});	
+		}
+	});
+	*/
+
 });

@@ -23,7 +23,7 @@
 
 	<div class='header-middle'>
 		<div class='search-form'>
-			<form>
+			<form method='POST' action='<?php echo $this->rootPath();?>products/search'>
 				<input type="text" name="search" class="search-bar">
 				<input type="submit" value="GO!" class="search-submit">
 			</form>

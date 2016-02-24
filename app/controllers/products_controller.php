@@ -18,17 +18,48 @@
 				$this->redirect_to();
 			}
 
+			if (count($_POST) > 0) {
+				if ($_POST['product_catagory'] == "book") {
+					// Split authors into array
+					if ($_POST['authors'] != '') {
+						$authorsList = explode(',', $_POST['authors']);
+						foreach ($authorsList as $key => $author) {
+							$authorsList[$key] = trim($author);
+						}
+						$_POST['authors'] = $authorsList;
+					}
+
+					require_once('../app/models/book.php');
+					$product = new Book;
+					$product->build();
+				}
+			}
+
+
+
+
+			$product = new Product();
+
+
 			$view = new View('products/create', ['header' => false, 'footer' =>false]);
 			$view->set_title('Add product');
+
+			$view->pass_data('product', $product);
+
 			$view->load_page();
+
+			if (count($_POST)) {
+				//var_dump($_POST);
+			}
 		}
 
 		public function search() {
-			
+			echo "This is the product search function<br><br>";
+			var_dump($_POST);
 		}
 
 		public function catagory($catagory) {
-			if(substr($catagory, -1) == "s") {
+			if (substr($catagory, -1) == "s") {
 				$catagory = substr($catagory, 0, strlen($catagory) - 1);
 			}
 
@@ -57,6 +88,10 @@
 				$view->set_title($product['product_name']);
 				$view->pass_data('product', $product);
 				$view->load_page();
+		}
+
+		private function newProductBook() {
+			echo "This is the new book product function";
 		}
 
 	}

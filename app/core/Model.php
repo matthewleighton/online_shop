@@ -150,6 +150,8 @@
 
 			$sql = rtrim($sql, ', ') . ')';
 
+			echo $sql;
+
 			return $sql;
 		}
 		

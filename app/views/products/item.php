@@ -60,7 +60,7 @@
 <h3>Product Details</h3>
 <div class="product-details">
 	<?php
-		if ($product['catagory'] == "book") {
+		if ($product['product_catagory'] == "book") {
 			include_once('../app/views/products/_book_details.php');
 		}
 	?>

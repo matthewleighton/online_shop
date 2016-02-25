@@ -33,13 +33,9 @@
 					$product = new Book;
 					$product->build();
 				}
+			} else {
+				$product = new Product();
 			}
-
-
-
-
-			$product = new Product();
-
 
 			$view = new View('products/create', ['header' => false, 'footer' =>false]);
 			$view->set_title('Add product');
@@ -47,10 +43,6 @@
 			$view->pass_data('product', $product);
 
 			$view->load_page();
-
-			if (count($_POST)) {
-				//var_dump($_POST);
-			}
 		}
 
 		public function search() {
@@ -66,7 +58,7 @@
 			if(file_exists('../app/models/' . $catagory . '.php')) {
 				require_once('../app/models/' . $catagory . '.php');
 				$this->model = new $catagory;
-				$list = $this->model->findAll();
+				$list = $this->model->findAll($catagory . "." . $catagory . "_id");
 
 				$view = new View('products/results');
 				$view->set_title(ucfirst($catagory) . 's');
@@ -82,17 +74,11 @@
 				require_once('../app/models/product.php');
 				$model = new Product;
 				$product = $model->findById($id);
-				//print_r($product);
 
 				$view = new View('products/item');
 				$view->set_title($product['product_name']);
 				$view->pass_data('product', $product);
 				$view->load_page();
 		}
-
-		private function newProductBook() {
-			echo "This is the new book product function";
-		}
-
 	}
 ?>

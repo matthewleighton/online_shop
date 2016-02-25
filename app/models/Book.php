@@ -22,8 +22,6 @@
 		}
 
 		public function build() {
-			//require_once('../app/models/Author.php');
-			//$author = new Author;
 			$this->assignProperties($_POST);
 			
 			if ($this->runValidations()) {
@@ -45,8 +43,8 @@
 					}
 				}
 
-				$productTableProperties = [];
 				// Saving the base product to the database
+				$productTableProperties = [];		
 				foreach ($this->properties as $key => $value) {
 					if (in_array($key, $this->productColumns)) {
 						$productTableProperties[$key] = $value;

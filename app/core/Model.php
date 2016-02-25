@@ -207,7 +207,7 @@
 			}
 
 			#echo $sql; // TEST LINE - COMMENT OUT /////////////////////
-			//die();
+			#die();
 			return $sql;
 		}
 
@@ -221,21 +221,51 @@
 			return $array;
 		}
 
-		public function findAll() {
+		public function findAll($column) {
 			$sql = "SELECT *";
-			$sql = $this->generateSearchSql($sql);
+			$where = " WHERE " . $column . " IS NOT NULL ";
+			$sql = $this->generateSearchSql($sql, $where);
 			$results = $this->runSql($sql);
 
 			return $this->createResultsArray($results);
 		}
 
-		public function findById($id) {
-			$sql = "SELECT *";
+		public static function findById($id) {
+			/*$sql = "SELECT *";
 			$where = " WHERE " . get_class($this) . "." . get_class($this) . "_id = '" . $id . "' ";
 			$sql = $this->generateSearchSql($sql, $where);
 			$results = $this->runSql($sql);
 			
-			return $results->fetch_assoc();
+			return $results->fetch_assoc();*/
+
+			$productCatagory = Product::findProductCatagory($id);
+
+			switch ($productCatagory) {
+				case 'book':
+					#echo "Product is a book.";
+					require_once('../app/models/Book.php');
+					$product = new Book;
+					break;
+				case 'film':
+					#echo "Product is a film.";
+					require_once('../app/models/Film.php');
+					$product = new Film;
+					break;
+			}
+
+			$sql = "SELECT *";
+			$where = " WHERE product.product_id='" . $id . "' ";
+			$sql = $product->generateSearchSql($sql, $where);
+			
+			$results = $product->runSql($sql);
+			
+			return $results->fetch_assoc();			
+		}
+
+		private static function findProductCatagory($id) {
+			$sql = "SELECT product_catagory FROM product WHERE product_id='" . $id . "'";
+			$results = Product::runSql($sql);
+			return $results->fetch_assoc()['product_catagory'];
 		}
 
 		public function findByUserId($userId) {

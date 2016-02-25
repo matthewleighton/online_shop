@@ -12,7 +12,8 @@
 			<div class="dropdown-content">
 				<ul>
 					<li><?php $this->link_to('products/catagory/books', 'Books') ?></li>
-					<li><?php $this->link_to('#', 'Movies & TV'); ?></li>
+					<li><?php $this->link_to('products/catagory/films', 'Films'); ?></li>
+					<li><?php $this->link_to('#', 'TV'); ?></li>
 					<li><?php $this->link_to('#', 'Music'); ?></li>
 					<li><?php $this->link_to('#', 'Video Games'); ?></li>
 				</ul>

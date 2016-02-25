@@ -235,6 +235,22 @@
 				 "<img src='" . $this->rootPath() . "assets/img/logo_placeholder.png' alt='logo'" .
 				 " height='" . $height . "'/></a></div>";
 		}
+
+		protected function printRunningTime($runningTime) {
+			$hours = (int) ($runningTime / 60);
+			$minutes = $runningTime % 60;
+			$output = '';
+
+			if($hours > 0) {
+				$output .= $hours . " hour";
+				$output .= ($hours == 1 ? " " : "s ");
+			}
+
+			$output .= $minutes . " minute";
+			$output .= ($minutes != 1 ? "s" : '');
+
+			return $output;
+		}
 	}
 	
 ?>

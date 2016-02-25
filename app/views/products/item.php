@@ -62,6 +62,8 @@
 	<?php
 		if ($product['product_catagory'] == "book") {
 			include_once('../app/views/products/_book_details.php');
+		} elseif ($product['product_catagory'] == "film") {
+			include_once('../app/views/products/_film_details.php');
 		}
 	?>
 </div>

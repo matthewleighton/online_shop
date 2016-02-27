@@ -150,14 +150,14 @@
 
 			$sql = rtrim($sql, ', ') . ')';
 
-			echo $sql;
+			#echo $sql;
 
 			return $sql;
 		}
 		
 		// Run an SQL statement
 		// $returnId can be set to true in order to return the id of the newly created entry.
-		protected function runSql($sql, $returnId = false) {
+		public function runSql($sql, $returnId = false) {
 			$conn = Db::connect();
 			$results = $conn->query($sql);
 			
@@ -185,7 +185,7 @@
 		}
 
 		// Creates the sql to search and join the required tables for the model this is called from.
-		protected function generateSearchSql($sql, $where = '') {
+		protected function generateSearchSql($sql, $where = '', $insertJoin = '') {
 			if(isset($this->sqlOptions['concat'])) {
 				foreach ($this->sqlOptions['concat'] as $concat => $value) {
 					$sql .= ", GROUP_CONCAT(" . $value[0] . ") " . $value[1];
@@ -200,14 +200,22 @@
 				}
 			}
 
-			$sql .= $where;
+			if (isset($join)) {
+				$sql .=  " " . $insertJoin . " ";
+			}
+
+
+
+			$sql .=" " . $where;
 
 			if(isset($this->sqlOptions['groupby'])) {
 				$sql .= " GROUP BY " . $this->sqlOptions['groupby'];
 			}
 
-			#echo $sql; // TEST LINE - COMMENT OUT /////////////////////
+			// Uncomment to view sql //
+			#echo $sql;
 			#die();
+
 			return $sql;
 		}
 
@@ -230,42 +238,14 @@
 			return $this->createResultsArray($results);
 		}
 
-		public static function findById($id) {
-			/*$sql = "SELECT *";
+		public function findById($id) {
+			$sql = "SELECT *";
 			$where = " WHERE " . get_class($this) . "." . get_class($this) . "_id = '" . $id . "' ";
 			$sql = $this->generateSearchSql($sql, $where);
+			
 			$results = $this->runSql($sql);
 			
-			return $results->fetch_assoc();*/
-
-			$productCatagory = Product::findProductCatagory($id);
-
-			switch ($productCatagory) {
-				case 'book':
-					#echo "Product is a book.";
-					require_once('../app/models/Book.php');
-					$product = new Book;
-					break;
-				case 'film':
-					#echo "Product is a film.";
-					require_once('../app/models/Film.php');
-					$product = new Film;
-					break;
-			}
-
-			$sql = "SELECT *";
-			$where = " WHERE product.product_id='" . $id . "' ";
-			$sql = $product->generateSearchSql($sql, $where);
-			
-			$results = $product->runSql($sql);
-			
-			return $results->fetch_assoc();			
-		}
-
-		private static function findProductCatagory($id) {
-			$sql = "SELECT product_catagory FROM product WHERE product_id='" . $id . "'";
-			$results = Product::runSql($sql);
-			return $results->fetch_assoc()['product_catagory'];
+			return $results->fetch_assoc();
 		}
 
 		public function findByUserId($userId) {
@@ -295,7 +275,7 @@
 				}
 				$sql = substr($sql, 0, -2);
 
-				
+				echo $sql;
 
 				$this->runSql($sql);
 			}

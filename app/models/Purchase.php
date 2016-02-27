@@ -22,11 +22,11 @@
 				array_push($purchaseIdList, $purchase['purchase_id']);
 			}
 
-			$sql = "SELECT *, GROUP_CONCAT(author.author_name) authors FROM product_purchase ";
+			$sql = "SELECT *, GROUP_CONCAT(person.person_name) authors FROM product_purchase ";
 			$sql .= "JOIN product ON product_purchase.product_id=product.product_id ";
 			$sql .= "JOIN book ON book.product_id=product.product_id ";
-			$sql .= "JOIN author_book ON book.book_id=author_book.book_id ";
-			$sql .= "JOIN author ON author_book.author_id=author.author_id ";
+			$sql .= "JOIN author ON author.FK_author_product=product.product_id ";
+			$sql .= "JOIN person ON person.person_id=author.FK_author_person ";
 			$sql .= "WHERE purchase_id IN (";
 			foreach ($purchaseIdList as $purchaseId) {
 				$sql .= "'" . $purchaseId . "', ";
@@ -34,7 +34,7 @@
 
 			$sql = substr($sql, 0, -2) . ") GROUP BY product_purchase.product_purchase_id";
 
-			#echo "<br><br>" . $sql . "<br><br>";
+			#echo $sql;
 			#die();
 
 			$products = $this->createResultsArray($this->runSql($sql));
@@ -47,6 +47,7 @@
 			}
 			
 			#var_dump(array_reverse($completePurchaseArray));
+			#die();
 			return array_reverse($completePurchaseArray);
 			
 		}

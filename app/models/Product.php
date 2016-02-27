@@ -56,6 +56,82 @@
  			}
  		}
 
+ 		public static function findByProductId($id) {
+			/*$sql = "SELECT *";
+			$where = " WHERE " . get_class($this) . "." . get_class($this) . "_id = '" . $id . "' ";
+			$sql = $this->generateSearchSql($sql, $where);
+			$results = $this->runSql($sql);
+			
+			return $results->fetch_assoc();*/
+
+			$productCatagory = Product::findProductCatagory($id);
+
+			switch ($productCatagory) {
+				case 'book':
+					require_once('../app/models/Book.php');
+					$product = new Book;
+					break;
+				case 'film':
+					require_once('../app/models/Film.php');
+					$product = new Film;
+					break;
+			}
+
+			$sql = "SELECT *";
+			$where = " WHERE product.product_id='" . $id . "' ";
+			$sql = $product->generateSearchSql($sql, $where);
+			
+			$results = $product->runSql($sql);
+			
+			return $results->fetch_assoc();			
+		}
+
+		private static function findProductCatagory($id) {
+			$sql = "SELECT product_catagory FROM product WHERE product_id='" . $id . "'";
+			$results = Product::runSql($sql);
+			return $results->fetch_assoc()['product_catagory'];
+		}
+
+		// Generates an array of products.
+		// For use when the products' types are not known
+		public static function findProducts($where, $join = '') {
+			$returnArray = [];
+			$productsSortedByType = [];
+
+			// Create array of product IDs/product catagories
+			$sql = "SELECT product.product_id, product_catagory FROM product ";
+			$sql .= $join . " " . $where;
+			$results = Model::runSql($sql);
+			$productTypes = Model::createResultsArray($results);
+			
+			// Arrange the product IDs by product catagory
+			foreach ($productTypes as $product) {
+				if (!array_key_exists($product['product_catagory'], $productsSortedByType)) {
+					$productsSortedByType[$product['product_catagory']] = [];
+				}
+
+				array_push($productsSortedByType[$product['product_catagory']], $product['product_id']);
+			}
+
+
+
+			// Query the database, creating an array of products and their attributes
+			// Then adding this array onto the final return array
+			foreach ($productsSortedByType as $catagory => $productList) {
+				require_once('../app/models/' . $catagory . '.php');
+				$model = new $catagory;
+
+				$sql = $model->generateSearchSql('SELECT *', $where, $join);
+				
+				$resultsPDO = $model->runSql($sql);
+				$resultsArray = $model->createResultsArray($resultsPDO);
+				$returnArray = array_merge($returnArray, $resultsArray);
+			}
+
+			
+			return $returnArray;
+		}
+
 	}
 
 ?>

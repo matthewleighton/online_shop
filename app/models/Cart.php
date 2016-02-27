@@ -11,22 +11,29 @@
 
 		// Specifies how to correctly use joins, etc for this table in queries.
 		protected $sqlOptions = ['join' => ['book' => ['book.product_id', 'product.product_id'],
-							 	 			'author_book' => ['author_book.book_id', 'book.book_id'],
-								 			'author' => ['author.author_id', 'author_book.author_id']],
-								 'concat' => [['author.author_name', 'authors']],
+							 	 			'author' => ['author.FK_author_product', 'product.product_id'],
+								 			'person' => ['person.person_id', 'author.FK_author_person']],
+								 'concat' => [['person.person_name', 'authors']],
 								 'groupby' => 'product.product_id'];
 
 		public function generateCartFromDb() {
 			// Add shopping_cart to the list of tables to be joined
-			$this->sqlOptions['join']['shopping_cart'] = ['shopping_cart.product_id', 'product.product_id'];
+			#$this->sqlOptions['join']['shopping_cart'] = ['shopping_cart.product_id', 'product.product_id'];
 
-			$sql = "SELECT *";
-			$where = " WHERE shopping_cart.user_id = '" . $_SESSION['user_id'] . "'";			
-			$sql = $this->generateSearchSql($sql, $where);
+			#$sql = "SELECT *";
+			#$where = " WHERE shopping_cart.user_id = '" . $_SESSION['user_id'] . "'";			
+			$where = "WHERE shopping_cart.user_id='" . $_SESSION['user_id'] . "'";
+			$join = "JOIN shopping_cart ON shopping_cart.product_id=product.product_id";
+			require_once('../app/models/Product.php');
+			$cart = Product::findProducts($where, $join);
 
-			$results = $this->runSql($sql);
-			
-			$cart = $this->createResultsArray($results);
+			/*$sql = $this->generateSearchSql($sql, $where);
+
+			$results = $this->runSql($sql);			
+			$cart = $this->createResultsArray($results);*/
+
+			#var_dump($cart);
+			#die();
 
 			unset($_SESSION['cart']);
 

@@ -71,14 +71,19 @@
 		}
 
 		public function item($id = '') {
+			if ($id == '464532') {
+				$this->redirect_to('');
+			} else {
 				require_once('../app/models/product.php');
-				$model = new Product;
-				$product = $model->findById($id);
+				//$model = new Product;
+				//$product = $model->findById($id);
+				$product = Product::findByProductId($id);
 
 				$view = new View('products/item');
 				$view->set_title($product['product_name']);
 				$view->pass_data('product', $product);
-				$view->load_page();
+				$view->load_page();	
+			}
 		}
 	}
 ?>

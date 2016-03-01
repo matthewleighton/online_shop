@@ -39,7 +39,7 @@
 			$_SESSION['checkout']['properties']['address'] = null;
 			$_SESSION['checkout']['properties']['deliveryMethod'] = null;
 			$_SESSION['checkout']['properties']['paymentMethod'] = null;
-			$_SESSION['checkout']['properties']['userId'] = $_SESSION['user_id'];
+			$_SESSION['checkout']['properties']['fk_purchase_user'] = $_SESSION['user_id'];
 			$this->redirect_to('checkout/address');
 		}
 
@@ -176,9 +176,9 @@
 			$view = new View('checkout/confirm', ['header' => false, 'footer' => false]);
 			$view->set_title('Confirm Purchase Details');
 
-			if($address['address_id'] != $paymentMethod['address_id']) {
+			if($address['address_id'] != $paymentMethod['fk_payment_method_address']) {
 				$billingAddress = new Address;
-				$billingAddress = $billingAddress->findById($paymentMethod['address_id']);
+				$billingAddress = $billingAddress->findById($paymentMethod['fk_payment_method_address']);
 				$view->pass_data('billingAddress', $billingAddress);
 			}
 
@@ -189,8 +189,8 @@
 			$_SESSION['checkout']['properties']['productsPrice'] = $productsPrice;
 
 			// TODO - Change original naming of properties to include "id", so these lines aren't needed.
-			$_SESSION['checkout']['properties']['paymentMethodId'] = $_SESSION['checkout']['properties']['paymentMethod'];
-			$_SESSION['checkout']['properties']['addressId'] = $_SESSION['checkout']['properties']['address'];
+			$_SESSION['checkout']['properties']['fk_purchase_payment_method'] = $_SESSION['checkout']['properties']['paymentMethod'];
+			$_SESSION['checkout']['properties']['fk_purchase_address'] = $_SESSION['checkout']['properties']['address'];
 
 			$view->pass_data('deliveryDate', $deliveryDate);
 			$view->pass_data('deliveryPrice', $deliveryPrice);
@@ -206,11 +206,12 @@
 			$purchase = new Purchase;
 			$purchase->assignProperties($_SESSION['checkout']['properties']);
 			$purchaseId = $purchase->saveToDb('INSERT INTO', 'purchase', $purchase->properties);
+			
 
 			$products = [];
 			foreach ($_SESSION['checkout']['cart'] as $key => $value) {
 				if (is_array($value)) {
-					array_push($products, ['productId' => $key,
+					array_push($products, ['fkProductPurchaseProduct' => $key,
 										   'quantityInPurchase' => $value['cart_quantity'],
 									   	   'priceAtPurchase' => $value['product_price']]);
 				}
@@ -219,7 +220,7 @@
 			$purchase->addToJoinTable($products, 'product_purchase');
 
 			require_once('../app/models/Cart.php');
-			$cart = new Cart($_SESSION['checkout']['properties']['userId']);
+			$cart = new Cart($_SESSION['checkout']['properties']['fk_purchase_user']);
 			
 			$cart->emptyCart();
 			

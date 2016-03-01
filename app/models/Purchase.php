@@ -1,9 +1,9 @@
 <?php
 	class Purchase extends Model {
 		public $properties = array(
-			'userId' => '',
-			'paymentMethodId' => '',
-			'addressId' => '',
+			'fk_purchase_user' => '',
+			'fk_purchase_payment_method' => '',
+			'fk_purchase_address' => '',
 			'productsPrice' => '',
 			'deliveryPrice' => ''
 		);
@@ -23,11 +23,11 @@
 			}
 
 			$sql = "SELECT *, GROUP_CONCAT(person.person_name) authors FROM product_purchase ";
-			$sql .= "JOIN product ON product_purchase.product_id=product.product_id ";
-			$sql .= "JOIN book ON book.product_id=product.product_id ";
-			$sql .= "JOIN author ON author.FK_author_product=product.product_id ";
-			$sql .= "JOIN person ON person.person_id=author.FK_author_person ";
-			$sql .= "WHERE purchase_id IN (";
+			$sql .= "JOIN product ON product_purchase.fk_product_purchase_product=product.product_id ";
+			$sql .= "JOIN book ON book.fk_book_product=product.product_id ";
+			$sql .= "JOIN author ON author.fk_author_product=product.product_id ";
+			$sql .= "JOIN person ON person.person_id=author.fk_author_person ";
+			$sql .= "WHERE fk_product_purchase_purchase IN (";
 			foreach ($purchaseIdList as $purchaseId) {
 				$sql .= "'" . $purchaseId . "', ";
 			}
@@ -40,10 +40,10 @@
 			$products = $this->createResultsArray($this->runSql($sql));
 			
 			foreach ($products as $product) {
-				if (!isset($completePurchaseArray[$product['purchase_id']]['products'])) {
-					$completePurchaseArray[$product['purchase_id']]['products'] = [];
+				if (!isset($completePurchaseArray[$product['fk_product_purchase_purchase']]['products'])) {
+					$completePurchaseArray[$product['fk_product_purchase_purchase']]['products'] = [];
 				}
-				array_push($completePurchaseArray[$product['purchase_id']]['products'], $product);
+				array_push($completePurchaseArray[$product['fk_product_purchase_purchase']]['products'], $product);
 			}
 			
 			#var_dump(array_reverse($completePurchaseArray));

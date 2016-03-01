@@ -1,8 +1,8 @@
 <?php
 	class Book extends Product {
-		protected $sqlOptions = ['join' => ['book' => ['book.product_id', 'product.product_id'],
-							 	 			'author' => ['author.FK_author_product', 'product.product_id'],
-								 			'person' => ['person.person_id', 'author.FK_author_person']],
+		protected $sqlOptions = ['join' => ['book' => ['book.fk_book_product', 'product.product_id'],
+							 	 			'author' => ['author.fk_author_product', 'product.product_id'],
+								 			'person' => ['person.person_id', 'author.fk_author_person']],
 								 'concat' => [['person.person_name', 'authors']],
 								 'groupby' => 'product.product_id'];
 
@@ -26,7 +26,7 @@
 			
 			if ($this->runValidations()) {
 				
-				// Generating array of authors	
+				// Generating array of authors
 				$authorIdArray = [];
 				foreach ($_POST['authors'] as $author) {
 					$sql = "SELECT * FROM author WHERE author_name='" . $author . "'";

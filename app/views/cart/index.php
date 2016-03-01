@@ -25,20 +25,30 @@
 	<div class='cart-item-list'>
 		<?php
 			foreach ($cart as $product) {
-		?>
+		?>	
 				<div class='cart-item'>
 					<div class='cart-product-image'>
 						<?php
-							 $this->productImage($product['product_id'], 100);					 
+							$this->productImage($product['product_id'], 100);
 						?>
 					</div>
-
 					<div class='cart-product-details'>
 						<span class='product-name'>
 							<?php $this->link_to("products/item/" . $product['product_id'], $product['product_name']); ?>
 						</span>
-						<span class='product-creator'>by <?php echo $product['authors'] ?></span><br>
-						<span class='product-type'><?php echo ucfirst($product['book_type']); ?></span><br>
+						<?php
+							switch ($product['product_catagory']) {
+								case 'book':
+									include_once('../app/views/cart/_cart_book.php');
+									break;
+								case 'figfdglm':
+									include_once('../app/views/cart/_cart_film.php');
+									break;
+								default:
+									# code...
+									break;
+							}
+						?>
 						<span class='cart-remove'>
 							<?php $this->removeFromCart($product['product_id'], $cart); ?>
 						</span>

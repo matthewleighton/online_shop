@@ -7,7 +7,7 @@
 		}
 
 		public function index() {
-			echo "Payment Methods - INDEX";
+			
 		}
 
 		public function add() {
@@ -34,7 +34,7 @@
 			}
 
 			
-			$paymentMethod->properties['address_id'] = $addressId;
+			$paymentMethod->properties['fk_payment_method_address'] = $addressId;
 			$paymentMethodId = $paymentMethod->saveToDb('INSERT INTO', 'payment_method', $paymentMethod->properties);
 
 			$_SESSION['paymentMethodId'] = $paymentMethodId;

@@ -10,22 +10,23 @@
 
 
 		// Specifies how to correctly use joins, etc for this table in queries.
-		protected $sqlOptions = ['join' => ['book' => ['book.product_id', 'product.product_id'],
-							 	 			'author' => ['author.FK_author_product', 'product.product_id'],
-								 			'person' => ['person.person_id', 'author.FK_author_person']],
+		protected $sqlOptions = ['join' => ['book' => ['book.fk_book_product', 'product.product_id'],
+							 	 			'author' => ['author.fk_author_product', 'product.product_id'],
+								 			'person' => ['person.person_id', 'author.fk_author_person']],
 								 'concat' => [['person.person_name', 'authors']],
 								 'groupby' => 'product.product_id'];
 
 		public function generateCartFromDb() {
 			// Add shopping_cart to the list of tables to be joined
-			#$this->sqlOptions['join']['shopping_cart'] = ['shopping_cart.product_id', 'product.product_id'];
+			#$this->sqlOptions['join']['shopping_cart'] = ['fk_shopping_cart_product', 'product.product_id'];
 
 			#$sql = "SELECT *";
-			#$where = " WHERE shopping_cart.user_id = '" . $_SESSION['user_id'] . "'";			
-			$where = "WHERE shopping_cart.user_id='" . $_SESSION['user_id'] . "'";
-			$join = "JOIN shopping_cart ON shopping_cart.product_id=product.product_id";
+			#$where = " WHERE fk_shopping_cart_user = '" . $_SESSION['user_id'] . "'";			
+			$where = "WHERE fk_shopping_cart_user='" . $_SESSION['user_id'] . "'";
+			$join = "JOIN shopping_cart ON fk_shopping_cart_product=product.product_id";
 			require_once('../app/models/Product.php');
 			$cart = Product::findProducts($where, $join);
+
 
 			/*$sql = $this->generateSearchSql($sql, $where);
 
@@ -69,13 +70,13 @@
 		}
 
 		public function removeItem($product_id) {
-			$sql = "DELETE FROM shopping_cart WHERE user_id='";
-			$sql .= $_SESSION['user_id'] . "' AND product_id='" . $product_id . "'";
+			$sql = "DELETE FROM shopping_cart WHERE fk_shopping_cart_user='";
+			$sql .= $_SESSION['user_id'] . "' AND fk_shopping_cart_product='" . $product_id . "'";
 			$this->runSql($sql);
 		}
 
 		public function emptyCart() {
-			$sql = "DELETE FROM shopping_cart WHERE user_id='" . $this->userId . "'";
+			$sql = "DELETE FROM shopping_cart WHERE fk_shopping_cart_user='" . $this->userId . "'";
 			$this->runSql($sql, true);
 
 			if (isset($_SESSION['cart'])) {

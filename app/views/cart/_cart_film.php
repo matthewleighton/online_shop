@@ -1,0 +1,1 @@
+<br><span class='product-creator'>Directed by <?php echo $product['director'] ?></span><br>

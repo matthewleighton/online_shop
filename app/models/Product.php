@@ -28,20 +28,21 @@
 		}
 
 		public function addToCart($product_id, $quantity) {
-			$sql = "SELECT * FROM shopping_cart WHERE user_id='" . $_SESSION['user_id'] .
-				   "' AND product_id='" . $product_id . "'";
+			$sql = "SELECT * FROM shopping_cart WHERE fk_shopping_cart_user='" . $_SESSION['user_id'] .
+				   "' AND fk_shopping_cart_product='" . $product_id . "'";
 			$conn = Db::connect();
 			$results = $conn->query($sql);
 
 			if($results->num_rows > 0) {
 				// Increment quantity
 				$sql = "UPDATE shopping_cart SET cart_quantity = cart_quantity + " . intval($quantity) . 
-						" WHERE user_id='" . $_SESSION['user_id'] . "' AND product_id='" . $product_id . "'";
+						" WHERE fk_shopping_cart_user='" . $_SESSION['user_id'] . 
+						"' AND fk_shopping_cart_product='" . $product_id . "'";
 				$conn->query($sql);
 			} else {
 				// Add new entry to cart
-				$sql = "INSERT INTO shopping_cart (user_id, product_id, cart_quantity) VALUES ('";
-				$sql .= $_SESSION['user_id'] . "', '" . $product_id . "', '" . $quantity . "')";
+				$sql = "INSERT INTO shopping_cart (fk_shopping_cart_user, fk_shopping_cart_product, cart_quantity)" . 
+					   "VALUES ('" . $_SESSION['user_id'] . "', '" . $product_id . "', '" . $quantity . "')";
 				$conn->query($sql);
 			}
 
@@ -113,22 +114,23 @@
 				array_push($productsSortedByType[$product['product_catagory']], $product['product_id']);
 			}
 
-
-
 			// Query the database, creating an array of products and their attributes
 			// Then adding this array onto the final return array
 			foreach ($productsSortedByType as $catagory => $productList) {
 				require_once('../app/models/' . $catagory . '.php');
 				$model = new $catagory;
-
-				$sql = $model->generateSearchSql('SELECT *', $where, $join);
-				
+				$catagoryWhere = $where;
+				$catagoryWhere .= " AND product_catagory='" . $catagory . "'";
+				$sql = $model->generateSearchSql('SELECT *', $catagoryWhere, $join);
+				echo $sql;
 				$resultsPDO = $model->runSql($sql);
 				$resultsArray = $model->createResultsArray($resultsPDO);
+				
 				$returnArray = array_merge($returnArray, $resultsArray);
 			}
-
 			
+			#var_dump($returnArray);
+			#die();
 			return $returnArray;
 		}
 

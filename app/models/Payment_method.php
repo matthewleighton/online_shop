@@ -2,8 +2,8 @@
 	class Payment_Method extends Model {
 
 		public $properties = array(
-			'user_id' => '',
-			'address_id' => '',
+			'fk_payment_method_user' => '',
+			'fk_payment_method_address' => '',
 			'card_type' => '',
 			'card_number' => '',
 			'cardholder_name' => '',
@@ -15,16 +15,16 @@
 
 		public $errors = array();
 
-		protected $sqlOptions = ['join' => ['address' => ['address.address_id', 'payment_method.address_id']]];
+		protected $sqlOptions = ['join' => ['address' => ['address.address_id', 'payment_method.fk_payment_method_address']]];
 
 		public function __construct() {
-			$this->properties['user_id'] = $_SESSION['user_id'];
+			$this->properties['fk_payment_method_user'] = $_SESSION['user_id'];
 
 			$this->validates('card_type', 'presence');
 	
 			$this->validates('card_number', 'presence');
 
-			$this->validates('address_id', 'presence');
+			$this->validates('fk_payment_method_address', 'presence');
 		}
 	}
 ?>

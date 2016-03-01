@@ -66,6 +66,8 @@
 			} else {
 				$this->redirect_to('home/index');
 			}
+
+			#var_dump($list);
 			
 			$view->load_page();
 		}

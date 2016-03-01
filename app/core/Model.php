@@ -213,8 +213,14 @@
 			}
 
 			// Uncomment to view sql //
-			#echo $sql;
+			echo $sql;
 			#die();
+
+			#$sql = "SELECT *, GROUP_CONCAT(person.person_name) authors FROM product
+			#		LEFT JOIN book ON book.fk_book_product = product.product_id
+			#		LEFT JOIN madeby ON madeby.fk_madeby_product = product.product_id
+			#		LEFT JOIN person ON person.person_id = madeby.fk_madeby_person 
+			#		WHERE book.book_id IS NOT NULL GROUP BY product.product_id";
 
 			return $sql;
 		}
@@ -233,6 +239,7 @@
 			$sql = "SELECT *";
 			$where = " WHERE " . $column . " IS NOT NULL ";
 			$sql = $this->generateSearchSql($sql, $where);
+			#echo $sql;
 			$results = $this->runSql($sql);
 
 			return $this->createResultsArray($results);
@@ -250,9 +257,18 @@
 
 		public function findByUserId($userId) {
 			$sql = "SELECT *";
-			$where = " WHERE " . get_class($this) . "." . "user_id = '" . $userId ."' ";
-			$sql = $this->generateSearchSql($sql, $where);
+			$where = " WHERE ";
+			if (strtolower(get_class($this)) == "User") {
+				$where .= "user_id";
+			} else {
+				$where .= "fk_" . get_class($this) . "_user";
+			}
+			$where .= "='" . $userId . "' ";
 			
+			#$where = "WHERE fk_" . get_class($this) . "_user='" . $userId . "' ";
+
+			$sql = $this->generateSearchSql($sql, $where);
+
 			$results = $this->runSql($sql);
 
 			return $this->createResultsArray($results);
@@ -260,7 +276,7 @@
 
 		public function addToJoinTable($propertiesList, $table) {
 			if (isset($this->id)) {
-				$sql = "INSERT INTO " . $table . " (" . get_class($this) . "_id, ";
+				$sql = "INSERT INTO " . $table . " (fk_" . $table . "_" . get_class($this) . ", ";
 
 				foreach (array_keys($propertiesList[0]) as $colName) {
 					$sql .= $this->toCamelCase($colName) . ", ";
@@ -275,7 +291,8 @@
 				}
 				$sql = substr($sql, 0, -2);
 
-				echo $sql;
+				#echo $sql;
+				#die();
 
 				$this->runSql($sql);
 			}

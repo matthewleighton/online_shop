@@ -22,6 +22,8 @@
 			</div>
 
 			<?php
+				#var_dump($purchase);
+				#die();
 				foreach ($purchase['products'] as $product) {
 			?>		<div class="purchase-product-details">
 						<div>

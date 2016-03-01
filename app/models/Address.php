@@ -2,7 +2,7 @@
 	class Address extends Model {
 
 		public $properties = array(
-			'user_id' => '',
+			'fk_address_user' => '',
 			'full_name' => '',
 			'address_line_1' => '',
 			'address_line_2' => '',
@@ -18,7 +18,7 @@
 		public $table = "address";
 
 		public function __construct() {
-			$this->properties['user_id'] = $_SESSION['user_id'];
+			$this->properties['fk_address_user'] = $_SESSION['user_id'];
 
 			$this->validates('full_name', 'presence');
 

@@ -15,6 +15,9 @@
 			$this->validates('age_rating', 'presence');
 			
 			parent::__construct();
+
+			$this->sqlOptions['join']['film'] = ['fk_film_product', 'product.product_id'];
+			array_push($this->sqlOptions['concat'], ["CASE WHEN person_role = 'director' THEN person.person_name ELSE NULL END", 'director']);
 		}
 	}
 ?>

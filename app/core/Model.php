@@ -185,10 +185,10 @@
 		}
 
 		// Creates the sql to search and join the required tables for the model this is called from.
-		protected function generateSearchSql($sql, $where = '', $insertJoin = '') {
+		protected function generateSearchSql($sql, $where = '', $options = []) {
 			if(isset($this->sqlOptions['concat'])) {
 				foreach ($this->sqlOptions['concat'] as $concat => $value) {
-					$sql .= ", GROUP_CONCAT(" . $value[0] . ") " . $value[1];
+					$sql .= ", GROUP_CONCAT(" . $value[0] . ") AS " . $value[1];
 				}
 			}
 
@@ -200,20 +200,27 @@
 				}
 			}
 
-			if (isset($join)) {
-				$sql .=  " " . $insertJoin . " ";
+			if (isset($options['join'])) {
+				$sql .= " " . $options['join'] . " ";
 			}
+
+			#if (isset($insertJoin)) {
+		#		$sql .=  " " . $insertJoin . " ";
+		#	}
 
 
 
 			$sql .=" " . $where;
 
-			if(isset($this->sqlOptions['groupby'])) {
-				$sql .= " GROUP BY " . $this->sqlOptions['groupby'];
+
+			if (isset($options['groupby'])) {
+				$sql .= " " . $options['groupby'] . " ";
+			} elseif (isset($this->sqlOptions['groupby'])) {
+				$sql .= "GROUP BY " . $this->sqlOptions['groupby'];
 			}
 
 			// Uncomment to view sql //
-			echo $sql;
+			#echo $sql;
 			#die();
 
 			#$sql = "SELECT *, GROUP_CONCAT(person.person_name) authors FROM product

@@ -38,7 +38,13 @@
 									}
 								?>
 							</p>
-							<p>By <?php echo $product['authors']; ?></p>
+							<?php
+								if (isset($product['authors'])) {
+									echo "<p>By " . $product['authors'] . "</p>";
+								} elseif (isset($product['director'])) {
+									echo "<p>Directed by " . $product['director'] . "</p>";
+								}
+							?>
 							<p class="price">£<?php echo $this->formatPrice($product['price_at_purchase']); ?></p>
 						</div>
 					</div>

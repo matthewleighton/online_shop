@@ -10,10 +10,11 @@
 		</div>
 
 		<div class="product-creator">
-			By 
 			<?php
 				if(isset($product['authors'])) {
-					echo $product['authors'];
+					echo "By " . $product['authors'];
+				} elseif (isset($product['director'])) {
+					echo "Directed by " . $product['director'];
 				}
 			?>
 		</div>

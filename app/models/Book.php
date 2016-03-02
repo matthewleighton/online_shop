@@ -1,10 +1,16 @@
 <?php
 	class Book extends Product {
-		protected $sqlOptions = ['join' => ['book' => ['book.fk_book_product', 'product.product_id'],
+		/*protected $sqlOptions = ['join' => ['book' => ['book.fk_book_product', 'product.product_id'],
 							 	 			'author' => ['author.fk_author_product', 'product.product_id'],
 								 			'person' => ['person.person_id', 'author.fk_author_person']],
 								 'concat' => [['person.person_name', 'authors']],
-								 'groupby' => 'product.product_id'];
+								 'groupby' => 'product.product_id'];*/
+
+		/*protected $sqlOptions = ['join' => ['book' => ['fk_book_product', 'product.product_id'],
+										    'madeby' => ['madeby.fk_madeby_product', 'product.product_id'],
+											'person' => ['person.person_id', 'madeby.fk_madeby_person']],
+								 'groupby' => 'product.product_id',
+								 'concat' => [["CASE WHEN person_role = 'author' THEN person.person_name ELSE NULL END", 'authors']]];*/
 
 		protected $bookColumns = ['page_count', 'book_type', 'publisher', 'language'];
 
@@ -19,6 +25,12 @@
 			$this->validates('publisher', 'presence');
 			
 			parent::__construct();
+
+			$this->sqlOptions['join']['book'] = ['fk_book_product', 'product.product_id'];
+			array_push($this->sqlOptions['concat'],
+				["CASE WHEN person_role = 'author' THEN person.person_name ELSE NULL END", 'authors']);
+
+
 		}
 
 		public function build() {

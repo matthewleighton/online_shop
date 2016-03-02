@@ -17,25 +17,10 @@
 								 'groupby' => 'product.product_id'];
 
 		public function generateCartFromDb() {
-			// Add shopping_cart to the list of tables to be joined
-			#$this->sqlOptions['join']['shopping_cart'] = ['fk_shopping_cart_product', 'product.product_id'];
-
-			#$sql = "SELECT *";
-			#$where = " WHERE fk_shopping_cart_user = '" . $_SESSION['user_id'] . "'";			
 			$where = "WHERE fk_shopping_cart_user='" . $_SESSION['user_id'] . "'";
 			$join = "JOIN shopping_cart ON fk_shopping_cart_product=product.product_id";
 			require_once('../app/models/Product.php');
 			$cart = Product::findProducts($where, $join);
-
-
-			/*$sql = $this->generateSearchSql($sql, $where);
-
-			$results = $this->runSql($sql);			
-			$cart = $this->createResultsArray($results);*/
-
-			#var_dump($cart);
-			#die();
-
 			unset($_SESSION['cart']);
 
 			// Also create a session cart variable, containing only IDs and quantities

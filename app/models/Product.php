@@ -14,17 +14,14 @@
 			"product_catagory" => ""
 			);
 
-		// Specifies how to correctly use joins, etc for this table in queries.
-		/*protected $sqlOptions = ['join' => ['book' => ['book.product_id', 'product.product_id'],
-							 	 			'author_book' => ['author_book.book_id', 'book.book_id'],
-								 			'author' => ['author.author_id', 'author_book.author_id']],
-								 'concat' => [['author.author_name', 'authors']],
-								 'groupby' => 'product.product_id'];
-		*/
-
 		public function __construct() {
 			$this->validates('product_name', 'presence');
 			$this->validates('product_name', 'length', ['minimum' => 2]);
+
+			$this->sqlOptions = ['join' => ['madeby' => ['madeby.fk_madeby_product', 'product.product_id'],
+									  		'person' => ['person.person_id', 'madeby.fk_madeby_person']],
+						   		 'groupby' => 'product.product_id',
+						   		 'concat' => []];
 		}
 
 		public function addToCart($product_id, $quantity) {
@@ -58,15 +55,7 @@
  		}
 
  		public static function findByProductId($id) {
-			/*$sql = "SELECT *";
-			$where = " WHERE " . get_class($this) . "." . get_class($this) . "_id = '" . $id . "' ";
-			$sql = $this->generateSearchSql($sql, $where);
-			$results = $this->runSql($sql);
-			
-			return $results->fetch_assoc();*/
-
-			$productCatagory = Product::findProductCatagory($id);
-
+			$productCatagory = Product::findProductCatagoryById($id);
 			switch ($productCatagory) {
 				case 'book':
 					require_once('../app/models/Book.php');
@@ -78,6 +67,7 @@
 					break;
 			}
 
+
 			$sql = "SELECT *";
 			$where = " WHERE product.product_id='" . $id . "' ";
 			$sql = $product->generateSearchSql($sql, $where);
@@ -87,10 +77,21 @@
 			return $results->fetch_assoc();			
 		}
 
-		private static function findProductCatagory($id) {
+		private static function findProductCatagoryById($id) {
 			$sql = "SELECT product_catagory FROM product WHERE product_id='" . $id . "'";
 			$results = Product::runSql($sql);
 			return $results->fetch_assoc()['product_catagory'];
+		}
+
+		public static function findMultipleProductCatagories($idArray) {
+			$sql = "SELECT product.product_id, product_catagory FROM product ";
+			$sql .= "WHERE product.product_id IN (";
+			foreach ($idArray as $id) {
+				$sql .= "'" . $id . "', ";
+			}
+			$sql = substr($sql, 0, -2) . ")";
+			echo $sql;
+			die();
 		}
 
 		// Generates an array of products.
@@ -121,16 +122,13 @@
 				$model = new $catagory;
 				$catagoryWhere = $where;
 				$catagoryWhere .= " AND product_catagory='" . $catagory . "'";
-				$sql = $model->generateSearchSql('SELECT *', $catagoryWhere, $join);
-				echo $sql;
+				$sql = $model->generateSearchSql('SELECT *', $catagoryWhere, ['join' => $join]);
 				$resultsPDO = $model->runSql($sql);
 				$resultsArray = $model->createResultsArray($resultsPDO);
 				
 				$returnArray = array_merge($returnArray, $resultsArray);
 			}
 			
-			#var_dump($returnArray);
-			#die();
 			return $returnArray;
 		}
 

@@ -39,10 +39,10 @@
 						<?php
 							switch ($product['product_catagory']) {
 								case 'book':
-									include_once('../app/views/cart/_cart_book.php');
+									include('../app/views/cart/_cart_book.php');
 									break;
-								case 'figfdglm':
-									include_once('../app/views/cart/_cart_film.php');
+								case 'film':
+									include('../app/views/cart/_cart_film.php');
 									break;
 								default:
 									# code...

@@ -192,11 +192,13 @@
 		}
 
 		protected function productImage($product_id, $height, $ident = []) {
-			if(file_exists('../public/assets/img/products/product' . $product_id . '.jpg')) {
-			 	$this->image_tag('products/product' . $product_id . '.jpg', ['height' => $height, $ident]);
-			 } else {
-			 	$this->image_tag('placeholder-image.png', ['height' => $height]);
-			 }
+			echo "<a href='" . $this->rootPath() . "products/item/" . $product_id . "'>";
+				if(file_exists('../public/assets/img/products/product' . $product_id . '.jpg')) {
+				 	$this->image_tag('products/product' . $product_id . '.jpg', ['height' => $height, $ident]);
+				 } else {
+				 	$this->image_tag('placeholder-image.png', ['height' => $height]);
+				 }
+			echo "</a>";
 		}
 
 		protected function formatLabel($label) {

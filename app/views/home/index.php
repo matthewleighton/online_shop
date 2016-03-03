@@ -1,1 +1,3 @@
-<p>This is the home index page.</p>
+<?php
+	include_once('../app/views/home/_featured_products.php');
+?>

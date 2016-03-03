@@ -88,35 +88,47 @@
 			die();
 		}
 
+
 		// Generates an array of products.
 		// For use when the products' types are not known
 		public static function findProducts($where, $join = []) {
-			$returnArray = [];
-			$productsSortedByType = [];
+			$productList = Product::findProductCatagories($where, $join);
+			$productIdsByCatagory = Product::sortByCatagory($productList);
+			return Product::findProductDetailsByCatagory($productIdsByCatagory, $where, $join);
+		}
 
-			// Create array of product IDs/product catagories
+
+		// Create array of product IDs/product catagories
+		public static function findProductCatagories($where, $join) {
 			$sql = "SELECT product.product_id, product_catagory FROM product ";
 			foreach ($join as $key => $value) {
 				$sql .= "JOIN " . $key . " ON " . $value[0] . "=" . $value[1] . " ";
 			}
 			$sql .= $where;
-
-			#$sql .= $join . " " . $where;
 			$results = Model::runSql($sql);
-			$productTypes = Model::createResultsArray($results);
-			
-			// Arrange the product IDs by product catagory
-			foreach ($productTypes as $product) {
-				if (!array_key_exists($product['product_catagory'], $productsSortedByType)) {
-					$productsSortedByType[$product['product_catagory']] = [];
+			return Model::createResultsArray($results);
+		}
+
+		// Arrange product IDs by product catagory
+		// $productList is an array of product IDs and catagories.
+		public static function sortByCatagory($productList) {
+			$returnArray = [];
+			foreach ($productList as $product) {
+				if (!array_key_exists($product['product_catagory'], $returnArray)) {
+					$returnArray[$product['product_catagory']] = [];
 				}
 
-				array_push($productsSortedByType[$product['product_catagory']], $product['product_id']);
+				array_push($returnArray[$product['product_catagory']], $product['product_id']);
 			}
 
-			// Query the database, creating an array of products and their attributes
-			// Then adding this array onto the final return array
-			foreach ($productsSortedByType as $catagory => $productList) {
+			return $returnArray;
+		}
+
+		// Query the database, creating an array of products and their attributes
+		// Then adding this array onto the final return array
+		public static function findProductDetailsByCatagory($productIds, $where, $join =[]) {
+			$returnArray = [];
+			foreach ($productIds as $catagory => $productList) {
 				require_once('../app/models/' . $catagory . '.php');
 				$model = new $catagory;
 				$catagoryWhere = $where;
@@ -140,6 +152,20 @@
 			}
 			
 			return $returnArray;
+		}
+
+		public static function findRandomProducts($quantity) {
+			$sql = "SELECT product_id, product_catagory FROM product ORDER BY RAND() LIMIT " . $quantity;
+			$productIds = Product::createResultsArray(Product::runSql($sql));
+			$productsByCatagory = Product::sortByCatagory($productIds);
+			
+			$where = " WHERE product_id IN (";
+			foreach ($productIds as $product) {
+				$where .= "'" . $product['product_id'] . "', ";
+			}
+			$where = substr($where, 0, -2) . ")";
+
+			return Product::findProductDetailsByCatagory($productsByCatagory, $where);
 		}
 
 		public function build($catagory) {

@@ -25,6 +25,16 @@ body {
 	display: inline-block;
 }
 
+/* ---------- Home Page ---------- */
+.featured-products {
+	text-align: center;
+}
+
+.featured-products div {
+	display: inline-block;
+	margin: 0 30px;
+}
+
 /* ---------- Account header ---------- */
 
 #account-header {

@@ -48,16 +48,16 @@
 		}
 
 		public function search() {
+			if (!isset($_POST['search'])) {
+				$this->redirect_to('');
+				break;
+			}
 			$where = "WHERE (product_name LIKE '%" . $_POST['search'] . "%') " .
 					 "OR (product_description LIKE '%" . $_POST['search'] . "%') " .
 					 "OR (person_name LIKE '%" . $_POST['search'] . "%') ";
 
 			$join = ['madeby' => ['product_id', 'fk_madeby_product'],
 					 'person' => ['fk_madeby_person', 'person_id']];
-
-
-			/*$join = "JOIN madeby ON product_id=fk_madeby_product " .
-					"JOIN person ON fk_madeby_person=person_id";*/
 
 			require_once('../app/models/Product.php');
 			$searchResults = Product::findProducts($where, $join);

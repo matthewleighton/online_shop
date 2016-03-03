@@ -8,9 +8,12 @@
 		}
 
 		public function index($name = '') {
+			require_once('../app/models/Product.php');
+			$featuredProducts = Product::findRandomProducts('5');
+
 			$view = new View('home/index');
+			$view->pass_data('featuredProducts', $featuredProducts);
 			$view->load_page();
-			//unset($_SESSION['checkout']);
 		}
 
 		public function test() {

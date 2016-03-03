@@ -48,13 +48,6 @@
 				}
 
 				$_SESSION['cart'][$_POST['product_id']]['price'] = $_POST['price'];
-/*
-				if(array_key_exists($_POST['product_id'], $_SESSION['cart'])) {
-					$_SESSION['cart'][$_POST['product_id']] += intval($_POST['quantity']);
-				} else {
-					$_SESSION['cart'][$_POST['product_id']] = intval($_POST['quantity']);
-				}
-*/
 			}
 			$this->redirect_to('carts');
 		}

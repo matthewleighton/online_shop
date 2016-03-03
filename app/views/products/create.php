@@ -24,12 +24,12 @@
 				<p hidden>book</p>
 				<p>Book</p>
 			</div>
-			<div class="div-btn" id='dvd-btn'>
-				<p hidden>dvd</p>
-				<p>DVD</p>
+			<div class="div-btn" id='film-btn'>
+				<p hidden>film</p>
+				<p>Film</p>
 			</div>
 			<div class="div-btn" id='video-game-btn'>
-				<p hidden>video_game</p>
+				<p hidden>video-game</p>
 				<p>Video Game</p>
 			</div>
 			<div class="div-btn" id='music-btn'>
@@ -42,8 +42,8 @@
 			<?php require_once('../app/views/products/_book_creation_form.php'); ?>
 		</div>
 
-		<div class="type-creation-form" id="dvd-form">
-			This is the dvd creation form.
+		<div class="type-creation-form" id="film-form">
+			<?php require_once('../app/views/products/_film_creation_form.php'); ?>
 		</div>
 
 		<div class="type-creation-form" id="video-game-form">

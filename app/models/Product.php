@@ -11,7 +11,8 @@
 			"price" => "",
 			"product_description" => "",
 			"release_date" => "",
-			"product_catagory" => ""
+			"product_catagory" => "",
+			"creators" => []
 			);
 
 		public function __construct() {
@@ -46,14 +47,6 @@
 			$conn->close();
  		}
 
- 		public function build() {
- 			$this->assignProperties($_POST);
- 			$this->runValidations();
- 			if (count($this->errorsList) == 0) {
- 				
- 			}
- 		}
-
  		public static function findByProductId($id) {
 			$productCatagory = Product::findProductCatagoryById($id);
 			switch ($productCatagory) {
@@ -83,6 +76,7 @@
 			return $results->fetch_assoc()['product_catagory'];
 		}
 
+		// NOT USED YET
 		public static function findMultipleProductCatagories($idArray) {
 			$sql = "SELECT product.product_id, product_catagory FROM product ";
 			$sql .= "WHERE product.product_id IN (";
@@ -96,13 +90,18 @@
 
 		// Generates an array of products.
 		// For use when the products' types are not known
-		public static function findProducts($where, $join = '') {
+		public static function findProducts($where, $join = []) {
 			$returnArray = [];
 			$productsSortedByType = [];
 
 			// Create array of product IDs/product catagories
 			$sql = "SELECT product.product_id, product_catagory FROM product ";
-			$sql .= $join . " " . $where;
+			foreach ($join as $key => $value) {
+				$sql .= "JOIN " . $key . " ON " . $value[0] . "=" . $value[1] . " ";
+			}
+			$sql .= $where;
+
+			#$sql .= $join . " " . $where;
 			$results = Model::runSql($sql);
 			$productTypes = Model::createResultsArray($results);
 			
@@ -122,7 +121,18 @@
 				$model = new $catagory;
 				$catagoryWhere = $where;
 				$catagoryWhere .= " AND product_catagory='" . $catagory . "'";
-				$sql = $model->generateSearchSql('SELECT *', $catagoryWhere, ['join' => $join]);
+
+				// Only join to tables if the catagory sql isn't already going to join it
+				$additionalJoins = '';
+				foreach ($join as $table => $value) {
+					if (!array_key_exists($table, $model->sqlOptions['join'])) {
+						$additionalJoins .= " JOIN " . $table . " ON " . $value[0] . "=" . $value[1] . " ";
+					}
+				}
+
+				$sql = $model->generateSearchSql('SELECT *', $catagoryWhere, ['join' => $additionalJoins]);
+				#echo $sql;
+				#die();
 				$resultsPDO = $model->runSql($sql);
 				$resultsArray = $model->createResultsArray($resultsPDO);
 				
@@ -130,6 +140,58 @@
 			}
 			
 			return $returnArray;
+		}
+
+		public function build($catagory) {
+			$this->assignProperties($_POST);
+
+			if ($this->runValidations()) {
+
+				// Saving the base product to the database
+				$productTableProperties = [];		
+				foreach ($this->properties as $key => $value) {
+					if (in_array($key, $this->productColumns)) {
+						$productTableProperties[$key] = $value;
+					}
+				}
+				$productId = $this->saveToDb('INSERT', 'product', $productTableProperties);
+
+				// Saving product to book table
+				$catagoryTableProperties = ['fk_' . $catagory . '_product' => $productId];
+				foreach ($this->properties as $key => $value) {
+					if (in_array($key, $this->catagoryColumns)) {
+						$catagoryTableProperties[$key] = $value;
+					}
+				}
+				$this->saveToDb('INSERT', $catagory, $catagoryTableProperties);
+
+				// Adding creators - authors, directors, etc
+				foreach (array_keys($this->properties['creators']) as $jobTitle) {
+					$creatorsArray = [];
+					foreach ($_POST[$jobTitle] as $person) {
+						$sql = "SELECT * FROM person WHERE person_name='" . $person . "'";
+						$results = $this->runSql($sql);
+						$resultsArray = $this->createResultsArray($results);
+
+						if (isset($resultsArray[0]['person_id'])) {
+							echo "That person already exists!<br><br>";
+							array_push($creatorsArray, $resultsArray[0]['person_id']);
+						} else {
+							echo "That is a new person!<br><br>";
+							$personId = $this->saveToDb('INSERT', 'person', ['person_name' => $person]);
+							array_push($creatorsArray, $personId);
+						}
+					}
+					foreach ($creatorsArray as $personId) {
+						$columnValues = ['fk_madeby_person' => $personId,
+										 'fk_madeby_product' => $productId,
+										 'person_role' => $jobTitle];
+						$this->saveToDb('INSERT', 'madeby', $columnValues);
+					}
+				}
+				return $productId;
+			}
+			
 		}
 
 	}

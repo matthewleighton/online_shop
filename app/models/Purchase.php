@@ -10,8 +10,6 @@
 
 		protected $table = "purchase";
 
-		//protected $sqlOptions = ['join' => ['product_purchase' => ['purchase.purchase_id', 'product_purchase.purchase_id']]];
-
 		public function generatePurchaseArray() {
 			$purchaseList = $this->findByUserId($_SESSION['user_id']);
 			$completePurchaseArray = [];
@@ -74,47 +72,6 @@
 			}
 
 			return array_reverse($completePurchaseArray);
-			
-
-			/*
-
-
-
-
-
-
-			$sql = "SELECT *, GROUP_CONCAT(person.person_name) authors FROM product_purchase ";
-			$sql .= "JOIN product ON product_purchase.fk_product_purchase_product=product.product_id ";
-			$sql .= "JOIN book ON book.fk_book_product=product.product_id ";
-			$sql .= "JOIN author ON author.fk_author_product=product.product_id ";
-			$sql .= "JOIN person ON person.person_id=author.fk_author_person ";
-			$sql .= "WHERE fk_product_purchase_purchase IN (";
-			foreach ($purchaseIdList as $purchaseId) {
-				$sql .= "'" . $purchaseId . "', ";
-			}
-
-			$sql = substr($sql, 0, -2) . ") GROUP BY product_purchase.product_purchase_id";
-
-			
-			echo $sql;
-			die();
-
-			$products = $this->createResultsArray($this->runSql($sql));
-
-			var_dump($products);
-			#die();
-			
-			foreach ($products as $product) {
-				if (!isset($completePurchaseArray[$product['fk_product_purchase_purchase']]['products'])) {
-					$completePurchaseArray[$product['fk_product_purchase_purchase']]['products'] = [];
-				}
-				array_push($completePurchaseArray[$product['fk_product_purchase_purchase']]['products'], $product);
-			}
-			
-			#var_dump(array_reverse($completePurchaseArray));
-			#die();
-			return array_reverse($completePurchaseArray);
-			*/
 		}
 	}
 ?>

@@ -19,19 +19,21 @@
 			}
 
 			if (count($_POST) > 0) {
-				if ($_POST['product_catagory'] == "book") {
-					// Split authors into array
-					if ($_POST['authors'] != '') {
-						$authorsList = explode(',', $_POST['authors']);
-						foreach ($authorsList as $key => $author) {
-							$authorsList[$key] = trim($author);
-						}
-						$_POST['authors'] = $authorsList;
-					}
+				switch ($_POST['product_catagory']) {
+					case 'book':
+						$this->explodeCreatorList('author');
+						break;
+					case 'film':
+						$this->explodeCreatorList('director');
+						break;
+				}
 
-					require_once('../app/models/book.php');
-					$product = new Book;
-					$product->build();
+				require_once('../app/models/' . $_POST['product_catagory'] . '.php');
+				$product = new $_POST['product_catagory'];
+				$productId = $product->build($_POST['product_catagory']);
+				if ($productId != 0) {
+					$this->redirect_to('products/item/' . $productId);
+					break;	
 				}
 			} else {
 				$product = new Product();
@@ -46,8 +48,26 @@
 		}
 
 		public function search() {
-			echo "This is the product search function<br><br>";
-			var_dump($_POST);
+			$where = "WHERE (product_name LIKE '%" . $_POST['search'] . "%') " .
+					 "OR (product_description LIKE '%" . $_POST['search'] . "%') " .
+					 "OR (person_name LIKE '%" . $_POST['search'] . "%') ";
+
+			$join = ['madeby' => ['product_id', 'fk_madeby_product'],
+					 'person' => ['fk_madeby_person', 'person_id']];
+
+
+			/*$join = "JOIN madeby ON product_id=fk_madeby_product " .
+					"JOIN person ON fk_madeby_person=person_id";*/
+
+			require_once('../app/models/Product.php');
+			$searchResults = Product::findProducts($where, $join);
+
+
+
+			$view = new View('products/results');
+			$view->set_title("Search results - '" . $_POST['search'] . "'");
+			$view->pass_data('products', $searchResults);
+			$view->load_page();
 		}
 
 		public function catagory($catagory) {

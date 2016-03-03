@@ -204,12 +204,6 @@
 				$sql .= " " . $options['join'] . " ";
 			}
 
-			#if (isset($insertJoin)) {
-		#		$sql .=  " " . $insertJoin . " ";
-		#	}
-
-
-
 			$sql .=" " . $where;
 
 
@@ -218,17 +212,6 @@
 			} elseif (isset($this->sqlOptions['groupby'])) {
 				$sql .= "GROUP BY " . $this->sqlOptions['groupby'];
 			}
-
-			// Uncomment to view sql //
-			#echo $sql;
-			#die();
-
-			#$sql = "SELECT *, GROUP_CONCAT(person.person_name) authors FROM product
-			#		LEFT JOIN book ON book.fk_book_product = product.product_id
-			#		LEFT JOIN madeby ON madeby.fk_madeby_product = product.product_id
-			#		LEFT JOIN person ON person.person_id = madeby.fk_madeby_person 
-			#		WHERE book.book_id IS NOT NULL GROUP BY product.product_id";
-
 			return $sql;
 		}
 

@@ -18,7 +18,8 @@
 
 		public function generateCartFromDb() {
 			$where = "WHERE fk_shopping_cart_user='" . $_SESSION['user_id'] . "'";
-			$join = "JOIN shopping_cart ON fk_shopping_cart_product=product.product_id";
+			$join = ['shopping_cart' => ['fk_shopping_cart_product', 'product_id']];
+			#$join = "JOIN shopping_cart ON fk_shopping_cart_product=product.product_id";
 			require_once('../app/models/Product.php');
 			$cart = Product::findProducts($where, $join);
 			unset($_SESSION['cart']);

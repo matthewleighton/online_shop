@@ -1,5 +1,5 @@
-<?php $this->createInput('text', 'authors', 'Authors (separate by comma)', 'product'); ?> <br>
-<?php $this->displayError($this->data['product'], 'authors'); ?>
+<?php $this->createInput('text', 'author', 'Author (separate by comma)', 'product'); ?> <br>
+<?php $this->displayError($this->data['product'], 'author'); ?>
 
 <?php $this->createInput('text', 'page_count', 'Page count', 'product'); ?> <br>
 <?php $this->displayError($this->data['product'], 'page_count'); ?>

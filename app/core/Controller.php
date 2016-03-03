@@ -23,5 +23,15 @@
 				$this->redirect_to('sessions/login?redirect=' . $_GET['url']);
 			}
 		}
+
+		protected function explodeCreatorList($role) {
+			if ($_POST[$role] != '') {
+				$personList = explode(',', $_POST[$role]);
+				foreach ($personList as $key => $person) {
+					$personList[$key] = trim($person);
+				}
+				$_POST[$role] = $personList;
+			}
+		}
 	}
 ?>

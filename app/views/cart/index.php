@@ -37,17 +37,7 @@
 							<?php $this->link_to("products/item/" . $product['product_id'], $product['product_name']); ?>
 						</span>
 						<?php
-							switch ($product['product_catagory']) {
-								case 'book':
-									include('../app/views/cart/_cart_book.php');
-									break;
-								case 'film':
-									include('../app/views/cart/_cart_film.php');
-									break;
-								default:
-									# code...
-									break;
-							}
+							include('../app/views/cart/_cart_' . $product['product_catagory'] . '.php');
 						?>
 						<span class='cart-remove'>
 							<?php $this->removeFromCart($product['product_id'], $cart); ?>

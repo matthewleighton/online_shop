@@ -147,7 +147,6 @@
 				#die();
 				$resultsPDO = $model->runSql($sql);
 				$resultsArray = $model->createResultsArray($resultsPDO);
-				
 				$returnArray = array_merge($returnArray, $resultsArray);
 			}
 			

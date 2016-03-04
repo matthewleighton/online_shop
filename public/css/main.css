@@ -30,6 +30,11 @@ body {
 	text-align: center;
 }
 
+.featured-products h2 {
+	font-size: 18px;
+	font-weight: normal;
+}
+
 .featured-products div {
 	display: inline-block;
 	margin: 0 30px;

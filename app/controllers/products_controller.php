@@ -48,24 +48,26 @@
 		}
 
 		public function search() {
-			if (!isset($_POST['search'])) {
+			if (!isset($_GET['search'])) {
 				$this->redirect_to('');
 				break;
 			}
-			$where = "WHERE (product_name LIKE '%" . $_POST['search'] . "%') " .
-					 "OR (product_description LIKE '%" . $_POST['search'] . "%') " .
-					 "OR (person_name LIKE '%" . $_POST['search'] . "%') ";
+			$where = "WHERE ((product_name LIKE '%" . $_GET['search'] . "%') " .
+					 "OR (product_description LIKE '%" . $_GET['search'] . "%') " .
+					 "OR (person_name LIKE '%" . $_GET['search'] . "%')) ";
 
 			$join = ['madeby' => ['product_id', 'fk_madeby_product'],
 					 'person' => ['fk_madeby_person', 'person_id']];
 
 			require_once('../app/models/Product.php');
 			$searchResults = Product::findProducts($where, $join);
+			#var_dump($searchResults);
+			#die();
 
 
 
 			$view = new View('products/results');
-			$view->set_title("Search results - '" . $_POST['search'] . "'");
+			$view->set_title("Search results - '" . $_GET['search'] . "'");
 			$view->pass_data('products', $searchResults);
 			$view->load_page();
 		}

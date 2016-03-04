@@ -31,12 +31,6 @@
 				
 				if(array_key_exists($attr, $this->properties)) {
 					$this->properties[$attr] = $list[$attr];
-				} else if ($attr == 'password' && array_key_exists('password_confirmation', $_POST)) {
-					
-				}
-
-				if(isset($this->{$postKey})) {
-					$this->{$postKey} = $_POST[$postKey];
 				}
 			}
 		}

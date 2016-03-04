@@ -1,5 +1,8 @@
 $(document).ready(function() {
 	
+// -- Product search -- //
+	
+
 // -- Product show page -- //
 	
 	$("#product-description-more").click(function() {

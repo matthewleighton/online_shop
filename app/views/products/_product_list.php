@@ -7,7 +7,7 @@
 
 		foreach ($productList as $product) {
 			if(array_key_exists('release_date', $product)) {
-				$releaseDate = $product['release_date'];
+				$releaseDate = $this->formatDate($product['release_date'], 'jS F Y');
 			} else {
 				$releaseDate = '';
 			}
@@ -15,7 +15,6 @@
 
 			echo "<div class='product-container'>";
 				$this->productImage($product['product_id'], 100, ['class' => 'product-list-image']);
-				//$this->image_tag('placeholder-image.png', ['height' => 100, 'class' => 'product-list-image']);
 					
 				$this->link_to('products/item/' . $product['product_id'], $product['product_name'], ['class' => 'product-name']);
 				

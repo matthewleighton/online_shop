@@ -60,6 +60,13 @@
 </div>
 <h3>Product Details</h3>
 <div class="product-details">
+	<?php 
+		if (isset($product['release_date'])) {
+	?>
+			<p>
+				<?php echo "<b>Release date:</b> " . $this->formatDate($product['release_date'], 'jS F Y'); ?>
+			</p>	
+	<?php } ?>
 	<?php
 		if ($product['product_catagory'] == "book") {
 			include_once('../app/views/products/_book_details.php');

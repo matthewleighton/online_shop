@@ -24,9 +24,37 @@
 
 	<div class='header-middle'>
 		<div class='search-form'>
+			<?php
+					if (isset($_GET['search'])) {
+						$searchValue = $_GET['search'];
+					} else {
+						$searchValue = '';
+					}
+
+					if (isset($_GET['catagory'])) {
+						$catagoryValue = $_GET['catagory'];
+					} else {
+						$catagoryValue = 'all';
+					}
+				?>
 			<form method='GET' action='<?php echo $this->rootPath();?>products/search'>
-				<input type="text" name="search" class="search-bar">
+				<select class='search-catagory' name='catagory' selected="<?php echo $catagoryValue; ?>">
+					<?php
+					$catagories = ['all', 'book', 'film'];
+					foreach ($catagories as $catagory) {
+						if (isset($_GET['catagory']) && $_GET['catagory'] == $catagory) {
+							$selected = " selected='selected' ";
+						} else {
+							$selected = "";
+						}
+						echo "<option value='" . $catagory . "' " . $selected . ">" . ucfirst($catagory) . "</option>";
+					}
+
+				?>
+				</select>
 				<input type="submit" value="GO!" class="search-submit">
+				<input type="text" name="search" class="search-bar" value="<?php echo $searchValue; ?>">
+				
 			</form>
 		</div>
 	</div>

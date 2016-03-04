@@ -228,8 +228,8 @@
 			//TODO - Add other ways of accessing creators as I add more product types
 		}
 
-		protected function formatDate($date) {
-			return date('l d M. Y', strtotime($date, time()));
+		protected function formatDate($date, $format = 'l d M. Y') {
+			return date($format, strtotime($date, time()));
 		}
 
 		public function boxPageLogo($height = '70') {

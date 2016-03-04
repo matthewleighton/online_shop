@@ -55,17 +55,17 @@
 			$where = "WHERE ((product_name LIKE '%" . $_GET['search'] . "%') " .
 					 "OR (product_description LIKE '%" . $_GET['search'] . "%') " .
 					 "OR (person_name LIKE '%" . $_GET['search'] . "%')) ";
+			
+			if ($_GET['catagory'] != 'all') {
+				$where .= "AND product_catagory='" . $_GET['catagory'] . "' ";
+			}
 
 			$join = ['madeby' => ['product_id', 'fk_madeby_product'],
 					 'person' => ['fk_madeby_person', 'person_id']];
 
 			require_once('../app/models/Product.php');
 			$searchResults = Product::findProducts($where, $join);
-			#var_dump($searchResults);
-			#die();
-
-
-
+			
 			$view = new View('products/results');
 			$view->set_title("Search results - '" . $_GET['search'] . "'");
 			$view->pass_data('products', $searchResults);

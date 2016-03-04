@@ -165,6 +165,12 @@ body {
 	width: 100%;	
 }
 
+.search-form select {
+	display: inline-block;
+	float: left;
+	height: 100%;
+}
+
 .search-form form {
 	height: 100%;
 }
@@ -175,12 +181,13 @@ body {
 }
 
 .search-bar {
-	width: 92%;
+	width: 80%;
 	float: left;
 }
 
 .search-submit {
 	width: 8%;
+	
 }
 
 /* - Header right - */

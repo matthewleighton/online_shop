@@ -9,20 +9,22 @@
 		}
 
 		public function login($error = false) {
-			if(isset($_POST['email']) && isset($_POST['password'])) {
-				if($_POST['email'] != '' && $_POST['password'] != '') {
-					if(Sessions_helper::login()) {
-						if(array_key_exists('redirect', $_POST)) {
-							$this->redirect_to($_POST['redirect']);
-						} else {
-							$this->redirect_to('home/index');	
-						}
-						
+			if(isset($_POST['email']) &&
+			   isset($_POST['password']) &&
+			   $_POST['email'] != '' &&
+			   $_POST['password'] != '') {
+				
+				if(Sessions_helper::login()) {
+					if(array_key_exists('redirect', $_POST)) {
+						$this->redirect_to($_POST['redirect']);
 					} else {
-						$_POST['email'] = '';
-						$_POST['password'] = '';
-						$this->login(true);
+						$this->redirect_to('home/index');	
 					}
+					
+				} else {
+					$_POST['email'] = '';
+					$_POST['password'] = '';
+					$this->login(true);
 				}
 			}
 

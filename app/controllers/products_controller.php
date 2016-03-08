@@ -7,7 +7,7 @@
 			require_once('../app/models/Product.php');
 		}
 
-		public function index($catagory) {
+		public function index($catagory = "book") {
 			$view = new View('products/index');
 			$view->set_title('Products');
 			$view->load_page();

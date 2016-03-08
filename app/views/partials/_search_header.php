@@ -52,9 +52,8 @@
 
 				?>
 				</select>
-				<input type="submit" value="GO!" class="search-submit">
 				<input type="text" name="search" class="search-bar" value="<?php echo $searchValue; ?>">
-				
+				<input type="submit" value="GO!" class="search-submit">				
 			</form>
 		</div>
 	</div>

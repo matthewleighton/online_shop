@@ -1,11 +1,11 @@
 <?php
 	class Film extends Product {
 		
-		protected $sqlOptions = ['join' => ['film' => ['film.fk_film_product', 'product.product_id'],
+		/*protected $sqlOptions = ['join' => ['film' => ['film.fk_film_product', 'product.product_id'],
 											'director' => ['director.fk_director_product', 'product.product_id'],
 											'person' => ['person.person_id', 'director.fk_director_person']],
 								 'concat' => [['person.person_name', 'director']],
-								 'groupby' => 'product.product_id'];
+								 'groupby' => 'product.product_id'];*/
 
 		protected $catagoryColumns = ['running_time', 'age_rating'];
 

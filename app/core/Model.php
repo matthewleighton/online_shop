@@ -111,6 +111,8 @@
 
 		// Assign values to the object's properties array, based on info submitted via POST
 		public function assignProperties($list) {
+			#var_dump($list);
+			#die();
 			foreach(array_keys($list) as $attr) {
 				
 				if(array_key_exists($attr, $this->properties)) {
@@ -151,6 +153,7 @@
 			$sql = rtrim($sql, ', ') . ')';
 
 			#echo $sql;
+			#die();
 
 			return $sql;
 		}

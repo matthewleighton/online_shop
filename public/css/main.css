@@ -26,18 +26,47 @@ body {
 }
 
 /* ---------- Home Page ---------- */
-.featured-products {
+.featured-products-full {
+	margin: 0 auto;
+	overflow: hidden;
+	width: 92%;
+}
+
+.featured-products-visible {
+	position: relative;
+	height: 270px;
+	margin: 0 auto;
+	white-space: nowrap;
+}
+
+.featured-products-full h2 {
+	font-size: 18px;
+	font-weight: normal;
 	text-align: center;
 }
 
-.featured-products h2 {
-	font-size: 18px;
-	font-weight: normal;
+.featured-products-visible img {
+	position: relative;
+	right: 0;
+	display: inline-block;
+	margin: 0 20px;
+	max-width: 170px;
 }
 
-.featured-products div {
-	display: inline-block;
-	margin: 0 30px;
+.featured-items-arrow {
+	position: relative;
+	height: 30px;
+	opacity: 0;
+	z-index: -1;
+	bottom: 170px;
+}
+
+#featured-arrow-right {
+	float: right;
+}
+
+#featured-arrow-left {
+	
 }
 
 /* ---------- Account header ---------- */

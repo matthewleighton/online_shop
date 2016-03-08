@@ -152,8 +152,6 @@
 			}
 
 			echo $tag .= ">";
-
-
 		}
 
 		protected function user_info($attr) {
@@ -163,11 +161,22 @@
 		}
 
 		private function listIdents($ident) {
+			$return = "";
 			if(array_key_exists('id', $ident)) {
+				$return .= "id='" . $ident['id'] . "' ";
+			}
+			if (array_key_exists('class', $ident)) {
+				$return .= "class='" . $ident['class'] . "' ";
+			}
+
+			return $return;
+
+			/*if(array_key_exists('id', $ident)) {
 				return "id='" . $ident['id'] . "' ";
 			} elseif (array_key_exists('class', $ident)) {
 				return "class='" . $ident['class'] . "' ";
-			}
+			}*/
+
 		}
 
 		protected function formatPrice($price) {
@@ -194,7 +203,11 @@
 		protected function productImage($product_id, $height, $ident = []) {
 			echo "<a href='" . $this->rootPath() . "products/item/" . $product_id . "'>";
 				if(file_exists('../public/assets/img/products/product' . $product_id . '.jpg')) {
-				 	$this->image_tag('products/product' . $product_id . '.jpg', ['height' => $height, $ident]);
+				 	$options = ['height' => $height];
+				 	foreach ($ident as $key => $value) {
+				 		$options[$key] = $value;
+				 	}
+				 	$this->image_tag('products/product' . $product_id . '.jpg', $options);
 				 } else {
 				 	$this->image_tag('placeholder-image.png', ['height' => $height]);
 				 }

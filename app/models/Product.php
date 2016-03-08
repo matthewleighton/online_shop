@@ -163,8 +163,10 @@
 				$where .= "'" . $product['product_id'] . "', ";
 			}
 			$where = substr($where, 0, -2) . ")";
-
-			return Product::findProductDetailsByCatagory($productsByCatagory, $where);
+			
+			$productList = Product::findProductDetailsByCatagory($productsByCatagory, $where);
+			shuffle($productList);
+			return($productList);
 		}
 
 		public function build($catagory) {

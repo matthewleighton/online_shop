@@ -11,8 +11,8 @@
 
 		public function __construct() {
 			$this->validates('first_name', 'presence');
-			$this->validates('first_name', 'length', ['maximum' => 30]);
-			$this->validates('first_name', 'no_match', ['/[0-9]/', ' must only contain letters.']);
+			//$this->validates('first_name', 'length', ['maximum' => 30]);
+			//$this->validates('first_name', 'no_match', ['/[0-9]/', ' must only contain letters.']);
 
 			$this->validates('last_name', 'presence', 'presence');
 			$this->validates('last_name', 'length', ['maximum' => 30]);
@@ -25,7 +25,7 @@
 			$this->validates('password', 'presence');
 			$this->validates('password', 'length', ['minimum' => 6]);
 		}
-
+/*
 		public function assignProperties($list) {
 			foreach(array_keys($list) as $attr) {
 				
@@ -34,7 +34,7 @@
 				}
 			}
 		}
-
+*/
 		public function createUser() {
 			if($this->runValidations()) {
 				$sql = $this->generateSql('INSERT INTO', 'users', $this->properties);

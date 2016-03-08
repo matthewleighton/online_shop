@@ -19,12 +19,11 @@
 		public function generateCartFromDb() {
 			$where = "WHERE fk_shopping_cart_user='" . $_SESSION['user_id'] . "'";
 			$join = ['shopping_cart' => ['fk_shopping_cart_product', 'product_id']];
-			#$join = "JOIN shopping_cart ON fk_shopping_cart_product=product.product_id";
 			require_once('../app/models/Product.php');
 			$cart = Product::findProducts($where, $join);
 			unset($_SESSION['cart']);
 
-			// Also create a session cart variable, containing only IDs and quantities
+			// Also create a session cart variable, containing only IDs and quantities - used in checkout.
 			foreach($cart as $product) {
 				$_SESSION['cart'][$product['product_id']] = ['cart_quantity' => $product['cart_quantity'],
 															 'product_price' => $product['price']];
@@ -34,25 +33,20 @@
 		}
 
 		public function generateCartFromSession($cart) {
-			$sql = "SELECT *";
-			$where = " WHERE ";
+			$where = " WHERE product_id IN (";
 			foreach ($cart as $product_id => $quality) {
-				$where .= "(product.product_id='" . $product_id . "') OR ";
+				$where .= "'" . $product_id . "', ";
+			}
+			$where = substr($where, 0, -2) . ") ";
+			
+			require_once('../app/models/Product.php');
+			$returnCart = Product::findProducts($where);
+			foreach ($returnCart as $key => $product) {
+				$returnCart[$key]['cart_quantity'] = $cart[$product['product_id']]['cart_quantity'];
+				
 			}
 
-			$where = rtrim($where, " OR ");
-			$sql = $this->generateSearchSql($sql, $where);
-
-			$results = $this->runSql($sql);
-			$array = $this->createResultsArray($results);
-
-			$finishedCart = [];
-			foreach ($array as $product) {
-				$product['cart_quantity'] = $cart[$product['product_id']]['cart_quantity'];
-				array_push($finishedCart, $product);
-			}
-
-			return $finishedCart;
+			return $returnCart;
 		}
 
 		public function removeItem($product_id) {

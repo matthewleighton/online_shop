@@ -1,7 +1,77 @@
 $(document).ready(function() {
 	
-// -- Product search -- //
+// -- Featured Product Scroll Area -- //
+	var featuredProductsDistance = 0;
+	var muteFeaturedProductArrow = function(side) {
+		$("#featured-arrow-".concat(side)).fadeTo(600, 0.3);
+	}
+
+	var fadeFeaturedProductsArrows = function() {
+		if (featuredProductsDistance == 0) {
+			console.log("Muting LEFT arrow");
+			muteFeaturedProductArrow("left");
+			$("#featured-arrow-right").fadeTo(600, 0.8);
+		} else if (featuredProductsDistance == -2208) {
+			console.log("Muting RIGHT arrow");
+			$("#featured-arrow-left").fadeTo(600, 0.8);
+			muteFeaturedProductArrow("right");
+		} else {
+			$("#featured-arrow-left").fadeTo(600, 0.8);
+			$("#featured-arrow-right").fadeTo(600, 0.8);
+		}		
+	}
+
+
+
+
+	$(".featured-products-visible").mouseenter(function() {		
+		clearTimeout($(this).data('timeoutId'));
+		setTimeout(function() {
+
+		}, 500);
+
+		setTimeout(fadeFeaturedProductsArrows, 500);
+		$(".featured-items-arrow").css("z-index", "1");
+	})
 	
+
+
+
+	$(".featured-products-visible").mouseout(function() {
+
+	});
+
+
+
+
+	
+	$(".featured-items-arrow").click(function() {
+		var invalidMove = function() {
+			$(".featured-products-visible").animate({left: direction.concat("=30")}, 300);
+			direction = direction == "+" ? "-" : "+";
+			$(".featured-products-visible").animate({left: direction.concat("=30")}, 200, 'easeOutQuint');
+		}
+
+		var direction = $(this).attr('id');
+		if (direction == "featured-arrow-left") {
+			direction = "+";
+		} else {
+			direction = "-";
+		}
+
+		if ((direction == "+" && featuredProductsDistance == 0) ||
+			(direction == "-" && featuredProductsDistance == -2208)) {
+			invalidMove();
+		} else {
+			$(".featured-products-visible").animate(
+				{left: direction.concat("=1104")}, 600, 'swing');
+			direction == "+" ? (featuredProductsDistance += 1104) : (featuredProductsDistance -= 1104);	
+			fadeFeaturedProductsArrows();
+		}
+	});
+
+
+
 
 // -- Product show page -- //
 	

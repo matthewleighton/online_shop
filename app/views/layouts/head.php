@@ -11,6 +11,7 @@
 		</title>
 		<link rel='stylesheet' href='/online_shop/public/css/main.css'/>
 		<script src="/online_shop/public/js/jquery-1.12.0.js"></script>
+		<script src="/online_shop/public/js/jquery-ui.min.js"></script>
 		<script src="/online_shop/public/js/main.js"></script>
 		<link rel="shortcut icon" href="/online_shop/public/assets/img/icons/icon.ico">
 	</head>

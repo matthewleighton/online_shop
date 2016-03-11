@@ -24,10 +24,10 @@
 				$_SESSION['user_id'] = $userId;
 
 				if(isset($_SESSION['cart']) && $_SESSION['cart'] != []) {
-					require_once('../app/models/Product.php');
-					$Product = new Product;
+					require_once('../app/models/Cart.php');
+					$cart = new Cart;
 					foreach ($_SESSION['cart'] as $product_id => $value) {
-						$Product->addToCart($product_id, $_SESSION['cart'][$product_id]['cart_quantity']);
+						$cart->addProductToCart($product_id, $_SESSION['cart'][$product_id]['cart_quantity']);
 					}
 				}
 

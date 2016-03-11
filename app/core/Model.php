@@ -162,6 +162,7 @@
 		// $returnId can be set to true in order to return the id of the newly created entry.
 		public function runSql($sql, $returnId = false) {
 			$conn = Db::connect();
+
 			$results = $conn->query($sql);
 			
 			if($returnId == true) {
@@ -294,8 +295,6 @@
 		private function toCamelCase($str) {
 			return ltrim(strtolower(preg_replace('/[A-Z]/', '_$0', $str)), '_');
 		}
-
-		
 
 	}
 ?>

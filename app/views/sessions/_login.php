@@ -15,7 +15,7 @@
 				Invalid email/password combination
 			</div>
 		<?php } ?>
-		<input type='submit', value='Log in'>
+		<input type='submit' value='Log in'>
 	</form>
 	
 <?php

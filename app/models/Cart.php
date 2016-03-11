@@ -4,6 +4,7 @@
 		public $table = "product";
 
 		public function __construct($userId = '') {
+			require_once('../app/helpers/carts_helper.php');
 			$this->userId = $userId;
 		}
 
@@ -33,14 +34,28 @@
 		}
 
 		public function generateCartFromSession($cart) {
+			/*$where = ' WHERE product_id IN (';
+			$numberOfProducts = count($cart);
+			for ($i=0; $i < $numberOfProducts; $i++) { 
+				$where .= ' ? ';
+			}
+			$where .= ') ';
+
+			require_once('../app/models/Product.php');
+			$returnCart = Product::findProducts($where);*/
+
+
+
 			$where = " WHERE product_id IN (";
 			foreach ($cart as $product_id => $quality) {
-				$where .= "'" . $product_id . "', ";
+				$where .= "'" . intval($product_id) . "', ";
 			}
 			$where = substr($where, 0, -2) . ") ";
 			
 			require_once('../app/models/Product.php');
 			$returnCart = Product::findProducts($where);
+
+
 			foreach ($returnCart as $key => $product) {
 				$returnCart[$key]['cart_quantity'] = $cart[$product['product_id']]['cart_quantity'];
 				
@@ -49,15 +64,38 @@
 			return $returnCart;
 		}
 
-		public function removeItem($product_id) {
-			$sql = "DELETE FROM shopping_cart WHERE fk_shopping_cart_user='";
-			$sql .= $_SESSION['user_id'] . "' AND fk_shopping_cart_product='" . $product_id . "'";
-			$this->runSql($sql);
+		public function addProductToCart($productId, $quantity) {
+			$conn = Db::connect();
+			if(carts_helper::alreadyInCart($productId)) {
+				carts_helper::incrementProductQuantity($productId, $quantity);
+			} else {
+				$sql = "INSERT INTO shopping_cart (fk_shopping_cart_user, fk_shopping_cart_product, cart_quantity) " . 
+					   "VALUES (?, ?, ?)";
+				$statement = $conn->prepare($sql);
+				$statement->bind_param('iii', $_SESSION['user_id'], $productId, $quantity);
+				$statement->execute();
+			}
+		}
+
+		public function removeItem($productId) {
+			$sql = 'DELETE FROM shopping_cart WHERE fk_shopping_cart_user = ? AND fk_shopping_cart_product = ?';
+			
+			$database = Db::connect();
+			$statement = $database->prepare($sql);
+
+			$statement->bind_param('ii', $_SESSION['user_id'], $productId);
+			$statement->execute();
 		}
 
 		public function emptyCart() {
-			$sql = "DELETE FROM shopping_cart WHERE fk_shopping_cart_user='" . $this->userId . "'";
-			$this->runSql($sql, true);
+			$sql = 'DELETE FROM shopping_cart WHERE fk_shopping_cart_user = ?';
+			$database = Db::connect();
+			$statement = $database->prepare($sql);
+			$statement->bind_param('i',  $_SESSION['user_id']);
+			$statement->execute();
+
+			/*$sql = "DELETE FROM shopping_cart WHERE fk_shopping_cart_user='" . $this->userId . "'";
+			$this->runSql($sql, true);*/
 
 			if (isset($_SESSION['cart'])) {
 				unset($_SESSION['cart']);

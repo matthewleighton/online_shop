@@ -1,7 +1,6 @@
 <?php
 	require_once('database.php');
 	
-	require_once('../app/helpers/main_helper.php');
 	require_once('../app/helpers/sessions_helper.php');
 
 	require_once('core/App.php');

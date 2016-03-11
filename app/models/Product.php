@@ -16,6 +16,7 @@
 			);
 
 		public function __construct() {
+			require_once('../app/helpers/products_helper.php');
 			$this->validates('product_name', 'presence');
 			$this->validates('product_name', 'length', ['minimum' => 2]);
 
@@ -25,27 +26,26 @@
 						   		 'concat' => []];
 		}
 
-		public function addToCart($product_id, $quantity) {
-			$sql = "SELECT * FROM shopping_cart WHERE fk_shopping_cart_user='" . $_SESSION['user_id'] .
-				   "' AND fk_shopping_cart_product='" . $product_id . "'";
-			$conn = Db::connect();
-			$results = $conn->query($sql);
 
-			if($results->num_rows > 0) {
+		//Replaced with Cart model method
+		/*public function addToCart($productId, $quantity) {
+			// Check if the product already exists in the cart
+			$conn = Db::connect();
+			if(products_helper::alreadyInCart($_SESSION['user_id'], $productId) > 0) {
 				// Increment quantity
 				$sql = "UPDATE shopping_cart SET cart_quantity = cart_quantity + " . intval($quantity) . 
 						" WHERE fk_shopping_cart_user='" . $_SESSION['user_id'] . 
-						"' AND fk_shopping_cart_product='" . $product_id . "'";
+						"' AND fk_shopping_cart_product='" . $productId . "'";
 				$conn->query($sql);
 			} else {
 				// Add new entry to cart
 				$sql = "INSERT INTO shopping_cart (fk_shopping_cart_user, fk_shopping_cart_product, cart_quantity)" . 
-					   "VALUES ('" . $_SESSION['user_id'] . "', '" . $product_id . "', '" . $quantity . "')";
+					   "VALUES ('" . $_SESSION['user_id'] . "', '" . $productId . "', '" . $quantity . "')";
 				$conn->query($sql);
 			}
 
 			$conn->close();
- 		}
+ 		}*/
 
  		public static function findByProductId($id) {
 			$productCatagory = Product::findProductCatagoryById($id);
@@ -77,7 +77,7 @@
 		}
 
 		// NOT USED YET
-		public static function findMultipleProductCatagories($idArray) {
+		/*public static function findMultipleProductCatagories($idArray) {
 			$sql = "SELECT product.product_id, product_catagory FROM product ";
 			$sql .= "WHERE product.product_id IN (";
 			foreach ($idArray as $id) {
@@ -86,7 +86,7 @@
 			$sql = substr($sql, 0, -2) . ")";
 			echo $sql;
 			die();
-		}
+		}*/
 
 
 		// Generates an array of products.
@@ -105,6 +105,10 @@
 				$sql .= "JOIN " . $key . " ON " . $value[0] . "=" . $value[1] . " ";
 			}
 			$sql .= $where;
+
+			#echo $sql;
+			#die();
+
 			$results = Model::runSql($sql);
 			return Model::createResultsArray($results);
 		}
@@ -126,7 +130,7 @@
 
 		// Query the database, creating an array of products and their attributes
 		// Then adding this array onto the final return array
-		public static function findProductDetailsByCatagory($productIds, $where, $join =[]) {
+		public static function findProductDetailsByCatagory($productIds, $where, $join = []) {
 			$returnArray = [];
 			foreach ($productIds as $catagory => $productList) {
 				require_once('../app/models/' . $catagory . '.php');

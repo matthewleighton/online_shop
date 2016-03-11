@@ -30,7 +30,6 @@
 			} else {
 				unset($_SESSION['redirecting']);
 			}
-			//var_dump($_SESSION['checkout']);
 		}
 
 		public function index() {
@@ -45,12 +44,13 @@
 
 		public function address() {
 			require_once('../app/models/Address.php');
-			//session_start();
+
 			if(isset($_POST['addressId'])) {
 				$_SESSION['checkout']['properties']['address'] = $_POST['addressId'];
 				$this->redirect_to('checkout/deliveryMethod');
 				break;
 			}
+
 			if(isset($_SESSION['address'])) {
 				$address = $_SESSION['address'];
 				if(count($_SESSION['address']->errorsList) == 0) {

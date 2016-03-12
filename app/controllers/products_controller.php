@@ -52,12 +52,30 @@
 				$this->redirect_to('');
 				break;
 			}
-			$where = "WHERE ((product_name LIKE '%" . $_GET['search'] . "%') " .
-					 "OR (product_description LIKE '%" . $_GET['search'] . "%') " .
-					 "OR (person_name LIKE '%" . $_GET['search'] . "%')) ";
+
+			#$where = 'WHERE ((product_name LIKE %?%) OR (product_description LIKE %?%) OR person_name LIKE %?%)) ';
 			
-			if ($_GET['catagory'] != 'all') {
-				$where .= "AND product_catagory='" . $_GET['catagory'] . "' ";
+
+
+
+
+			$where = [];
+			$where['sql'] = 'WHERE ((product_name LIKE ?) OR (product_description LIKE ?) OR (person_name LIKE ?)) ';
+			$where['datatypes'] = 'sss';
+			$where['values'] = [];
+			for ($i=0; $i < 3; $i++) { 
+				array_push($where['values'], '%' . $_GET['search'] . '%');
+			}
+
+			// Uncomment this, and comment out the above $where in order to turn this back to original functionality.
+			/*$where = "WHERE ((product_name LIKE '%" . $_GET['search'] . "%') " .
+					 "OR (product_description LIKE '%" . $_GET['search'] . "%') " .
+					 "OR (person_name LIKE '%" . $_GET['search'] . "%')) ";*/
+			
+
+			$validCatagories = ['book', 'film'];
+			if ($_GET['catagory'] != 'all' && in_array($_GET['catagory'], $validCatagories)) {
+					$where['sql'] .= "AND product_catagory='" . $_GET['catagory'] . "' ";
 			}
 
 			$join = ['madeby' => ['product_id', 'fk_madeby_product'],

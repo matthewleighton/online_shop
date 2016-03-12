@@ -296,5 +296,43 @@
 			return ltrim(strtolower(preg_replace('/[A-Z]/', '_$0', $str)), '_');
 		}
 
+		public static function buildAndRunPreparedStatement($sql, $datatypes, $params) {
+			$conn = Db::connect();
+			$stmt = $conn->prepare($sql);
+
+			$stmtParams = array();
+			$stmtParams[] = & $datatypes;
+
+			foreach ($params as $param) {
+				$stmtParams[] = & $param;
+			}
+
+			call_user_func_array(array($stmt, 'bind_param'), $stmtParams);
+			$stmt->execute();
+			$results = $stmt->get_result();
+
+			$returnArray = [];
+			while ($row = $results->fetch_array(MYSQLI_ASSOC)) {
+				array_push($returnArray, $row);
+			}
+
+			return $returnArray;
+		}
+
+		public static function runPreparedStatement($stmt) {
+			$conn = Db::connect();
+			$stmt->execute();
+			var_dump($stmt);
+			die();
+			$results = $stmt->get_result();
+
+			$returnArray = [];
+			while ($row = $results->fetch_array(MYSQLI_ASSOC)) {
+				array_push($returnArray, $row);
+			}
+
+			return $returnArray;
+		}
+
 	}
 ?>

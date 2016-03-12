@@ -104,13 +104,43 @@
 			foreach ($join as $key => $value) {
 				$sql .= "JOIN " . $key . " ON " . $value[0] . "=" . $value[1] . " ";
 			}
-			$sql .= $where;
 
-			#echo $sql;
-			#die();
+			if (is_array($where)) {
+				$sql .= $where['sql'];
 
-			$results = Model::runSql($sql);
-			return Model::createResultsArray($results);
+				return Model::buildAndRunPreparedStatement($sql, $where['datatypes'], $where['values']);
+
+				$conn = Db::connect();
+				$stmt = $conn->prepare($sql);
+
+				$stmtParams = array();
+				$stmtParams[] = & $where['datatypes'];
+
+				foreach ($where['values'] as $value) {
+					$stmtParams[] = & $value;
+				}
+				
+				call_user_func_array(array($stmt, 'bind_param'), $stmtParams);
+
+				$stmt->execute();
+
+				$results = $stmt->get_result();
+
+				$returnArray = [];
+				while ($row = $results->fetch_array(MYSQLI_ASSOC)) {
+					array_push($returnArray, $row);
+				}
+
+				return $returnArray;
+			} else {
+				$sql .= $where;
+				$results = Model::runSql($sql);
+				#var_dump(Model::createResultsArray($results));
+				#die();
+				return Model::createResultsArray($results);
+			}
+			
+			
 		}
 
 		// Arrange product IDs by product catagory
@@ -135,7 +165,11 @@
 			foreach ($productIds as $catagory => $productList) {
 				require_once('../app/models/' . $catagory . '.php');
 				$model = new $catagory;
-				$catagoryWhere = $where;
+				if (is_array($where)) {
+					$catagoryWhere = $where['sql'];
+				} else {
+					$catagoryWhere = $where;
+				}
 				$catagoryWhere .= " AND product_catagory='" . $catagory . "'";
 
 				// Only join to tables if the catagory sql isn't already going to join it
@@ -149,8 +183,13 @@
 				$sql = $model->generateSearchSql('SELECT *', $catagoryWhere, ['join' => $additionalJoins]);
 				#echo $sql;
 				#die();
-				$resultsPDO = $model->runSql($sql);
-				$resultsArray = $model->createResultsArray($resultsPDO);
+				if (is_array($where)) {
+					$resultsArray = Model::buildAndRunPreparedStatement($sql, $where['datatypes'], $where['values']);
+				} else {
+					$resultsPDO = $model->runSql($sql);
+					$resultsArray = $model->createResultsArray($resultsPDO);	
+				}
+
 				$returnArray = array_merge($returnArray, $resultsArray);
 			}
 			

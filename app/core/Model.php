@@ -111,8 +111,6 @@
 
 		// Assign values to the object's properties array, based on info submitted via POST
 		public function assignProperties($list) {
-			#var_dump($list);
-			#die();
 			foreach(array_keys($list) as $attr) {
 				
 				if(array_key_exists($attr, $this->properties)) {
@@ -128,7 +126,7 @@
 /* ---------- SQL functions ---------- */
 
 		// Generates the sql needed to add entries to the database
-		protected function generateSql($method, $table, $entries) {
+		protected function generateSql($method, $table, $entries, $prepared = false) {
 			$sql = $method . ' ' . $table . ' (';
 
 			foreach(array_keys($entries) as $key) {
@@ -142,18 +140,22 @@
 
 			$sql = rtrim($sql, ', ') . ') VALUES (';
 
-			foreach($entries as $value) {
-				$sql .= "'" . $value . "', ";
-			}
+			if ($prepared) {
+				$n = count($entries);
+				for ($i=0; $i < $n; $i++) { 
+					$sql .= '?, ';
+				}
+			} else {
+				foreach($entries as $value) {
+					$sql .= "'" . $value . "', ";
+				}
 
-			if(array_key_exists('password', $_POST)) {
-				$sql .= "'" . md5($_POST['password']) . "', ";
+				if(array_key_exists('password', $_POST)) {
+					$sql .= "'" . md5($_POST['password']) . "', ";
+				}
 			}
-
+			
 			$sql = rtrim($sql, ', ') . ')';
-
-			#echo $sql;
-			#die();
 
 			return $sql;
 		}
@@ -183,6 +185,37 @@
 				
 				$this->id = $entryId;
 				return $entryId;
+			} else {
+				return false;
+			}
+		}
+
+		// Save an entry to the database via a prepared statement.
+		// This should gradually replace the older version above.
+		public function savePreparedStatementToDb($table, $data) {
+			if($this->runValidations()) {
+				$sql = $this->generateSql('INSERT INTO', $table, $data, true);
+				$params = array_values($data);
+				$stmtParams = [''];
+				$datatypes = '';
+
+				$n = count($data);
+				for ($i=0; $i < $n; $i++) {
+					$stmtParams[] = &$params[$i];
+					$datatypes .= 's';
+				}
+				$stmtParams[0] = &$datatypes;
+
+				$conn = Db::connect();
+				$stmt = $conn->prepare($sql);
+
+				call_user_func_array(array($stmt, 'bind_param'), $stmtParams);
+				$stmt->execute();
+				$newId = $conn->insert_id;
+				$this->id = $newId;
+				$conn->close();
+
+				return $newId;
 			} else {
 				return false;
 			}
@@ -221,9 +254,13 @@
 
 		// Turns the PDO object returned from a query into an associative array
 		protected function createResultsArray($results) {
+			#var_dump($results);
+			#die();
 			$array = [];
 			while($row = $results->fetch_assoc()) {
 				array_push($array, $row);
+				#var_dump($results);
+				#echo "<br><br>";
 			}
 
 			return $array;
@@ -241,12 +278,15 @@
 
 		public function findById($id) {
 			$sql = "SELECT *";
-			$where = " WHERE " . get_class($this) . "." . get_class($this) . "_id = '" . $id . "' ";
+			$where = " WHERE " . get_class($this) . "_id = ?";
 			$sql = $this->generateSearchSql($sql, $where);
-			
-			$results = $this->runSql($sql);
-			
-			return $results->fetch_assoc();
+
+			#var_dump($id);
+			#die();
+
+			$results = Model::buildAndRunPreparedStatement($sql, 'i', [$id]);
+
+			return $this->createResultsArray($results)[0];
 		}
 
 		public function findByUserId($userId) {
@@ -257,38 +297,41 @@
 			} else {
 				$where .= "fk_" . get_class($this) . "_user";
 			}
-			$where .= "='" . $userId . "' ";
+			$where .= " = ? ";
 			
-			#$where = "WHERE fk_" . get_class($this) . "_user='" . $userId . "' ";
-
 			$sql = $this->generateSearchSql($sql, $where);
 
-			$results = $this->runSql($sql);
+			$results = Model::buildAndRunPreparedStatement($sql, 'i', [$userId]);
 
 			return $this->createResultsArray($results);
 		}
 
 		public function addToJoinTable($propertiesList, $table) {
 			if (isset($this->id)) {
-				$sql = "INSERT INTO " . $table . " (fk_" . $table . "_" . get_class($this) . ", ";
+				$datatypes = '';
+				$params = [];
+
+
+				$sql = 'INSERT INTO ' . $table . ' (fk_' . $table . '_' . get_class($this) . ', ';
 
 				foreach (array_keys($propertiesList[0]) as $colName) {
 					$sql .= $this->toCamelCase($colName) . ", ";
 				}
 				$sql = substr($sql, 0, -2) . ") VALUES ";
 				foreach ($propertiesList as $key => $value) {
-					$sql .= "('" . $this->id . "', ";
+					$sql .= "(?, ";
+					$datatypes .= 's';
+					$params[] = $this->id;
 					foreach ($value as $colValue) {
-						$sql .= "'" . $colValue . "', ";
+						$sql .= "?, ";
+						$datatypes .= 's';
+						$params[] = $colValue;
 					}
 					$sql = substr($sql, 0, -2) . "), ";
 				}
 				$sql = substr($sql, 0, -2);
 
-				#echo $sql;
-				#die();
-
-				$this->runSql($sql);
+				Model::buildAndRunPreparedStatement($sql, $datatypes, $params);	
 			}
 		}
 
@@ -297,42 +340,23 @@
 		}
 
 		public static function buildAndRunPreparedStatement($sql, $datatypes, $params) {
+			$stmtParams = array();
+			$stmtParams[] = &$datatypes;
+
+			$n = count($params);
+			for ($i=0; $i < $n; $i++) { 
+				$stmtParams[] = &$params[$i];
+			}
+
 			$conn = Db::connect();
 			$stmt = $conn->prepare($sql);
-
-			$stmtParams = array();
-			$stmtParams[] = & $datatypes;
-
-			foreach ($params as $param) {
-				$stmtParams[] = & $param;
-			}
 
 			call_user_func_array(array($stmt, 'bind_param'), $stmtParams);
 			$stmt->execute();
 			$results = $stmt->get_result();
+			$conn->close();
 
-			$returnArray = [];
-			while ($row = $results->fetch_array(MYSQLI_ASSOC)) {
-				array_push($returnArray, $row);
-			}
-
-			return $returnArray;
+			return $results;
 		}
-
-		public static function runPreparedStatement($stmt) {
-			$conn = Db::connect();
-			$stmt->execute();
-			var_dump($stmt);
-			die();
-			$results = $stmt->get_result();
-
-			$returnArray = [];
-			while ($row = $results->fetch_array(MYSQLI_ASSOC)) {
-				array_push($returnArray, $row);
-			}
-
-			return $returnArray;
-		}
-
 	}
 ?>

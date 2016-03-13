@@ -74,13 +74,14 @@ $(document).ready(function() {
 
 
 // -- Product show page -- //
-	
+	// Extend product description
 	$("#product-description-more").click(function() {
 		$("#product-description-more").css("display", "none");
 		$("#product-description-less").css("display", "inline");
 		$("#product-description-text").css("height", "100%");
 	});
 
+	// Compress product description
 	$("#product-description-less").click(function() {
 		$("#product-description-more").css("display", "inline");
 		$("#product-description-less").css("display", "none");

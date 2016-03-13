@@ -16,7 +16,6 @@
 				} else {
 					$cart = [];
 				}
-				
 			}
 			
 			$view = new View('cart/index');

@@ -8,8 +8,6 @@
 			$this->userId = $userId;
 		}
 
-
-
 		// Specifies how to correctly use joins, etc for this table in queries.
 		protected $sqlOptions = ['join' => ['book' => ['book.fk_book_product', 'product.product_id'],
 							 	 			'author' => ['author.fk_author_product', 'product.product_id'],
@@ -18,7 +16,11 @@
 								 'groupby' => 'product.product_id'];
 
 		public function generateCartFromDb() {
-			$where = "WHERE fk_shopping_cart_user='" . $_SESSION['user_id'] . "'";
+			$where = [];
+			$where['sql'] = 'WHERE fk_shopping_cart_user = ? ';
+			$where['datatypes'] = 'i';
+			$where['values'] = [$_SESSION['user_id']];
+
 			$join = ['shopping_cart' => ['fk_shopping_cart_product', 'product_id']];
 			require_once('../app/models/Product.php');
 			$cart = Product::findProducts($where, $join);
@@ -34,23 +36,17 @@
 		}
 
 		public function generateCartFromSession($cart) {
-			/*$where = ' WHERE product_id IN (';
-			$numberOfProducts = count($cart);
-			for ($i=0; $i < $numberOfProducts; $i++) { 
-				$where .= ' ? ';
+			$where = [];
+			$where['sql'] = 'WHERE product_id IN (';
+			$where['datatypes'] = '';
+			$where['values'] = [];
+
+			foreach ($cart as $productId => $quantity) {
+				$where['sql'] .= ' ?, ';
+				$where['datatypes'] .= 'i';
+				array_push($where['values'], $productId);
 			}
-			$where .= ') ';
-
-			require_once('../app/models/Product.php');
-			$returnCart = Product::findProducts($where);*/
-
-
-
-			$where = " WHERE product_id IN (";
-			foreach ($cart as $product_id => $quality) {
-				$where .= "'" . intval($product_id) . "', ";
-			}
-			$where = substr($where, 0, -2) . ") ";
+			$where['sql'] = substr($where['sql'], 0, -2) . ') ';
 			
 			require_once('../app/models/Product.php');
 			$returnCart = Product::findProducts($where);
@@ -93,9 +89,6 @@
 			$statement = $database->prepare($sql);
 			$statement->bind_param('i',  $_SESSION['user_id']);
 			$statement->execute();
-
-			/*$sql = "DELETE FROM shopping_cart WHERE fk_shopping_cart_user='" . $this->userId . "'";
-			$this->runSql($sql, true);*/
 
 			if (isset($_SESSION['cart'])) {
 				unset($_SESSION['cart']);

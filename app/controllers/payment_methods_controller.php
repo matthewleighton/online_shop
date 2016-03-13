@@ -25,9 +25,9 @@
 				$address->assignProperties($_POST);
 				$address->runValidations();
 
-				// A valid payment method will still have one error - the address_id will be missing.
-				if(count($paymentMethod->errorsList) == 1 && isset($paymentMethod->errorsList['address_id'])) {
-					$addressId = $address->saveToDb('INSERT INTO', 'address', $address->properties);
+				// A valid payment method will still have one error - fk_payment_method_address  will be missing.
+				if(count($paymentMethod->errorsList) == 1 && isset($paymentMethod->errorsList['fk_payment_method_address'])) {
+					$addressId = $address->savePreparedStatementToDb('address', $address->properties);
 				}
 			} else {
 				$addressId = $_POST['addressId'];
@@ -35,7 +35,7 @@
 
 			
 			$paymentMethod->properties['fk_payment_method_address'] = $addressId;
-			$paymentMethodId = $paymentMethod->saveToDb('INSERT INTO', 'payment_method', $paymentMethod->properties);
+			$paymentMethodId = $paymentMethod->savePreparedStatementToDb('payment_method', $paymentMethod->properties);
 
 			$_SESSION['paymentMethodId'] = $paymentMethodId;
 			$_SESSION['payment_method'] = $paymentMethod;

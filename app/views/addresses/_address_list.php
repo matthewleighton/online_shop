@@ -6,7 +6,7 @@
 				<p hidden class='address_id'><?php echo $address['address_id']; ?></p>
 <?php
 				foreach($address as $label => $value) {
-					if($label != 'address_id' && $label != 'user_id' && $value != '') {
+					if($label != 'address_id' && $label != 'fk_address_user' && $value != '') {
 						echo "<strong>" . $this->formatLabel($label) . ":</strong> " . $value . "<br>";
 					}
 				}

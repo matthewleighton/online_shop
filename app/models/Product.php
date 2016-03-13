@@ -93,6 +93,9 @@
 		// For use when the products' types are not known
 		public static function findProducts($where, $join = []) {
 			$productList = Product::findProductCatagories($where, $join);
+			#var_dump($productList);
+			#die();
+
 			$productIdsByCatagory = Product::sortByCatagory($productList);
 			return Product::findProductDetailsByCatagory($productIdsByCatagory, $where, $join);
 		}
@@ -107,31 +110,8 @@
 
 			if (is_array($where)) {
 				$sql .= $where['sql'];
-
-				return Model::buildAndRunPreparedStatement($sql, $where['datatypes'], $where['values']);
-
-				$conn = Db::connect();
-				$stmt = $conn->prepare($sql);
-
-				$stmtParams = array();
-				$stmtParams[] = & $where['datatypes'];
-
-				foreach ($where['values'] as $value) {
-					$stmtParams[] = & $value;
-				}
-				
-				call_user_func_array(array($stmt, 'bind_param'), $stmtParams);
-
-				$stmt->execute();
-
-				$results = $stmt->get_result();
-
-				$returnArray = [];
-				while ($row = $results->fetch_array(MYSQLI_ASSOC)) {
-					array_push($returnArray, $row);
-				}
-
-				return $returnArray;
+				$results = Model::buildAndRunPreparedStatement($sql, $where['datatypes'], $where['values']);
+				return Model::createResultsArray($results);
 			} else {
 				$sql .= $where;
 				$results = Model::runSql($sql);
@@ -181,18 +161,16 @@
 				}
 
 				$sql = $model->generateSearchSql('SELECT *', $catagoryWhere, ['join' => $additionalJoins]);
-				#echo $sql;
-				#die();
-				if (is_array($where)) {
-					$resultsArray = Model::buildAndRunPreparedStatement($sql, $where['datatypes'], $where['values']);
-				} else {
-					$resultsPDO = $model->runSql($sql);
-					$resultsArray = $model->createResultsArray($resultsPDO);	
-				}
 
+				if (is_array($where)) {
+					$results = Model::buildAndRunPreparedStatement($sql, $where['datatypes'], $where['values']);
+				} else {
+					$results = $model->runSql($sql);
+				}
+				$resultsArray = $model->createResultsArray($results);
 				$returnArray = array_merge($returnArray, $resultsArray);
 			}
-			
+
 			return $returnArray;
 		}
 

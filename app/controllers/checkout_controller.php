@@ -2,6 +2,7 @@
 	Class checkout extends Controller {
 		
 		public function __construct() {
+			require_once('../app/helpers/Checkout_helper.php');
 			session_start();
 			if(!Sessions_helper::logged_in()) {
 				$this->redirect_to('sessions/login?redirect=checkout');
@@ -44,11 +45,10 @@
 
 		public function address() {
 			require_once('../app/models/Address.php');
-
-			if(isset($_POST['addressId'])) {
-				$_SESSION['checkout']['properties']['address'] = $_POST['addressId'];
-				$this->redirect_to('checkout/deliveryMethod');
-				break;
+			if(isset($_POST['addressId']) && Checkout_helper::confirmAddressOwnership($_POST['addressId'])) {
+					$_SESSION['checkout']['properties']['address'] = $_POST['addressId'];
+					$this->redirect_to('checkout/deliveryMethod');
+					break;
 			}
 
 			if(isset($_SESSION['address'])) {
@@ -105,7 +105,7 @@
 		public function paymentMethod() {
 			require_once('../app/models/Payment_Method.php');
 			require_once('../app/models/Address.php');
-			if(isset($_POST['paymentMethodId'])) {
+			if(isset($_POST['paymentMethodId']) && Checkout_helper::confirmCardOwnership($_POST['paymentMethodId'])) {
 				$_SESSION['checkout']['properties']['paymentMethod'] = $_POST['paymentMethodId'];
 				$this->redirect_to('checkout/confirm');
 				break;
@@ -205,9 +205,8 @@
 			require_once('../app/models/Purchase.php');
 			$purchase = new Purchase;
 			$purchase->assignProperties($_SESSION['checkout']['properties']);
-			$purchaseId = $purchase->saveToDb('INSERT INTO', 'purchase', $purchase->properties);
+			$purchaseId = $purchase->savePreparedStatementToDb('purchase', $purchase->properties);
 			
-
 			$products = [];
 			foreach ($_SESSION['checkout']['cart'] as $key => $value) {
 				if (is_array($value)) {

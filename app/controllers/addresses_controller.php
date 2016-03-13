@@ -16,7 +16,8 @@
 			$address = new Address;
 			if(isset($_POST['full_name'])) {
 				$address->assignProperties($_POST);
-				$addressId = $address->saveToDb('INSERT INTO', 'address', $address->properties);
+				
+				$addressId = $address->savePreparedStatementToDb('address', $address->properties);
 				
 				$_SESSION['addressId'] = $addressId;
 				$_SESSION['address'] = $address;

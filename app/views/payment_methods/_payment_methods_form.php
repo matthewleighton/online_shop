@@ -1,4 +1,4 @@
-<form action="/online_shop/public/payment_methods/add" method="post" class="input-page" id="new-payment-method">
+<form action="<?php echo $GLOBALS['rootPath']; ?>payment_methods/add" method="post" class="input-page" id="new-payment-method">
 	<input type="hidden" name="addressId" value="">
 	<div class='card-details-entry'>
 		<div class='card-type inline-block'>

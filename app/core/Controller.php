@@ -10,7 +10,7 @@
 		}
 
 		public function redirect_to($location = '') {
-			header('location: http://localhost/online_shop/public/' . $location);
+			header('location: ' . $GLOBALS['rootPath'] . $location);
 		}
 
 		protected function currentMethod() {

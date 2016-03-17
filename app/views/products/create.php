@@ -1,4 +1,4 @@
-<?php $this->boxPageLogo(); ?>
+<?php $this->displayLogo(); ?>
 
 <div class="box-page input-page" id="product-create-page">
 	<h2>New product</h2>

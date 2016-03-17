@@ -103,7 +103,7 @@
 		}
 
 		public function paymentMethod() {
-			require_once('../app/models/Payment_Method.php');
+			require_once('../app/models/Payment_method.php');
 			require_once('../app/models/Address.php');
 			if(isset($_POST['paymentMethodId']) && Checkout_helper::confirmCardOwnership($_POST['paymentMethodId'])) {
 				$_SESSION['checkout']['properties']['paymentMethod'] = $_POST['paymentMethodId'];

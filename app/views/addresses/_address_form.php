@@ -9,7 +9,7 @@
 
 	if($includeForm) {
 ?>
-		<form action='/online_shop/public/addresses/add' method='post' class='input-page'>
+		<form action='<?php echo $GLOBALS['rootPath']; ?>addresses/add' method='post' class='input-page'>
 <?php	 
 	}
 ?>

@@ -2,8 +2,8 @@
 	<div class='header-left'>
 		
 		<div class='logo'>
-			<a href="/online_shop/public">
-				<img src='/online_shop/public/assets/img/logo_placeholder.png' alt='logo' height='70'/>
+			<a href='<?php echo $GLOBALS['rootPath']; ?>'>
+				<img src='<?php echo $GLOBALS['rootPath']; ?>assets/img/logo_placeholder.png' alt='logo' height='70'/>
 			</a>
 		</div>
 

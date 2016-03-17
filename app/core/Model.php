@@ -84,6 +84,7 @@
 							$this->addError($attr_name, $this->validationsList[$attr_name][$quality][1]);
 						}
 					break;
+					// TODO - use prepared statements for uniqueness validation
 					case 'unique':
 						$conn = Db::connect();
 						$sql = 'SELECT *' . ' FROM ' . get_class($this) . 's WHERE ' . $attr_name . "='" . $_POST[$attr_name] . "'";

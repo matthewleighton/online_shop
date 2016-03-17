@@ -4,6 +4,8 @@
 		public $partials = array('header' => true, 'footer' => true);
 
 		public function __construct($page, $partials = []) {
+			global $rootPath;
+
 			$this->data['page'] = $page;
 			foreach ($partials as $key => $value) {
 					if(array_key_exists($key, $this->partials)) {
@@ -13,7 +15,7 @@
 		}
 
 		public function rootPath() {
-			return "/online_shop/public/";
+			return $GLOBALS['rootPath'];
 		}
 
 		public function set($key, $value) {
@@ -130,17 +132,17 @@
 		protected function link_to($location, $text, $ident = []) {
 			$link = "<a ";
 			$link .= $this->listIdents($ident);
-			echo $link .= "href='/online_shop/public/" . $location . "'>" . $text . "</a>";
+			echo $link .= "href='" . $GLOBALS['rootPath'] . $location . "'>" . $text . "</a>";
 		}
 
 		protected function linkToProduct($productId, $text, $ident = []) {
 			$link = "<a ";
 			$link .= $this->listIdents($ident);
-			echo $link .= "href='/online_shop/public/products/item/" . $productId . "'>" . $text ."</a>";
+			echo $link .= "href='<?php " . $GLOBALS['rootPath'] . "products/item/" . $productId . "'>" . $text ."</a>";
 		}
 
 		protected function image_tag($image, $options = []) {
-			$tag = "<img src='/online_shop/public/assets/img/" . $image . "' ";
+			$tag = "<img src='" . $GLOBALS['rootPath'] . "assets/img/" . $image . "' ";
 
 			$tag .= $this->listIdents($options);
 
@@ -170,13 +172,6 @@
 			}
 
 			return $return;
-
-			/*if(array_key_exists('id', $ident)) {
-				return "id='" . $ident['id'] . "' ";
-			} elseif (array_key_exists('class', $ident)) {
-				return "class='" . $ident['class'] . "' ";
-			}*/
-
 		}
 
 		protected function formatPrice($price) {
@@ -194,7 +189,7 @@
 		}
 
 		protected function removeFromCart($product_id, $cart) {
-			echo "<form action='/online_shop/public/carts/removeitem' method='post'>";
+			echo "<form action='" . $GLOBALS['rootPath'] . "carts/removeitem' method='post'>";
 				echo "<input type='hidden' name='product_id' value='" . $product_id . "'>";
 				echo "<input type='submit' value='Delete' class='cart-delete-btn'>";
 			echo "</form>";
@@ -245,9 +240,9 @@
 			return date($format, strtotime($date, time()));
 		}
 
-		public function boxPageLogo($height = '70') {
+		public function displayLogo($height = '70') {
 			echo "<div class='box-page-logo'><a href='" . $this->rootPath() . "'>" .
-				 "<img src='" . $this->rootPath() . "assets/img/logo_placeholder.png' alt='logo'" .
+				 "<img src='" . $GLOBALS['rootPath'] . "assets/img/logo_placeholder.png' alt='logo'" .
 				 " height='" . $height . "'/></a></div>";
 		}
 

@@ -1,4 +1,4 @@
-<?php $this->boxPageLogo(); ?>
+<?php $this->displayLogo(); ?>
 
 <div class="box-page half-size">
 	<h2>Review your order</h2>

@@ -1,4 +1,4 @@
-<?php $this->boxPageLogo(); ?>
+<?php $this->displayLogo(); ?>
 
 <div class='box-page half-size choose-delivery-method'>
 	<h2>Choose a delivery method</h2>

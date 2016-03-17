@@ -1,4 +1,4 @@
-<?php $this->boxPageLogo(); ?>
+<?php $this->displayLogo(); ?>
 
 <div class='box-page'>
 	<div class='checkout-left checkout-half'>

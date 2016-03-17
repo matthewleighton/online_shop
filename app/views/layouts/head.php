@@ -1,19 +1,21 @@
 <!DOCTYPE html>
 <html>
 	<head>
+		<meta charset="UTF-8">
 		<title>
 			<?php
-				if(array_key_exists('title', $this->data)) {
-					echo $this->data['title'];
-				} else
-				echo 'Not Amazon';
+				$baseTitle = 'Matthew Leighton';
+				if (array_key_exists('title', $this->data)) {
+					$baseTitle .= ' | ' . $this->data['title'];
+				}
+				echo $baseTitle;
 			?>
 		</title>
-		<link rel='stylesheet' href='/online_shop/public/css/main.css'/>
-		<script src="/online_shop/public/js/jquery-1.12.0.js"></script>
-		<script src="/online_shop/public/js/jquery-ui.min.js"></script>
-		<script src="/online_shop/public/js/main.js"></script>
-		<link rel="shortcut icon" href="/online_shop/public/assets/img/icons/icon.ico">
+		<link rel='stylesheet' href='<?php echo $GLOBALS['rootPath']; ?>css/main.css'/>
+		<script src='<?php echo $GLOBALS['rootPath']; ?>js/jquery-1.12.0.js'></script>
+		<script src='<?php echo $GLOBALS['rootPath']; ?>js/jquery-ui.min.js'></script>
+		<script src='<?php echo $GLOBALS['rootPath']; ?>js/main.js'></script>
+		<link rel='shortcut icon' href='<?php echo $GLOBALS['rootPath']; ?>assets/img/icons/icon.ico'>
 	</head>
 	<body>
 			<?php

@@ -26,27 +26,6 @@
 						   		 'concat' => []];
 		}
 
-
-		//Replaced with Cart model method
-		/*public function addToCart($productId, $quantity) {
-			// Check if the product already exists in the cart
-			$conn = Db::connect();
-			if(products_helper::alreadyInCart($_SESSION['user_id'], $productId) > 0) {
-				// Increment quantity
-				$sql = "UPDATE shopping_cart SET cart_quantity = cart_quantity + " . intval($quantity) . 
-						" WHERE fk_shopping_cart_user='" . $_SESSION['user_id'] . 
-						"' AND fk_shopping_cart_product='" . $productId . "'";
-				$conn->query($sql);
-			} else {
-				// Add new entry to cart
-				$sql = "INSERT INTO shopping_cart (fk_shopping_cart_user, fk_shopping_cart_product, cart_quantity)" . 
-					   "VALUES ('" . $_SESSION['user_id'] . "', '" . $productId . "', '" . $quantity . "')";
-				$conn->query($sql);
-			}
-
-			$conn->close();
- 		}*/
-
  		public static function findByProductId($id) {
 			$productCatagory = Product::findProductCatagoryById($id);
 			switch ($productCatagory) {
@@ -75,19 +54,6 @@
 			$results = Product::runSql($sql);
 			return $results->fetch_assoc()['product_catagory'];
 		}
-
-		// NOT USED YET
-		/*public static function findMultipleProductCatagories($idArray) {
-			$sql = "SELECT product.product_id, product_catagory FROM product ";
-			$sql .= "WHERE product.product_id IN (";
-			foreach ($idArray as $id) {
-				$sql .= "'" . $id . "', ";
-			}
-			$sql = substr($sql, 0, -2) . ")";
-			echo $sql;
-			die();
-		}*/
-
 
 		// Generates an array of products.
 		// For use when the products' types are not known

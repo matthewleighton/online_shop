@@ -64,7 +64,7 @@
 
 		public function removeItem() {
 			if(Sessions_helper::logged_in()) {
-				require_once('../app/models/cart.php');
+				require_once('../app/models/Cart.php');
 				$cart = new Cart;
 				$cart->removeItem($_POST['productVersionId']);
 			} else {

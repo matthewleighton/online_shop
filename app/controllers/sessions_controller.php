@@ -5,7 +5,7 @@
 		}
 
 		public function index() {
-			echo 'The page you were looking for could not be found.';
+			$this->redirect_to('');
 		}
 
 		public function login($error = false) {

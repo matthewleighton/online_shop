@@ -157,7 +157,7 @@
 		}
 
 		public function confirm() {
-			require_once('../app/models/Payment_Method.php');
+			require_once('../app/models/Payment_method.php');
 			require_once('../app/models/Address.php');
 			require_once('../app/models/Cart.php');
 

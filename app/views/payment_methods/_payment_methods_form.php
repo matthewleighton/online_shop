@@ -1,6 +1,12 @@
 <form action="<?php echo $GLOBALS['rootPath']; ?>payment_methods/add" method="post" class="input-page" id="new-payment-method">
 	<input type="hidden" name="addressId" value="">
+	
+	<div class='payment-method-warning'>
+		This site is purely for demonstration purposes. Do NOT enter genuine payment information.
+	</div>
+
 	<div class='card-details-entry'>
+
 		<div class='card-type inline-block'>
 			<span class='small-field-label'>Card type: </span><br>
 			<?php $this->createSelect('card_type',

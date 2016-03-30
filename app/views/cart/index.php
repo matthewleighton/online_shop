@@ -39,31 +39,7 @@
 											   $product['product_name'] . ' (' . $product['platform'] . ')');
 							?>
 						</span>
-						<?php
-							#include('../app/views/cart/_cart_' . ucfirst($product['product_catagory']) . '.php');
-							switch ($product['product_catagory']) {
-								case 'book':
-									if (isset($product['authors'])) {
-										echo '<span>By ' . $this->arrayToString($product['authors']) . '</span>';
-									}
-									break;
-
-								case 'film':
-								case 'TV':
-									if (isset($product['directors'])) {
-										echo '<span>Directed by ' . $this->arrayToString($product['directors']) . '</span>';
-									}
-									break;
-
-								case 'music':
-									if (isset($product['musicians'])) {
-										echo '<span>By ' . $this->arrayToString($product['musicians']) . '</span>';
-									}
-									break;
-							}
-
-						?>
-
+						<p class='product-creator'><?php echo $this->displayProductCreator($product); ?></p>
 						<span class='cart-remove'>
 							<?php $this->removeFromCart($product['product_version_id']); ?>
 						</span>

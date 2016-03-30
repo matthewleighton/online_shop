@@ -13,14 +13,9 @@
 		</div>
 
 		<div class="product-creator">
+			
 			<?php
-				if (isset($product['authors'])) {
-					echo "By " . $this->arrayToString($product['authors']);
-				} elseif (isset($product['directors'])) {
-					echo "Directed by " . $this->arrayToString($product['directors']);
-				} elseif (isset($product['musicians'])) {
-					echo "By " . $product['musicians'];
-				}
+				echo $this->displayProductCreator($this->data['product']);
 			?>
 		</div>
 

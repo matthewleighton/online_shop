@@ -8,6 +8,6 @@
 	require_once('core/Controller.php');
 	require_once('core/Model.php');
 	
-	require_once('../app/models/user.php');	
+	require_once('../app/models/User.php');	
 	$GLOBALS['rootPath'] = '/online_shop/public/';
 ?>

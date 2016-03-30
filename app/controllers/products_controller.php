@@ -28,7 +28,7 @@
 						break;
 				}
 
-				require_once('../app/models/' . $_POST['product_catagory'] . '.php');
+				require_once('../app/models/' . ucfirst($_POST['product_catagory']) . '.php');
 				$product = new $_POST['product_catagory'];
 				$productId = $product->build($_POST['product_catagory']);
 				if ($productId != 0) {

@@ -64,6 +64,7 @@ body {
 }
 
 .featured-items-arrow {
+	cursor: pointer;
 	position: relative;
 	height: 30px;
 	opacity: 0;
@@ -1224,4 +1225,29 @@ body {
 .wish-list-product-image {
 	text-align: center;
 	width: 135px;
+}
+
+/* ---------- Cover Letter ---------- */
+
+.cover-letter-box {
+	margin: 0 auto;
+	margin-bottom: 40px;
+	width: 650px;
+}
+
+.cover-letter-box h2, .cover-letter-box p{
+	text-align: center;
+}
+
+.cover-letter-box a {
+	color: #0066c0;
+	text-decoration: none;
+}
+
+.payment-method-warning {
+	color: #990000;
+	font-size: 14px;
+	margin: 0 auto;
+	margin-bottom: 20px;
+	width: 300px;
 }

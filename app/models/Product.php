@@ -29,7 +29,7 @@
 
 		# Returns a single product, based on its version_id
  		public static function findByProductVersionId($id) {
-			$productCatagory = Product::findProductCatagoryById($id);
+			$productCatagory = ucfirst(Product::findProductCatagoryById($id));
 
 			if (!$productCatagory) {
 				return false;
@@ -111,7 +111,7 @@
 		public static function findProductDetailsByCatagory($productIds, $where, $join = []) {
 			$returnArray = [];
 			foreach ($productIds as $catagory => $productList) {
-				require_once('../app/models/' . $catagory . '.php');
+				require_once('../app/models/' . ucfirst($catagory) . '.php');
 				$model = new $catagory;
 				if (is_array($where)) {
 					$catagoryWhere = $where['sql'];
@@ -149,13 +149,30 @@
 		}
 
 		public static function findRandomProductIds($quantity) {
+			$sql = 'SELECT base_product_id, product_version_id FROM product_version ' . 
+				   'JOIN base_product ON fk_product_version_base_product = base_product_id ORDER BY RAND() LIMIT ?';
+			$datatypes = 'i';
+			$params = [$quantity];
+
+			$results = Model::buildAndRunPreparedStatement($sql, $datatypes, $params);
+
+			$resultsArray = Model::createResultsArray($results);
+
+			#var_dump($resultsArray);die;
+
+			return $resultsArray;
+		}
+
+
+/*
+		public static function findRandomProductIds($quantity) {
 			#TODO - Each product_version id must be from a different base_product
 			$sql = "SELECT product_version_id FROM product_version ORDER BY RAND() LIMIT " . $quantity;
 			$productIds = Product::createResultsArray(Product::runSql($sql));
 			#var_dump($productIds);die;
 			return $productIds;
 			
-			/*
+			
 			$productsByCatagory = Product::sortByCatagory($productIds);
 			
 			$where = " WHERE product_id IN (";
@@ -166,9 +183,9 @@
 			
 			$productList = Product::findProductDetailsByCatagory($productsByCatagory, $where);
 			shuffle($productList);
-			return($productList);*/
+			return($productList);
 		}
-
+*/
 		/*
 		public static function findRandomProductIds($quantity) {
 			$sql = 'SELECT base_product_id FROM base_product ORDER BY RAND() LIMIT ?';

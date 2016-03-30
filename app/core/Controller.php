@@ -1,7 +1,7 @@
 <?php
 	class Controller {
 		public function load_model($model) {
-			require_once('../app/models/' . $model . '.php');
+			require_once('../app/models/' . ucfirst($model) . '.php');
 			return new $model;
 		}
 
@@ -18,9 +18,13 @@
 			return substr($url, strrpos($url, '/') + 1);
 		}
 
-		protected function mustBeLoggedIn() {
+		protected function mustBeLoggedIn($url = false) {
 			if (!Sessions_helper::logged_in()) {
-				$this->redirect_to('sessions/login?redirect=' . $_GET['url']);
+				if ($url == false) {
+					$url = $_GET['url'];
+				}
+
+				$this->redirect_to('sessions/login?redirect=' . $url);
 			}
 		}
 

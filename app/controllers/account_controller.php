@@ -10,7 +10,7 @@
 		}
 
 		public function orders() {
-			require_once('../app/models/purchase.php');
+			require_once('../app/models/Purchase.php');
 			$model = new Purchase;
 			$purchaseList = $model->generatePurchaseArray();
 

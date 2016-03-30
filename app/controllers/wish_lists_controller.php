@@ -2,6 +2,18 @@
 	class Wish_lists extends Controller {
 		
 		public function __construct() {
+			session_start();
+			if (!isset($_SESSION['user_id'])) {
+				if (isset($_POST['productVersionId'])) {
+					$url = 'products/item/' . $_POST['productVersionId'];
+				} else {
+					$url = ' ';
+				}
+				$this->mustBeLoggedIn($url);
+				break;
+			}
+
+			
 			require_once('../app/models/Wish_list.php');
 		}
 
@@ -61,7 +73,6 @@
 		}
 
 		public function destroy($wishListId) {
-			#echo "This is the destroy function. You are trying to delete list " . $wishListId;
 			if (Wish_list::listBelongsToUser($wishListId)) {
 				Wish_list::destroy($wishListId);
 			}

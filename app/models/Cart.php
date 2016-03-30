@@ -20,16 +20,19 @@
 			$where['sql'] = 'WHERE fk_shopping_cart_user = ? ';
 			$where['datatypes'] = 'i';
 			$where['values'] = [$_SESSION['user_id']];
+			
+			$join = [];
+			$join['product_version'] = ['fk_product_version_base_product', 'base_product_id'];
+			$join['shopping_cart'] = ['fk_shopping_cart_product_version', 'product_version_id'];
 
-			$join = ['shopping_cart' => ['fk_shopping_cart_product', 'product_id']];
 			require_once('../app/models/Product.php');
 			$cart = Product::findProducts($where, $join);
 			unset($_SESSION['cart']);
 
 			// Also create a session cart variable, containing only IDs and quantities - used in checkout.
 			foreach($cart as $product) {
-				$_SESSION['cart'][$product['product_id']] = ['cart_quantity' => $product['cart_quantity'],
-															 'product_price' => $product['price']];
+				$_SESSION['cart'][$product['product_version_id']] = ['cart_quantity' => $product['cart_quantity'],
+																	 'product_price' => $product['product_price']];
 			}
 
 			return $cart;
@@ -37,49 +40,51 @@
 
 		public function generateCartFromSession($cart) {
 			$where = [];
-			$where['sql'] = 'WHERE product_id IN (';
+			$where['sql'] = 'WHERE product_version_id IN (';
 			$where['datatypes'] = '';
 			$where['values'] = [];
 
-			foreach ($cart as $productId => $quantity) {
+			foreach ($cart as $productVersionId => $quantity) {
 				$where['sql'] .= ' ?, ';
 				$where['datatypes'] .= 'i';
-				array_push($where['values'], $productId);
+				array_push($where['values'], $productVersionId);
 			}
 			$where['sql'] = substr($where['sql'], 0, -2) . ') ';
+
+			$join = [];
+			$join['product_version'] = ['fk_product_version_base_product', 'base_product_id'];
 			
 			require_once('../app/models/Product.php');
-			$returnCart = Product::findProducts($where);
-
+			$returnCart = Product::findProducts($where, $join);
 
 			foreach ($returnCart as $key => $product) {
-				$returnCart[$key]['cart_quantity'] = $cart[$product['product_id']]['cart_quantity'];
+				$returnCart[$key]['cart_quantity'] = $cart[$product['product_version_id']]['cart_quantity'];
 				
 			}
 
 			return $returnCart;
 		}
 
-		public function addProductToCart($productId, $quantity) {
+		public function addProductToCart($productVersionId, $quantity) {
 			$conn = Db::connect();
-			if(carts_helper::alreadyInCart($productId)) {
-				carts_helper::incrementProductQuantity($productId, $quantity);
+			if(carts_helper::alreadyInCart($productVersionId)) {
+				carts_helper::incrementProductQuantity($productVersionId, $quantity);
 			} else {
-				$sql = "INSERT INTO shopping_cart (fk_shopping_cart_user, fk_shopping_cart_product, cart_quantity) " . 
+				$sql = "INSERT INTO shopping_cart (fk_shopping_cart_user, fk_shopping_cart_product_version, cart_quantity) " . 
 					   "VALUES (?, ?, ?)";
 				$statement = $conn->prepare($sql);
-				$statement->bind_param('iii', $_SESSION['user_id'], $productId, $quantity);
+				$statement->bind_param('iii', $_SESSION['user_id'], $productVersionId, $quantity);
 				$statement->execute();
 			}
 		}
 
-		public function removeItem($productId) {
-			$sql = 'DELETE FROM shopping_cart WHERE fk_shopping_cart_user = ? AND fk_shopping_cart_product = ?';
+		public function removeItem($productVersionId) {
+			$sql = 'DELETE FROM shopping_cart WHERE fk_shopping_cart_user = ? AND fk_shopping_cart_product_version = ?';
 			
 			$database = Db::connect();
 			$statement = $database->prepare($sql);
 
-			$statement->bind_param('ii', $_SESSION['user_id'], $productId);
+			$statement->bind_param('ii', $_SESSION['user_id'], $productVersionId);
 			$statement->execute();
 		}
 

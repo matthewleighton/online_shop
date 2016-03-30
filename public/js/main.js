@@ -74,18 +74,59 @@ $(document).ready(function() {
 
 
 // -- Product show page -- //
+	if ($('#product-description-measurement').length) {
+		var productDescriptionHeight = document.getElementById('product-description-measurement').offsetHeight;
+		if (productDescriptionHeight > 150) {
+			$('#product-description-more').css('display', 'inline');
+			$('#product-description-text').css('max-height', '150px');
+		}
+	}
+
+	// Reset wish list select element to default on page load.
+	if ($('#add-to-wish-list-id').length) {
+		$('#add-to-wish-list-id').val('');
+		$('#add-to-wish-list-input').val('');
+	}
+
+	// Display input box if 'new wish list' selected. Else submit the form if a wish list is selected.
+	$("#add-to-wish-list-id").click(function() {
+		var selected = $("#add-to-wish-list-id").val();
+		if (selected == 'new-wish-list') {
+			$('#new-wish-list-input').css('z-index', '1');
+			$('#new-wish-list-input').focus();
+		} else if (selected != '') {
+			$('#add-to-wish-list-btn-text').css('z-index', '-1');
+			$('#add-to-wish-list-form').submit();
+		}
+	});
+
+	// Hide the wish list text box if it's empty when user clicks out.
+	$('#new-wish-list-input').focusout(function() {
+		var input = $('#new-wish-list-input').val().trim();
+		if (input == '') {
+			$('#new-wish-list-input').val('');
+			$('#add-to-wish-list-id').val('');
+			$('#new-wish-list-input').css('z-index', '-1');
+		}
+	});
+
+	// Helping to fake the 'Add to Wish List' text as part of the form.
+	$('#add-to-wish-list-btn-text').hover(function() {
+		$('.add-to-wish-list-btn').css('background-color', '#BF2F2F');
+	});
+	
 	// Extend product description
 	$("#product-description-more").click(function() {
 		$("#product-description-more").css("display", "none");
 		$("#product-description-less").css("display", "inline");
-		$("#product-description-text").css("height", "100%");
+		$("#product-description-text").css("max-height", "100%");
 	});
 
 	// Compress product description
 	$("#product-description-less").click(function() {
 		$("#product-description-more").css("display", "inline");
 		$("#product-description-less").css("display", "none");
-		$("#product-description-text").css("height", "150px");
+		$("#product-description-text").css("max-height", "150px");
 	});
 
 // -- Checkout -- //

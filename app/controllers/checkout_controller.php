@@ -170,6 +170,14 @@
 			$cart = new Cart;
 			$cart = $cart->generateCartFromSession($_SESSION['checkout']['cart']);
 
+			$amountInCart = count($cart);
+			for ($i=0; $i < $amountInCart; $i++) { 
+				$catagory = ucfirst($cart[$i]['product_catagory']);
+				require_once('../app/models/' . $catagory . '.php');
+				$model = new $catagory;
+				$cart[$i] = $model->splitListsToArray($cart[$i]);
+			}
+
 			$deliveryDate = $_SESSION['checkout']['properties']['deliveryDue'];
 			$deliveryPrice = $_SESSION['checkout']['properties']['deliveryPrice'];
 
@@ -206,17 +214,19 @@
 			$purchase = new Purchase;
 			$purchase->assignProperties($_SESSION['checkout']['properties']);
 			$purchaseId = $purchase->savePreparedStatementToDb('purchase', $purchase->properties);
-			
+
+
+
 			$products = [];
 			foreach ($_SESSION['checkout']['cart'] as $key => $value) {
 				if (is_array($value)) {
-					array_push($products, ['fkProductPurchaseProduct' => $key,
+					array_push($products, ['fkPurchaseProductVersionProductVersion' => $key,
 										   'quantityInPurchase' => $value['cart_quantity'],
 									   	   'priceAtPurchase' => $value['product_price']]);
 				}
 			}
 
-			$purchase->addToJoinTable($products, 'product_purchase');
+			$purchase->addToJoinTable($products, 'purchase_product_version');
 
 			require_once('../app/models/Cart.php');
 			$cart = new Cart($_SESSION['checkout']['properties']['fk_purchase_user']);

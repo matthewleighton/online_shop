@@ -22,12 +22,13 @@
 			}
 
 			// Find all items belonging to purchases linked to current user
-			$sql = "SELECT product_id, product_catagory, fk_product_purchase_purchase " .
-				   "FROM product_purchase " .
-				   "JOIN product ON product_id=fk_product_purchase_product " . 
-				   "WHERE fk_product_purchase_purchase IN (";
+			$sql = "SELECT product_version_id, product_catagory, fk_purchase_product_version_purchase " .
+				   "FROM purchase_product_version " .
+				   "JOIN product_version ON product_version_id=fk_purchase_product_version_product_version " .
+				   "JOIN base_product ON base_product_id=fk_product_version_base_product " . # Do I need this line?
+				   "WHERE fk_purchase_product_version_purchase IN (";
 			foreach ($purchaseIdList as $purchaseId) {
-				$sql .= "'" . $purchaseId . "', ";
+				$sql .= "'" . intval($purchaseId) . "', ";
 			}
 			$sql = substr($sql, 0, -2) . ") ";
 			
@@ -45,29 +46,29 @@
 			// Search for the details of each purchased product, dealing with each catagory individually
 			require_once('../app/models/Product.php');
 			foreach ($productCatagories as $catagory => $productList) {
-				require_once('../app/models/' . $catagory . '.php');
+				require_once('../app/models/' . ucfirst($catagory) . '.php');
 				$model = new $catagory;
 				$sql = 'SELECT * ';
 				
-				$where = "WHERE fk_product_purchase_product IN (";
+				$where = "WHERE fk_purchase_product_version_product_version IN (";
 				foreach ($productList as $product) {
-					$where .= "'" . $product['product_id'] . "', ";
+					$where .= "'" . $product['product_version_id'] . "', ";
 				}
-				$where = substr($where, 0, -2) . ") AND fk_product_purchase_purchase IN (";
+				$where = substr($where, 0, -2) . ") AND fk_purchase_product_version_purchase IN (";
 				foreach ($productList as $product) {
-					$where .= "'" . $product['fk_product_purchase_purchase'] . "', ";
+					$where .= "'" . $product['fk_purchase_product_version_purchase'] . "', ";
 				}
 				$where = substr($where, 0, -2) . ")";
 
-				$join = "JOIN product_purchase ON fk_product_purchase_product=product_id ";
-				$groupby = "GROUP BY product_purchase_id";
+				$join = "JOIN purchase_product_version ON fk_purchase_product_version_product_version=product_version_id ";
+				$groupby = "GROUP BY purchase_product_version_id";
 
-				
 				$sql = $model->generateSearchSql($sql, $where, ['join' => $join, 'groupby' => $groupby]);
+
 				$productsOfCatagory = $this->createResultsArray($this->runSql($sql));
 
 				foreach ($productsOfCatagory as $product) {
-					array_push($completePurchaseArray[$product['fk_product_purchase_purchase']]['products'], $product);
+					array_push($completePurchaseArray[$product['fk_purchase_product_version_purchase']]['products'], $product);
 				}
 			}
 

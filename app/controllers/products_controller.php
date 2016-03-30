@@ -78,54 +78,75 @@
 					$where['sql'] .= "AND product_catagory='" . $_GET['catagory'] . "' ";
 			}
 
-			$join = ['madeby' => ['product_id', 'fk_madeby_product'],
-					 'person' => ['fk_madeby_person', 'person_id']];
+			$join = ['madeby' => ['fk_madeby_base_product', 'base_product_id'],
+					 'person' => ['person_id', 'fk_madeby_person']];
 
 			require_once('../app/models/Product.php');
 			$searchResults = Product::findProducts($where, $join);
+			$orderedResults = Product::groupByBaseProduct($searchResults);
 			
 			$view = new View('products/results');
 			$view->set_title("Search results - '" . $_GET['search'] . "'");
-			$view->pass_data('products', $searchResults);
+			$view->pass_data('products', $orderedResults);
 			$view->load_page();
 		}
 
+		# TODO - This should search for base products, not versions.
 		public function catagory($catagory) {
 			if (substr($catagory, -1) == "s") {
 				$catagory = substr($catagory, 0, strlen($catagory) - 1);
 			}
 
-			if(file_exists('../app/models/' . $catagory . '.php')) {
-				require_once('../app/models/' . $catagory . '.php');
+
+			if(file_exists('../app/models/' . ucfirst($catagory) . '.php')) {
+				require_once('../app/models/' . ucfirst($catagory) . '.php');
 				$this->model = new $catagory;
-				$list = $this->model->findAll($catagory . "." . $catagory . "_id");
+				$products = $this->model->findAll($catagory);
+				$baseProducts = $this->model->groupByBaseProduct($products);
 
 				$view = new View('products/results');
 				$view->set_title(ucfirst($catagory) . 's');
-				$view->pass_data('products', $list);	
+				$view->pass_data('products', $baseProducts);
 			} else {
 				$this->redirect_to('home/index');
 			}
-
-			#var_dump($list);
 			
 			$view->load_page();
 		}
 
 		public function item($id = '') {
-			if ($id == '464532') {
-				$this->redirect_to('');
-			} else {
-				require_once('../app/models/product.php');
-				//$model = new Product;
-				//$product = $model->findById($id);
-				$product = Product::findByProductId($id);
+			require_once('../app/models/Product.php');
+			$product = Product::findByProductVersionId($id);
+
+			if ($product) {
+				$catagory = ucfirst($product['product_catagory']);
+				require_once('../app/models/' . $catagory . '.php');
+				$model = new $catagory;
+				$product = $model->splitListsToArray($product);
+
+				$productVersions = Product::findProductVersions($product['base_product_id']);
+
+				require_once('../app/models/Wish_list.php');
 
 				$view = new View('products/item');
 				$view->set_title($product['product_name']);
+
+				session_start();
+				if (isset($_SESSION['user_id'])) {
+					$wishLists = Wish_list::findByUserId($_SESSION['user_id']);	
+					$view->pass_data('wishLists', $wishLists);
+				}
+
+
 				$view->pass_data('product', $product);
-				$view->load_page();	
+				$view->pass_data('productVersions', $productVersions);
+
+			} else {
+				$view = new View('products/not_found');
+				$view->set_title('Product not found');
 			}
+			
+			$view->load_page();
 		}
 	}
 ?>

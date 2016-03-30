@@ -157,7 +157,7 @@
 			}
 			
 			$sql = rtrim($sql, ', ') . ')';
-
+	
 			return $sql;
 		}
 		
@@ -248,30 +248,30 @@
 			if (isset($options['groupby'])) {
 				$sql .= " " . $options['groupby'] . " ";
 			} elseif (isset($this->sqlOptions['groupby'])) {
-				$sql .= "GROUP BY " . $this->sqlOptions['groupby'];
+				$sql .= " GROUP BY " . $this->sqlOptions['groupby'];
 			}
+			
+			// Uncomment to view Sql
+			#echo $sql;
+			#die;
 			return $sql;
 		}
 
 		// Turns the PDO object returned from a query into an associative array
 		protected function createResultsArray($results) {
-			#var_dump($results);
-			#die();
 			$array = [];
 			while($row = $results->fetch_assoc()) {
 				array_push($array, $row);
-				#var_dump($results);
-				#echo "<br><br>";
 			}
 
 			return $array;
 		}
 
-		public function findAll($column) {
+		public function findAll($catagory) {
 			$sql = "SELECT *";
-			$where = " WHERE " . $column . " IS NOT NULL ";
+			$where = " WHERE product_catagory = '" . $catagory . "'";
 			$sql = $this->generateSearchSql($sql, $where);
-			#echo $sql;
+			#echo $sql;die;
 			$results = $this->runSql($sql);
 
 			return $this->createResultsArray($results);
@@ -312,7 +312,6 @@
 				$datatypes = '';
 				$params = [];
 
-
 				$sql = 'INSERT INTO ' . $table . ' (fk_' . $table . '_' . get_class($this) . ', ';
 
 				foreach (array_keys($propertiesList[0]) as $colName) {
@@ -331,6 +330,7 @@
 					$sql = substr($sql, 0, -2) . "), ";
 				}
 				$sql = substr($sql, 0, -2);
+				#echo $sql;die;
 
 				Model::buildAndRunPreparedStatement($sql, $datatypes, $params);	
 			}
@@ -340,7 +340,7 @@
 			return ltrim(strtolower(preg_replace('/[A-Z]/', '_$0', $str)), '_');
 		}
 
-		public static function buildAndRunPreparedStatement($sql, $datatypes, $params) {
+		public static function buildAndRunPreparedStatement($sql, $datatypes, $params, $returnId = false) {
 			$stmtParams = array();
 			$stmtParams[] = &$datatypes;
 
@@ -354,10 +354,21 @@
 
 			call_user_func_array(array($stmt, 'bind_param'), $stmtParams);
 			$stmt->execute();
-			$results = $stmt->get_result();
-			$conn->close();
 
-			return $results;
+			if ($returnId) {
+				$newId = $conn->insert_id;
+				$conn->close();
+				
+				return $newId;
+			} else {
+				$results = $stmt->get_result();
+
+				$conn->close();
+
+				return $results;	
+			}
+
+			
 		}
 	}
 ?>

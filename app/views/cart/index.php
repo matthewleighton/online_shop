@@ -29,23 +29,48 @@
 				<div class='cart-item'>
 					<div class='cart-product-image'>
 						<?php
-							$this->productImage($product['product_id'], 100);
+							echo $this->productImage($product['base_product_id'], $product['product_version_id'], 100, 0, true);
 						?>
 					</div>
 					<div class='cart-product-details'>
 						<span class='product-name'>
-							<?php $this->link_to("products/item/" . $product['product_id'], $product['product_name']); ?>
+							<?php
+								$this->link_to("products/item/" . $product['product_version_id'],
+											   $product['product_name'] . ' (' . $product['platform'] . ')');
+							?>
 						</span>
 						<?php
-							include('../app/views/cart/_cart_' . $product['product_catagory'] . '.php');
+							#include('../app/views/cart/_cart_' . ucfirst($product['product_catagory']) . '.php');
+							switch ($product['product_catagory']) {
+								case 'book':
+									if (isset($product['authors'])) {
+										echo '<span>By ' . $this->arrayToString($product['authors']) . '</span>';
+									}
+									break;
+
+								case 'film':
+								case 'TV':
+									if (isset($product['directors'])) {
+										echo '<span>Directed by ' . $this->arrayToString($product['directors']) . '</span>';
+									}
+									break;
+
+								case 'music':
+									if (isset($product['musicians'])) {
+										echo '<span>By ' . $this->arrayToString($product['musicians']) . '</span>';
+									}
+									break;
+							}
+
 						?>
+
 						<span class='cart-remove'>
-							<?php $this->removeFromCart($product['product_id'], $cart); ?>
+							<?php $this->removeFromCart($product['product_version_id']); ?>
 						</span>
 					</div>
 
 					<div class='cart-product-price price'>
-						<span>£<?php echo $this->formatPrice($product['price']); ?></span>
+						<span>£<?php echo $this->formatPrice($product['product_price']); ?></span>
 					</div>
 
 					<div class='cart-product-quantity'>

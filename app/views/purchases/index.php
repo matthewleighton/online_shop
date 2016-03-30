@@ -22,17 +22,17 @@
 			</div>
 
 			<?php
-				#var_dump($purchase);
-				#die();
 				foreach ($purchase['products'] as $product) {
 			?>		<div class="purchase-product-details">
 						<div>
-							<?php $this->productImage($product['product_id'], 80); ?>
+							<?php echo $this->productImage($product['base_product_id'],
+														   $product['product_version_id'], 80, 0, true); ?>
 						</div>
 						<div>
 							<p>
 								<?php
-									echo $this->linkToProduct($product['product_id'], $product['product_name']);
+									$this->linkToProduct($product['product_version_id'],
+														 $product['product_name'] . ' (' . $product['platform'] . ')');
 									if ($product['quantity_in_purchase'] != '1') {
 										echo " (x" . $product['quantity_in_purchase'] . ")";
 									}

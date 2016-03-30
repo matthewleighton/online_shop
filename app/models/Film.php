@@ -20,9 +20,19 @@
 			
 			parent::__construct();
 
-			$this->sqlOptions['join']['film'] = ['fk_film_product', 'product.product_id'];
-			array_push($this->sqlOptions['concat'],
-				["CASE WHEN person_role = 'director' THEN person.person_name ELSE NULL END", 'director']);
+			$this->sqlOptions['join']['film'] = ['fk_film_base_product', 'base_product_id'];
+			$this->sqlOptions['join']['languages_base_product'] = ['fk_languages_base_product_base_product', 'base_product_id'];
+			$this->sqlOptions['join']['subtitles'] = ['fk_subtitles_base_product', 'base_product_id'];
+			$this->sqlOptions['join']['languages'] = ['language_id', 'fk_languages_base_product_languages'];
+
+			$this->sqlOptions['concat'][] = ["DISTINCT CASE WHEN person_role = 'director' " .
+											 "THEN person.person_name ELSE NULL END", 'directors'];
+			$this->sqlOptions['concat'][] = ["DISTINCT CASE WHEN person_role = 'actor' " .
+											 "THEN person.person_name ELSE NULL END", 'actors'];
+			$this->sqlOptions['concat'][] = ["DISTINCT CASE WHEN fk_languages_base_product_languages = language_id " .
+											 "THEN language_name END ORDER BY languages_base_product_id", 'languages'];
+			$this->sqlOptions['concat'][] = ["DISTINCT CASE WHEN fk_subtitles_languages = language_id " .
+											 "THEN language_name END ORDER BY languages_base_product_id", 'subtitles'];
 		}
 	}
 ?>

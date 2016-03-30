@@ -67,12 +67,20 @@
 				?>
 						<div class="checkout-cart-item">
 							<div class="cart-product-image">
-								<?php $this->productImage($product['product_id'], 75); ?>
+								<?php echo $this->productImage($product['base_product_id'],
+															   $product['product_version_id'],
+															   75); ?>
 							</div>
 							<div class="cart-product-details">
-								<p><strong><?php echo $product['product_name'];?></strong></p>
-								<p>By <?php echo $this->productCreator($product); ?></p>
-								<p class="price">£<?php echo $this->formatPrice($product['price']); ?></p>
+								<p><strong>
+									<?php echo $product['product_name'] . ' (' . $product['platform'] . ')'?>
+								</strong></p>
+								
+								<?php
+									echo '<p>' . $this->displayProductCreator($product) . '</p>';
+								?>
+
+								<p class="price">£<?php echo $this->formatPrice($product['product_price']); ?></p>
 								<p>Quantity: <?php echo $product['cart_quantity']; ?></p>
 							</div>
 						</div>

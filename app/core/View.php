@@ -138,9 +138,10 @@
 		protected function linkToProduct($productId, $text, $ident = []) {
 			$link = "<a ";
 			$link .= $this->listIdents($ident);
-			echo $link .= "href='<?php " . $GLOBALS['rootPath'] . "products/item/" . $productId . "'>" . $text ."</a>";
+			echo $link .= "href='" . $GLOBALS['rootPath'] . "products/item/" . $productId . "'>" . $text ."</a>";
 		}
 
+		# TODO change all uses of image_tag to echo its return value
 		protected function image_tag($image, $options = []) {
 			$tag = "<img src='" . $GLOBALS['rootPath'] . "assets/img/" . $image . "' ";
 
@@ -152,8 +153,8 @@
 			if(array_key_exists('width', $options)) {
 				$tag .= "width='" . $options['width'] . "' ";
 			}
-
-			echo $tag .= ">";
+			
+			return $tag .= ">";
 		}
 
 		protected function user_info($attr) {
@@ -181,32 +182,50 @@
 		protected function totalPrice($cart) {
 			$total = 0;
 			foreach ($cart as $item) {
-				$n = $item['price'] * intval($item['cart_quantity']);
+				$n = $item['product_price'] * intval($item['cart_quantity']);
 				$total += $n;
 			}
 
 			return number_format($total, 2);
 		}
 
-		protected function removeFromCart($product_id, $cart) {
+		protected function removeFromCart($productVersionId) {
 			echo "<form action='" . $GLOBALS['rootPath'] . "carts/removeitem' method='post'>";
-				echo "<input type='hidden' name='product_id' value='" . $product_id . "'>";
+				echo "<input type='hidden' name='productVersionId' value='" . $productVersionId . "'>";
 				echo "<input type='submit' value='Delete' class='cart-delete-btn'>";
 			echo "</form>";
 		}
 
-		protected function productImage($product_id, $height, $ident = []) {
-			echo "<a href='" . $this->rootPath() . "products/item/" . $product_id . "'>";
-				if(file_exists('../public/assets/img/products/product' . $product_id . '.jpg')) {
-				 	$options = ['height' => $height];
-				 	foreach ($ident as $key => $value) {
-				 		$options[$key] = $value;
-				 	}
-				 	$this->image_tag('products/product' . $product_id . '.jpg', $options);
-				 } else {
-				 	$this->image_tag('placeholder-image.png', ['height' => $height]);
-				 }
-			echo "</a>";
+		protected function productImage($baseId, $versionId, $height, $imageNumber = 0, $link = false, $ident = []) {
+			if ($link) {
+				$imageTag = "<a href='" . $GLOBALS['rootPath'] . "products/item/" . $versionId . "'>";
+			} else {
+				$imageTag = '';
+			}
+
+			$options = ['height' => $height];
+			foreach ($ident as $key => $value) {
+				$options[$key] = $value;
+			}
+		
+			if (file_exists('../public/assets/img/products/p' . $baseId . '-' . $versionId . '-' . $imageNumber . '.jpg')) {
+				$imageTag .= $this->image_tag('products/p' . $baseId . '-' . $versionId . '-' . $imageNumber . '.jpg', $options);
+			} else if ($imageNumber == 0 && file_exists('../public/assets/img/products/p' . $baseId . '-0-0.jpg')) {
+				$imageTag .= $this->image_tag('products/p' . $baseId . '-0-0.jpg', $options);
+			} else {
+				$imageTag .= $this->image_tag('placeholder-image.png', $options);
+				if ($link) {
+					$imageTag .= '</a>';
+				}
+				echo $imageTag;
+				return false;
+			}
+
+			if ($link) {
+				$imageTag .= '</a>';
+			}
+
+			return $imageTag;			
 		}
 
 		protected function formatLabel($label) {
@@ -227,13 +246,6 @@
 			echo "<p>" . $address['city'] . ", " . $address['county'] . " " . $address['postcode'] . "</p>";
 			echo "<p>" . $address['country'] . "</p>";
 			echo "<p>Phone: " . $address['phone_number'] . "</p>";
-		}
-
-		protected function productCreator($product) {
-			if(isset($product['authors'])) {
-				return $product['authors'];
-			}
-			//TODO - Add other ways of accessing creators as I add more product types
 		}
 
 		protected function formatDate($date, $format = 'l d M. Y') {
@@ -260,6 +272,56 @@
 			$output .= ($minutes != 1 ? "s" : '');
 
 			return $output;
+		}
+
+		# Produces a string list of the elements of an array.
+		public function arrayToString($array) {
+			$arrayLength = count($array);
+
+			if ($arrayLength == 1) {
+				return $array[0];
+			} else {
+				$returnString = '';
+				
+				for ($i=0; $i < $arrayLength; $i++)	{
+					if ($i > 0) {
+						if ($i < ($arrayLength - 1)) {
+							$returnString .= ', ';
+						} else {
+							$returnString .= ' and ';
+						}
+					}
+
+					$returnString .= $array[$i];
+				}
+
+				return $returnString;
+			}	
+		}
+
+		# Display an age rating logo
+		public function displayAgeRating($ageRating, $height) {
+			if (file_exists('../public/assets/img/age_ratings/' . $ageRating . '.png')) {
+				$imageTag = "<img src='" . $GLOBALS['rootPath'] . "assets/img/age_ratings/" . $ageRating . ".png";
+				$imageTag .= "' height='" . $height . "'>";
+				return $imageTag;
+			} else {
+				return $ageRating;
+			}
+		}
+
+		public function displayProductCreator($product) {
+			if (isset($product['authors'])) {
+				$creator = 'By ' . $this->arrayToString($product['authors']);
+			} elseif (isset($product['directors'])) {
+				$creator = 'Directed by ' . $this->arrayToString($product['directors']);
+			} elseif (isset($product['musicians'])) {
+				$creator = 'By ' . $this->arrayToString($product['musicians']);
+			} else {
+				$creator = '';
+			}
+
+			return $creator;
 		}
 	}
 	

@@ -9,10 +9,10 @@
 
 		public function index($name = '') {
 			require_once('../app/models/Product.php');
-			$featuredProducts = Product::findRandomProducts('18');
+			$featuredProductsIds = Product::findRandomProductIds('18');
 
 			$view = new View('home/index');
-			$view->pass_data('featuredProducts', $featuredProducts);
+			$view->pass_data('featuredProductsIds', $featuredProductsIds);
 			$view->load_page();
 		}
 

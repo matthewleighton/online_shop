@@ -19,10 +19,14 @@
 			$this->properties['creators']['author'] = [];
 			
 			parent::__construct();
+			$this->sqlOptions['concat'][] = ["DISTINCT CASE WHEN person_role = 'author' THEN person.person_name ELSE NULL END", 'authors'];
+			$this->sqlOptions['concat'][] = ["DISTINCT CASE WHEN fk_languages_base_product_languages = language_id " .
+											 "THEN language_name END ORDER BY languages_base_product_id", 'languages'];
 
-			$this->sqlOptions['join']['book'] = ['fk_book_product', 'product.product_id'];
-			array_push($this->sqlOptions['concat'],
-				["CASE WHEN person_role = 'author' THEN person.person_name ELSE NULL END", 'authors']);
+			$this->sqlOptions['join']['physical_book'] = ['fk_physical_book_product_version', 'product_version_id'];
+			$this->sqlOptions['join']['ebook'] = ['fk_ebook_product_version', 'product_version_id'];
+			$this->sqlOptions['join']['languages_base_product'] = ['fk_languages_base_product_base_product', 'base_product_id'];
+			$this->sqlOptions['join']['languages'] = ['language_id', 'fk_languages_base_product_languages'];
 		}
 	}
 ?>
